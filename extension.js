@@ -9,6 +9,7 @@
 // Author: Harry Karvonen <harry.karvonen@gmail.com>
 //
 
+const Clutter = imports.gi.Clutter;
 const Lang = imports.lang;
 const Gvc = imports.gi.Gvc;
 const Signals = imports.signals;
@@ -56,9 +57,10 @@ AdvMixer.prototype = {
       let item = new PopupMenu.PopupSliderMenuItem(
         stream.volume / this._control.get_vol_max_norm()
       );
-      let title = new PopupMenu.PopupMenuItem(
+      let title = new PopupMenu.PopupSwitchMenuItem(
         stream.name,
-        {reactive: false}
+        !stream.is_muted,
+        {activate: false}
       );
 
       this._items[id] = [item, title];
@@ -68,9 +70,29 @@ AdvMixer.prototype = {
         Lang.bind(this, this._sliderValueChanged, stream.id)
       );
 
+      title.actor.connect(
+        "button-release-event",
+        Lang.bind(this, this._titleToggleState, stream.id)
+      );
+
+      title.actor.connect(
+        "key-press-event",
+        Lang.bind(this, this._titleToggleState, stream.id)
+      );
+
+      //title.connect(
+      //  "toggled",
+      //  Lang.bind(this, this._titleToggled, stream.id)
+      //);
+
       stream.connect(
         "notify::volume",
         Lang.bind(this, this._notifyVolume, stream.id)
+      );
+
+      stream.connect(
+        "notify::is-muted",
+        Lang.bind(this, this._notifyIsMuted, stream.id)
       );
 
       this._mixer.menu.addMenuItem(item, 3);
@@ -97,10 +119,42 @@ AdvMixer.prototype = {
     stream.push_volume();
   },
 
+  _titleToggled: function(title, value, id) {
+    let stream = this._control.lookup_stream_id(id);
+
+    stream.change_is_muted(!value);
+
+    return false;
+  },
+
+  _titleToggleState: function(title, event, id) {
+    //if (event.type() == Clutter.EventType.BUTTON_RELEASE) {
+    //} else
+    if (event.type() == Clutter.EventType.KEY_PRESS) {
+      let symbol = event.get_key_symbol();
+
+      if (symbol != Clutter.KEY_space && symbol != Clutter.KEY_Return) {
+        return false;
+      }
+    }
+
+    let stream = this._control.lookup_stream_id(id);
+
+    stream.change_is_muted(!stream.is_muted);
+
+    return true;
+  },
+
   _notifyVolume: function(object, param_spec, id) {
     let stream = this._control.lookup_stream_id(id);
 
     this._items[id][0].setValue(stream.volume / this._control.get_vol_max_norm());
+  },
+
+  _notifyIsMuted: function(object, param_spec, id) {
+    let stream = this._control.lookup_stream_id(id);
+
+    this._items[id][1].setToggleState(!stream.is_muted);
   },
 
   destroy: function() {
@@ -135,6 +189,6 @@ function disable() {
   if (advMixer) {
     advMixer.destroy();
     advMixer = null;
-  }
+  }
 }
 
