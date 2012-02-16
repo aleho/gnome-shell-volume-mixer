@@ -1,5 +1,13 @@
 // extension.js
 // vi: et sw=2
+//
+// Advanced Volume Mixer
+// Control programs' volume from gnome volume mixer applet.
+//
+// Idea from: https://extensions.gnome.org/extension/142/output-device-chooser-on-volume-menu/
+//
+// Author: Harry Karvonen <harry.karvonen@gmail.com>
+//
 
 const Lang = imports.lang;
 const Gvc = imports.gi.Gvc;
@@ -12,9 +20,11 @@ const PA_INVALID_INDEX = 0xffffffff;
 
 let advMixer;
 
+
 function AdvMixer(mixer) {
   this._init(mixer);
 }
+
 
 AdvMixer.prototype = {
   _init: function(mixer) {
@@ -103,13 +113,16 @@ AdvMixer.prototype = {
 
 Signals.addSignalMethods(AdvMixer.prototype);
 
+
 function main() {
   init();
   enable();
 }
 
+
 function init() {
 }
+
 
 function enable() {
   if (Main.panel._statusArea['volume'] && !advMixer) {
@@ -117,9 +130,11 @@ function enable() {
   }
 }
 
+
 function disable() {
   if (advMixer) {
     advMixer.destroy();
     advMixer = null;
   }
 }
+
