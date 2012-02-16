@@ -80,11 +80,6 @@ AdvMixer.prototype = {
         Lang.bind(this, this._titleToggleState, stream.id)
       );
 
-      //title.connect(
-      //  "toggled",
-      //  Lang.bind(this, this._titleToggled, stream.id)
-      //);
-
       stream.connect(
         "notify::volume",
         Lang.bind(this, this._notifyVolume, stream.id)
@@ -119,17 +114,7 @@ AdvMixer.prototype = {
     stream.push_volume();
   },
 
-  _titleToggled: function(title, value, id) {
-    let stream = this._control.lookup_stream_id(id);
-
-    stream.change_is_muted(!value);
-
-    return false;
-  },
-
   _titleToggleState: function(title, event, id) {
-    //if (event.type() == Clutter.EventType.BUTTON_RELEASE) {
-    //} else
     if (event.type() == Clutter.EventType.KEY_PRESS) {
       let symbol = event.get_key_symbol();
 
