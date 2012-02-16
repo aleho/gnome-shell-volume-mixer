@@ -103,6 +103,11 @@ AdvMixer.prototype = {
 
 Signals.addSignalMethods(AdvMixer.prototype);
 
+function main() {
+  init();
+  enable();
+}
+
 function init() {
 }
 
