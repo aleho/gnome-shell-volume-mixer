@@ -13,13 +13,39 @@ const Clutter = imports.gi.Clutter;
 const Lang = imports.lang;
 const Gvc = imports.gi.Gvc;
 const Signals = imports.signals;
+const St = imports.gi.St;
 
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
 
-const PA_INVALID_INDEX = 0xffffffff;
 
 let advMixer;
+
+
+function AdvPopupSwitchMenuItem() {
+  this._init.apply(this, arguments);
+}
+
+
+AdvPopupSwitchMenuItem.prototype = {
+  __proto__: PopupMenu.PopupSwitchMenuItem.prototype,
+
+  _init: function(text, active, gicon, params) {
+    PopupMenu.PopupSwitchMenuItem.prototype._init.call(this, "  " + text, active, params);
+
+    this._icon = new St.Icon({
+      gicon:        gicon,
+      style_class: "system-status-icon"
+    });
+
+    this.removeActor(this._statusBin);
+    this.removeActor(this.label)
+
+    this.addActor(this._icon, {span: 0, expand: false});
+    this.addActor(this.label);
+    this.addActor(this._statusBin, { span: -1, expand: true });
+  }
+}
 
 
 function AdvMixer(mixer) {
@@ -54,18 +80,22 @@ AdvMixer.prototype = {
     if (stream["is-event-stream"]) {
       // Do nothing
     } else if (stream instanceof Gvc.MixerSinkInput) {
-      let item = new PopupMenu.PopupSliderMenuItem(
+      let slider = new PopupMenu.PopupSliderMenuItem(
         stream.volume / this._control.get_vol_max_norm()
       );
-      let title = new PopupMenu.PopupSwitchMenuItem(
+      let title = new AdvPopupSwitchMenuItem(
         stream.name,
         !stream.is_muted,
+        stream.get_gicon(),
         {activate: false}
       );
 
-      this._items[id] = [item, title];
+      this._items[id] = {
+        slider: slider,
+        title: title
+      };
 
-      item.connect(
+      slider.connect(
         "value-changed",
         Lang.bind(this, this._sliderValueChanged, stream.id)
       );
@@ -90,18 +120,15 @@ AdvMixer.prototype = {
         Lang.bind(this, this._notifyIsMuted, stream.id)
       );
 
-      this._mixer.menu.addMenuItem(item, 3);
+      this._mixer.menu.addMenuItem(slider, 3);
       this._mixer.menu.addMenuItem(title, 3);
-
-      title.actor.show();
-      item.actor.show();
     }
   },
 
   _streamRemoved: function(control, id) {
     if (id in this._items) {
-      this._items[id][0].destroy();
-      this._items[id][1].destroy();
+      this._items[id]["slider"].destroy();
+      this._items[id]["title"].destroy();
       delete this._items[id];
     }
   },
@@ -133,13 +160,13 @@ AdvMixer.prototype = {
   _notifyVolume: function(object, param_spec, id) {
     let stream = this._control.lookup_stream_id(id);
 
-    this._items[id][0].setValue(stream.volume / this._control.get_vol_max_norm());
+    this._items[id]["slider"].setValue(stream.volume / this._control.get_vol_max_norm());
   },
 
   _notifyIsMuted: function(object, param_spec, id) {
     let stream = this._control.lookup_stream_id(id);
 
-    this._items[id][1].setToggleState(!stream.is_muted);
+    this._items[id]["title"].setToggleState(!stream.is_muted);
   },
 
   destroy: function() {
