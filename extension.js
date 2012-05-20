@@ -33,22 +33,20 @@ AdvPopupSwitchMenuItem.prototype = {
   _init: function(text, active, gicon, params) {
     PopupMenu.PopupSwitchMenuItem.prototype._init.call(
       this,
-      "  " + text,
+      "   " + text,
       active,
       params
     );
 
     this._icon = new St.Icon({
       gicon:        gicon,
-      style_class: "system-status-icon"
+      style_class: "adv-volume-icon"
     });
 
     this.removeActor(this._statusBin);
     this.removeActor(this.label)
 
     this.label.add_style_class_name("adv-volume-label");
-    //this._icon.add_style_class_name("adv-volume-label");
-    //this._statusBin.add_style_class_name("adv-volume-label");
 
     this.addActor(this._icon, {span: 0, expand: false});
     this.addActor(this.label, {span: 2, expand: true});
