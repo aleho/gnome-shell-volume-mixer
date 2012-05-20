@@ -33,7 +33,7 @@ AdvPopupSwitchMenuItem.prototype = {
   _init: function(text, active, gicon, params) {
     PopupMenu.PopupSwitchMenuItem.prototype._init.call(
       this,
-      "   " + text,
+      " " + text + "  ",
       active,
       params
     );
@@ -43,16 +43,21 @@ AdvPopupSwitchMenuItem.prototype = {
       style_class: "adv-volume-icon"
     });
 
+    // Rebuild switch
     this.removeActor(this._statusBin);
     this.removeActor(this.label)
 
-    this.label.add_style_class_name("adv-volume-label");
+    // Horizontal box
+    let labelBox = new St.BoxLayout({vertical: false});
 
-    this.addActor(this._icon, {span: 0, expand: false});
-    this.addActor(this.label, {span: 2, expand: true});
-    this.addActor(this._statusBin, {span: -1,
-                                    expand: false,
-                                    align: St.Align.END});
+    labelBox.add(this._icon,
+                {expand: false, x_fill: false, x_align: St.Align.START});
+    labelBox.add(this.label,
+                 {expand: false, x_fill: false, x_align: St.Align.START});
+    labelBox.add(this._statusBin,
+                 {expand: true, x_fill: true, x_align: St.Align.END});
+            
+    this.addActor(labelBox, {span: -1, expand: true });
   }
 }
 
