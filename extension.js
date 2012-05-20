@@ -31,7 +31,12 @@ AdvPopupSwitchMenuItem.prototype = {
   __proto__: PopupMenu.PopupSwitchMenuItem.prototype,
 
   _init: function(text, active, gicon, params) {
-    PopupMenu.PopupSwitchMenuItem.prototype._init.call(this, "  " + text, active, params);
+    PopupMenu.PopupSwitchMenuItem.prototype._init.call(
+      this,
+      "  " + text,
+      active,
+      params
+    );
 
     this._icon = new St.Icon({
       gicon:        gicon,
@@ -41,9 +46,15 @@ AdvPopupSwitchMenuItem.prototype = {
     this.removeActor(this._statusBin);
     this.removeActor(this.label)
 
+    this.label.add_style_class_name("adv-volume-label");
+    //this._icon.add_style_class_name("adv-volume-label");
+    //this._statusBin.add_style_class_name("adv-volume-label");
+
     this.addActor(this._icon, {span: 0, expand: false});
-    this.addActor(this.label);
-    this.addActor(this._statusBin, { span: -1, expand: true });
+    this.addActor(this.label, {span: 2, expand: true});
+    this.addActor(this._statusBin, {span: -1,
+                                    expand: false,
+                                    align: St.Align.END});
   }
 }
 
@@ -120,8 +131,8 @@ AdvMixer.prototype = {
         Lang.bind(this, this._notifyIsMuted, stream.id)
       );
 
-      this._mixer.menu.addMenuItem(slider, 3);
-      this._mixer.menu.addMenuItem(title, 3);
+      this._mixer.menu.addMenuItem(this._items[id]["slider"], 3);
+      this._mixer.menu.addMenuItem(this._items[id]["title"], 3);
     }
   },
 
