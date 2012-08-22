@@ -90,6 +90,7 @@ AdvMixer.prototype = {
     delete label;
 
     this._mixer.menu.addMenuItem(this._outputMenu, 0);
+    this._outputMenu.actor.show();
   },
 
 
@@ -213,14 +214,22 @@ AdvMixer.prototype = {
   },
 
   destroy: function() {
+    this._control.disconnect(this._streamAddedId);
+    this._control.disconnect(this._streamRemovedId);
+
     // Restore Volume label
     this._outputMenu.destroy();
     delete this._outputMenu;
 
-    this._mixer.menu.addMenuItem(new St.Label(_("Volume")), 0);
+    let label = new PopupMenu.PopupMenuItem(_("Volume"), {reactive: false });
+    this._mixer.menu.addMenuItem(label, 0);
+    label.actor.show();
 
-    this._control.disconnect(this._streamAddedId);
-    this._control.disconnect(this._streamRemovedId);
+    // remove application streams
+    for (let id in this._items) {
+      this._streamRemoved(this._control, id);
+    }
+
     this.emit("destroy");
   }
 };
