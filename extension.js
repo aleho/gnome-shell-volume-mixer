@@ -72,6 +72,8 @@ AdvMixer.prototype = {
     this._mixer = mixer;
     this._control = mixer._control;
     this._items = {};
+    this._outputs = {};
+    this._outputMenu = new PopupMenu.PopupSubMenuMenuItem(_("Volume"));
 
     this._streamAddedId = this._control.connect(
       "stream-added",
@@ -81,11 +83,22 @@ AdvMixer.prototype = {
       "stream-removed",
       Lang.bind(this, this._streamRemoved)
     );
+
+    // Change Volume label
+    let label = this._mixer.menu.firstMenuItem;
+    label.destroy();
+    delete label;
+
+    this._mixer.menu.addMenuItem(this._outputMenu, 0);
   },
 
 
   _streamAdded: function(control, id) {
     if (id in this._items) {
+      return;
+    }
+
+    if (id in this._outputs) {
       return;
     }
 
@@ -136,6 +149,17 @@ AdvMixer.prototype = {
 
       this._mixer.menu.addMenuItem(this._items[id]["slider"], 3);
       this._mixer.menu.addMenuItem(this._items[id]["title"], 3);
+    } else if (stream instanceof Gvc.MixerSink) {
+      let output = new PopupMenu.PopupMenuItem(stream.description);
+
+      output.connect(
+        "activate",
+        function (item, event) { control.set_default_sink(stream); }
+      );
+
+      this._outputMenu.menu.addMenuItem(output);
+
+      this._outputs[id] = output;
     }
   },
 
@@ -144,6 +168,11 @@ AdvMixer.prototype = {
       this._items[id]["slider"].destroy();
       this._items[id]["title"].destroy();
       delete this._items[id];
+    }
+
+    if (id in this._outputs) {
+      this._outputs[id].destroy();
+      delete this._outputs[id];
     }
   },
 
@@ -184,6 +213,12 @@ AdvMixer.prototype = {
   },
 
   destroy: function() {
+    // Restore Volume label
+    this._outputMenu.destroy();
+    delete this._outputMenu;
+
+    this._mixer.menu.addMenuItem(new St.Label(_("Volume")), 0);
+
     this._control.disconnect(this._streamAddedId);
     this._control.disconnect(this._streamRemovedId);
     this.emit("destroy");
