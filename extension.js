@@ -91,6 +91,12 @@ AdvMixer.prototype = {
 
     this._mixer.menu.addMenuItem(this._outputMenu, 0);
     this._outputMenu.actor.show();
+
+    // Add streams
+    let streams = this._control.get_streams();
+    for (let i = 0; i < streams.length; i++) {
+      this._streamAdded(this._control, streams[i].id);
+    }
   },
 
 
