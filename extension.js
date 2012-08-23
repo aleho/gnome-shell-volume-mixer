@@ -83,6 +83,10 @@ AdvMixer.prototype = {
       "stream-removed",
       Lang.bind(this, this._streamRemoved)
     );
+    this._defaultSinkChangedId = this._control.connect(
+      "default-sink-changed",
+      Lang.bind(this, this._defaultSinkChanged)
+    );
 
     // Change Volume label
     let label = this._mixer.menu.firstMenuItem;
@@ -97,6 +101,11 @@ AdvMixer.prototype = {
     for (let i = 0; i < streams.length; i++) {
       this._streamAdded(this._control, streams[i].id);
     }
+
+    this._defaultSinkChanged(
+      this._control,
+      this._control.get_default_sink().id
+    );
   },
 
 
@@ -183,6 +192,12 @@ AdvMixer.prototype = {
     }
   },
 
+  _defaultSinkChanged: function(control, id) {
+    for (let output in this._outputs) {
+      this._outputs[output].setShowDot(output == id);
+    }
+  },
+
   _sliderValueChanged: function(slider, value, id) {
     let stream = this._control.lookup_stream_id(id);
     let volume = value * this._control.get_vol_max_norm();
@@ -222,6 +237,7 @@ AdvMixer.prototype = {
   destroy: function() {
     this._control.disconnect(this._streamAddedId);
     this._control.disconnect(this._streamRemovedId);
+    this._control.disconnect(this._defaultSinkChangedId);
 
     // Restore Volume label
     this._outputMenu.destroy();
