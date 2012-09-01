@@ -91,7 +91,7 @@ AdvMixer.prototype = {
     // Change Volume label
     let label = this._mixer.menu.firstMenuItem;
     label.destroy();
-    delete label;
+    //delete label;
 
     this._mixer.menu.addMenuItem(this._outputMenu, 0);
     this._outputMenu.actor.show();
@@ -102,10 +102,12 @@ AdvMixer.prototype = {
       this._streamAdded(this._control, streams[i].id);
     }
 
-    this._defaultSinkChanged(
-      this._control,
-      this._control.get_default_sink().id
-    );
+    if (this._control.get_default_sink() != null) {
+      this._defaultSinkChanged(
+        this._control,
+        this._control.get_default_sink().id
+      );
+    }
   },
 
 
