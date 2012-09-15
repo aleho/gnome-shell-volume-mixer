@@ -129,7 +129,7 @@ AdvMixer.prototype = {
         stream.volume / this._control.get_vol_max_norm()
       );
       let title = new AdvPopupSwitchMenuItem(
-        stream.name,
+        stream.name || stream.description,
         !stream.is_muted,
         stream.get_gicon(),
         {activate: false}
