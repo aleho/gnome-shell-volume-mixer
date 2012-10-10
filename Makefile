@@ -1,5 +1,5 @@
 
-VERSION=0.7
+VERSION=0.9
 PKG=AdvancedVolumeMixer@harry.karvonen.gmail.com
 
 deploy: AdvancedVolumeMixer-$(VERSION).zip
