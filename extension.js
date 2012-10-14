@@ -90,11 +90,11 @@ AdvMixer.prototype = {
     );
 
     // Change Volume label
-    let label = this._mixer.menu.firstMenuItem;
+    let label = this._mixer._volumeMenu.firstMenuItem;
     label.destroy();
     //delete label;
 
-    this._mixer.menu.addMenuItem(this._outputMenu, 0);
+    this._mixer._volumeMenu.addMenuItem(this._outputMenu, 0);
     this._outputMenu.actor.show();
 
     // Add streams
@@ -250,7 +250,7 @@ AdvMixer.prototype = {
     delete this._outputMenu;
 
     let label = new PopupMenu.PopupMenuItem(_("Volume"), {reactive: false });
-    this._mixer.menu.addMenuItem(label, 0);
+    this._mixer._volumeMenu.addMenuItem(label, 0);
     label.actor.show();
 
     // remove application streams
