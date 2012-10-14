@@ -4,8 +4,6 @@
 // Advanced Volume Mixer
 // Control programs' volume from gnome volume mixer applet.
 //
-// Idea from: https://extensions.gnome.org/extension/142/output-device-chooser-on-volume-menu/
-//
 // Author: Harry Karvonen <harry.karvonen@gmail.com>
 //
 
@@ -71,9 +69,12 @@ AdvMixer.prototype = {
   _init: function(mixer) {
     this._mixer = mixer;
     this._control = mixer._control;
+    this._separator = new PopupMenu.PopupSeparatorMenuItem();
     this._items = {};
     this._outputs = {};
     this._outputMenu = new PopupMenu.PopupSubMenuMenuItem(_("Volume"));
+
+    this._mixer.menu.addMenuItem(this._separator, 1);
 
     this._streamAddedId = this._control.connect(
       "stream-added",
@@ -165,8 +166,8 @@ AdvMixer.prototype = {
         Lang.bind(this, this._notifyIsMuted, stream.id)
       );
 
-      this._mixer.menu.addMenuItem(this._items[id]["slider"], 3);
-      this._mixer.menu.addMenuItem(this._items[id]["title"], 3);
+      this._mixer.menu.addMenuItem(this._items[id]["slider"], 2);
+      this._mixer.menu.addMenuItem(this._items[id]["title"], 2);
     } else if (stream instanceof Gvc.MixerSink) {
       let output = new PopupMenu.PopupMenuItem(stream.description);
 
@@ -241,6 +242,9 @@ AdvMixer.prototype = {
     this._control.disconnect(this._streamRemovedId);
     this._control.disconnect(this._defaultSinkChangedId);
 
+    this._separator.destroy();
+    delete this._separator;
+
     // Restore Volume label
     this._outputMenu.destroy();
     delete this._outputMenu;
@@ -273,8 +277,8 @@ function init() {
 
 
 function enable() {
-  if (Main.panel._statusArea['volume'] && !advMixer) {
-    advMixer = new AdvMixer(Main.panel._statusArea["volume"]);
+  if (Main.panel.statusArea['volume'] && !advMixer) {
+    advMixer = new AdvMixer(Main.panel.statusArea["volume"]);
   }
 }
 
