@@ -89,12 +89,11 @@ AdvMixer.prototype = {
       Lang.bind(this, this._defaultSinkChanged)
     );
 
-    // Change Volume label
-    let label = this._mixer._volumeMenu.firstMenuItem;
-    label.destroy();
-    //delete label;
+    // Change Volume title
+    let title = this._mixer._volumeMenu.firstMenuItem.firstMenuItem;
+    title.destroy();
 
-    this._mixer._volumeMenu.addMenuItem(this._outputMenu, 0);
+    this._mixer._volumeMenu.firstMenuItem.addMenuItem(this._outputMenu, 0);
     this._outputMenu.actor.show();
 
     // Add streams
@@ -249,9 +248,9 @@ AdvMixer.prototype = {
     this._outputMenu.destroy();
     delete this._outputMenu;
 
-    let label = new PopupMenu.PopupMenuItem(_("Volume"), {reactive: false });
-    this._mixer._volumeMenu.addMenuItem(label, 0);
-    label.actor.show();
+    let title = new PopupMenu.PopupMenuItem(_("Volume"), {reactive: false });
+    this._mixer._volumeMenu.firstMenuItem.addMenuItem(title, 0);
+    title.actor.show();
 
     // remove application streams
     for (let id in this._items) {
