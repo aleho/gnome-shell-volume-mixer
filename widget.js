@@ -23,13 +23,23 @@ const AppOutputStreamSlider = new Lang.Class({
     this._control = control;
     this.item = new PopupMenu.PopupBaseMenuItem({ activate: false });
 
+    this._vbox = new St.BoxLayout({vertical: true});
+    //this._hbox = new St.BoxLayout({vertical: false});
+
     this._slider = new Slider.Slider(0);
     this._slider.connect('value-changed', Lang.bind(this, this._sliderChanged));
     this._slider.connect('drag-end', Lang.bind(this, this._notifyVolumeChange));
 
     this._icon = new St.Icon({ style_class: 'popup-menu-icon' });
+    this._label = new St.Label({text: ""});
     this.item.actor.add(this._icon);
-    this.item.actor.add(this._slider.actor, { expand: true });
+    //this.item.actor.add(this._slider.actor, { expand: true });
+    //this._hbox.add(this._icon);
+    this._vbox.add(this._label);
+    this._vbox.add(this._slider.actor /*,{ expand: true }*/);
+    //this._vbox.add(this._hbox);
+    this.item.actor.add(this._vbox, {expand: true});
+
     this.item.actor.connect('button-press-event', Lang.bind(this, function(actor, event) {
         this._slider.startDragging(event);
     }));
@@ -53,6 +63,7 @@ const AppOutputStreamSlider = new Lang.Class({
   _connectStream: function(stream) {
     this._mutedChangedId = stream.connect('notify::is-muted', Lang.bind(this, this._updateVolume));
     this._volumeChangedId = stream.connect('notify::volume', Lang.bind(this, this._updateVolume));
+    this._label.text = stream.get_name();
     this._icon.gicon = stream.get_gicon();
   },
 
