@@ -25,6 +25,14 @@ function init() {
         {nick: "right", name: _("Right"), id: 2},
         {nick: "aggregatedMenu", name: _("Aggregated menu"), id: 3},
       ]
+    },
+    output_type: {
+      type: "e",
+      label: _("Type of output slider"),
+      list: [
+        {nick: "OutputStreamSlider", name: _("Default"), id: 0},
+        {nick: "AppOutputStreamSlider", name: _("New"), id: 1},
+      ]
     }
   };
 }

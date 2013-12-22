@@ -8,6 +8,10 @@
     <value value="2" nick="right"/>
     <value value="3" nick="aggregatedMenu"/>
   </enum>
+  <enum id="org.gnome.shell.extensions.AdvancedVolumeMixer.outputType">
+    <value value="0" nick="OutputStreamSlider"/>
+    <value value="1" nick="AppOutputStreamSlider"/>
+  </enum>
   <schema path="/org/gnome/shell/extensions/AdvancedVolumeMixer/"
           id="org.gnome.shell.extensions.AdvancedVolumeMixer">
     <key name="position"
@@ -15,6 +19,12 @@
       <default>'right'</default><!-- FIXME tarkista voiko olla ilman hipsuja -->
       <summary>Position of volume mixer</summary>
       <description>Position of volume mixer</description>
+    </key>
+    <key name="output-type"
+         enum="org.gnome.shell.extensions.AdvancedVolumeMixer.outputType">
+      <default>'OutputStreamSlider'</default>
+      <summary>Output stream type</summary>
+      <description>Select type of output stream</description>
     </key>
     <!-- FIXME other settings like max label length etc. -->
   </schema>
