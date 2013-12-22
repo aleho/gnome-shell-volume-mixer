@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vi: et sw=2 fileencoding=utf8
+  -->
+<schemalist gettext-domain="gnome-shell-extensions-AdvancedVolumeMixer">
+  <enum id="org.gnome.shell.extensions.AdvancedVolumeMixer.position">
+    <value value="0" nick="left"/>
+    <value value="1" nick="center"/>
+    <value value="2" nick="right"/>
+    <value value="3" nick="aggregatedMenu"/>
+  </enum>
+  <schema path="/org/gnome/shell/extensions/AdvancedVolumeMixer/"
+          id="org.gnome.shell.extensions.AdvancedVolumeMixer">
+    <key name="position"
+         enum="org.gnome.shell.extensions.AdvancedVolumeMixer.position">
+      <default>'right'</default><!-- FIXME tarkista voiko olla ilman hipsuja -->
+      <summary>Position of volume mixer</summary>
+      <description>Position of volume mixer</description>
+    </key>
+    <!-- FIXME other settings like max label length etc. -->
+  </schema>
+</schemalist>
