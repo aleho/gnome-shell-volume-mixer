@@ -60,13 +60,13 @@ const AdvancedVolumeMixer = new Lang.Class({
       Lang.bind(this, this._streamRemoved)
     );
 
-    this._output = null;
+//    this._output = null;
 
-    if (this._settings.get_enum("output-type") == 0) {
-      this._output = new Volume.OutputStreamSlider(this._control);
-    } else {
-      this._output = new Widget.AppOutputStreamSlider(this._control);
-    }
+//    if (this._settings.get_enum("output-type") == 0) {
+//      this._output = new Volume.OutputStreamSlider(this._control);
+//    } else {
+    this._output = new Widget.AdvOutputStreamSlider(this._control, this._settings.get_enum("output-type") == 0);
+//    }
     this._output.connect('stream-updated', Lang.bind(this, function() {
       this.emit('icon-changed');
     }));
@@ -118,9 +118,21 @@ const AdvancedVolumeMixer = new Lang.Class({
       this._sinks[id] = s;
       this.addMenuItem(s.item);
     } else if (stream instanceof Gvc.MixerSink) {
-      let s = new Volume.OutputStreamSlider(this._control);
+      let s = new Widget.AppOutputStreamSlider(this._control);
       s.stream = stream;
+      s.item.setOrnament(this._output.stream.id == s.stream.id);
       this._outputs[id] = s;
+      this._output.item.menu.addMenuItem(s.item);
+      s.item.actor.connect(
+        "button-press-event",
+        function (actor, event) {
+          if (event.get_button() == 1) {
+            control.set_default_sink(actor.stream);
+          } else if (event.get_button() == 2) {
+            actor.stream.change_is_muted(!actor.stream.is_muted);
+          }
+        }
+      );
     }
   },
 
@@ -150,6 +162,10 @@ const AdvancedVolumeMixer = new Lang.Class({
 
   _readOutput: function() {
     this._output.stream = this._control.get_default_sink();
+
+    for (let output in this._outputs) {
+      this._outputs[output].item.setOrnament(this._output.stream.id == output);
+    }
   },
 
   _readInput: function() {
