@@ -122,6 +122,12 @@ const AdvSubMenuItem = new Lang.Class({
       this.actor.add_child(this.icon);
       this.actor.add_child(this._vbox);
     }
+  },
+
+  _onButtonReleaseEvent: function (actor, event) {
+    if (event.get_button() != 2) {
+      this._setOpenState(!this._getOpenState());
+    }
   }
 });
 
@@ -149,11 +155,5 @@ const AdvOutputStreamSlider = new Lang.Class({
 
     this.item.actor.connect('scroll-event', Lang.bind(this._slider, this._slider._onScrollEvent));
 
-    this.item.actor.connect('button-release-event', Lang.bind(this, function(actor, event) {
-      if (event.get_button() == 2) {
-        log("test");
-        return true;
-      }
-    }));
   }
 });

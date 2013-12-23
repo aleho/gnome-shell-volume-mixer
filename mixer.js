@@ -70,6 +70,12 @@ const AdvancedVolumeMixer = new Lang.Class({
     this._output.connect('stream-updated', Lang.bind(this, function() {
       this.emit('icon-changed');
     }));
+    this._output.item.actor.connect('button-press-event', Lang.bind(this, function(actor, event) {
+      if (event.get_button() == 2) {
+        actor.stream.change_is_muted(!actor.stream.is_muted);
+        return true;
+      }
+    }));
 
     this._input = new Volume.InputStreamSlider(this._control);
     this._separator = new PopupMenu.PopupSeparatorMenuItem();
