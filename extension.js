@@ -22,15 +22,31 @@ function init() {
   menu = null;
   advMixer = null;
   Settings.init();
+  Settings.gsettings.connect("changed::", function() {
+    disable();
+    enable();
+  });
 }
 
 
 function enable() {
   advMixer = new Mixer.AdvancedVolumeMixer();
-  menu = new Panel.AdvancedVolumeMixerStatusButton(advMixer);
-  Main.panel.addToStatusArea("AdvancedVolumeMixer", menu)
 
-  menu.setMixer(advMixer);
+  let pos = Settings.gsettings.get_enum("position");
+
+  if (pos <= 2) {
+    menu = new Panel.AdvancedVolumeMixerStatusButton(advMixer);
+
+    if (pos == 0) {
+      Main.panel.addToStatusArea("AdvancedVolumeMixer", menu, 999, 'left');
+    } else if (pos == 1) {
+      Main.panel.addToStatusArea("AdvancedVolumeMixer", menu, 999, 'center');
+    } else {
+      Main.panel.addToStatusArea("AdvancedVolumeMixer", menu);
+    }
+  } else {
+  }
+
 }
 
 
