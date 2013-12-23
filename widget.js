@@ -19,7 +19,7 @@ const Volume = imports.ui.status.volume;
 
 const AppOutputStreamSlider = new Lang.Class({
   Name: "AppOutputStreamSlider",
-  Extends: Volume.StreamSlider,
+  Extends: Volume.OutputStreamSlider,
 
   _init: function(control, oldStyle) {
     this.parent(control);
@@ -67,22 +67,19 @@ const AppOutputStreamSlider = new Lang.Class({
 
   _updateSliderIcon: function() {
     if (this._stream && !this.oldStyle) {
-      //log("_updateSliderIcon:");
-      //log(this._stream.get_gicon());
       this._icon.gicon = this._stream.get_gicon();
     } else {
-      this._icon.icon_name = (this._hasHeadphones ?
-                              'audio-headphones-symbolic' :
-                              'audio-speakers-symbolic');
+      this.parent();
     }
+
+    this.emit("stream-updated");
   },
 
   _connectStream: function(stream) {
-    this._mutedChangedId = stream.connect('notify::is-muted', Lang.bind(this, this._updateVolume));
-    this._volumeChangedId = stream.connect('notify::volume', Lang.bind(this, this._updateVolume));
+    this.parent(stream);
+
     this._label.text = stream.get_name() || stream.get_description();
     this._updateSliderIcon();
-    //this._icon.gicon = stream.get_gicon();
     this.item.actor.stream = stream;
   }
 });

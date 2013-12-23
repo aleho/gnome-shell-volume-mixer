@@ -53,7 +53,6 @@ function enable() {
     orgIndicator = Main.panel.statusArea.aggregateMenu._volume;
     orgIndicator.menu.addMenuItem(advMixer);
     orgIndicator._volumeMenu.actor.hide();
-    //Main.panel.statusArea.aggregateMenu._volume = advMixer;
   }
 
 }
@@ -61,20 +60,18 @@ function enable() {
 
 function disable() {
   if (orgIndicator) {
-    //orgIndicator.menu.addMenuItem(orgIndicator._volumeMenu);
     orgIndicator._volumeMenu.actor.show();
-  //  Main.panel.statusArea.aggregateMenu._volume = orgIndicator;
     orgIndicator = null;
   }
 
   if (advMixer) {
     advMixer.destroy();
+    advMixer = null;
   }
-  advMixer = null;
 
   if (menu) {
     menu.destroy();
+    menu = null;
   }
-  menu = null;
 }
 

@@ -29,16 +29,10 @@ const AdvancedVolumeMixer = new Lang.Class({
   _init: function() {
     this.parent();
 
-    this.hasHeadphones = false;
-
     this._control = Volume.getMixerControl();
     this._sinks = {};
     this._outputs = {};
     this._settings = Settings.gsettings;
-
-    log("AdvVolumeMixer init");
-    log(this._control.get_vol_max_norm());
-    log(this._settings.get_enum("position"));
 
     this._control.connect(
       "state-changed",
@@ -60,22 +54,23 @@ const AdvancedVolumeMixer = new Lang.Class({
       Lang.bind(this, this._streamRemoved)
     );
 
-//    this._output = null;
+    this._output = new Widget.AdvOutputStreamSlider(
+      this._control,
+      this._settings.get_enum("output-type") == 0
+    );
 
-//    if (this._settings.get_enum("output-type") == 0) {
-//      this._output = new Volume.OutputStreamSlider(this._control);
-//    } else {
-    this._output = new Widget.AdvOutputStreamSlider(this._control, this._settings.get_enum("output-type") == 0);
-//    }
     this._output.connect('stream-updated', Lang.bind(this, function() {
       this.emit('icon-changed');
     }));
-    this._output.item.actor.connect('button-press-event', Lang.bind(this, function(actor, event) {
-      if (event.get_button() == 2) {
-        actor.stream.change_is_muted(!actor.stream.is_muted);
-        return true;
+    this._output.item.actor.connect(
+      'button-press-event',
+      Lang.bind(this, function(actor, event) {
+        if (event.get_button() == 2) {
+          actor.stream.change_is_muted(!actor.stream.is_muted);
+          return true;
+        }
       }
-    }));
+    ));
 
     this._input = new Volume.InputStreamSlider(this._control);
     this._separator = new PopupMenu.PopupSeparatorMenuItem();
@@ -85,10 +80,15 @@ const AdvancedVolumeMixer = new Lang.Class({
     this.addMenuItem(this._separator);
 
     this._onControlStateChanged();
+    log("AdvVolumeMixer init");
   },
 
   scroll: function(event) {
     this._output.scroll(event);
+  },
+
+  outputHasHeadphones: function() {
+    return this._output._hasHeadphones;
   },
 
   separatorLastItem: function(last) {
@@ -123,6 +123,14 @@ const AdvancedVolumeMixer = new Lang.Class({
       s.stream = stream;
       this._sinks[id] = s;
       this.addMenuItem(s.item);
+      s.item.actor.connect(
+        "button-press-event",
+        function (actor, event) {
+          if (event.get_button() == 2) {
+            actor.stream.change_is_muted(!actor.stream.is_muted);
+          }
+        }
+      );
     } else if (stream instanceof Gvc.MixerSink) {
       let s = new Widget.AppOutputStreamSlider(this._control);
       s.stream = stream;

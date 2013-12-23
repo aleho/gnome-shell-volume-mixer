@@ -18,46 +18,49 @@ const AdvancedVolumeMixerStatusButton = new Lang.Class({
   _init: function(mixer) {
     this.parent(0.0, "AdvancedVolumeMixer");
 
-    this._mixer = mixer;
-
-    this._delegate = this._mixer;
-
-    this._coverPath = "";
-    this._coverSize = 22;
-    this._state = "";
+    this.mixer = mixer;
 
     this._box = new St.BoxLayout();
 
-    this._icon = new St.Icon({icon_name: this._mixer.getIcon(), // 'audio-x-generic-symbolic',
-                              style_class: 'system-status-icon'});
+    this._icon = new St.Icon({style_class: 'system-status-icon'});
     this._bin = new St.Bin({child: this._icon});
 
-    this._stateIcon = new St.Icon({icon_name: 'system-run-symbolic',
-                                   style_class: 'status-icon'});
-    this._stateIconBin = new St.Bin({child: this._stateIcon,
-                                     y_align: St.Align.END});
+    this._stateIcon = new St.Icon({icon_name: 'audio-headphones-symbolic',
+                                   style_class: 'system-status-icon'});
+    this._stateIconBin = new St.Bin({child: this._stateIcon});
 
     this._box.add(this._bin);
     this._box.add(this._stateIconBin);
+
+    this._stateIconBin.hide();
+
     this.actor.add_actor(this._box);
     this.actor.add_style_class_name('panel-status-button');
     this.actor.connect('scroll-event', Lang.bind(this, this._onScrollEvent));
 
-    this._mixer.connect("icon-changed", Lang.bind(this, this._onIconChanged));
+    this.mixer.connect("icon-changed", Lang.bind(this, this._onIconChanged));
+
     this.menu.actor.add_style_class_name("AdvancedVolumeMixer");
-    this.menu.addMenuItem(this._mixer);
+    this.menu.addMenuItem(this.mixer);
+
+    this._onIconChanged();
   },
 
   _onScrollEvent: function (actor, event) {
-    this._mixer.scroll(event);
+    this.mixer.scroll(event);
   },
 
-  _onIconChanged: function (mixer) {
-    this.setIcon(mixer.getIcon());
+  _onIconChanged: function () {
+    this.setIcon(this.mixer.getIcon());
+
+    if (this.mixer.outputHasHeadphones()) {
+      this._stateIconBin.show();
+    } else {
+      this._stateIconBin.hide();
+    }
   },
 
   setIcon: function (icon_name) {
     this._icon.icon_name = icon_name;
   }
-
 });
