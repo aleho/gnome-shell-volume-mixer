@@ -26,12 +26,11 @@ const AdvancedVolumeMixer = new Lang.Class({
   Name: "AdvancedVolumeMixer",
   Extends: PopupMenu.PopupMenuSection,
 
-  _init: function(menu) {
+  _init: function() {
     this.parent();
 
     this.hasHeadphones = false;
 
-    this._menu = menu;
     this._control = Volume.getMixerControl();
     this._sinks = {};
     this._outputs = {};
@@ -73,16 +72,31 @@ const AdvancedVolumeMixer = new Lang.Class({
     }));
 
     this._input = new Volume.InputStreamSlider(this._control);
+    this._separator = new PopupMenu.PopupSeparatorMenuItem();
 
     this.addMenuItem(this._output.item);
     this.addMenuItem(this._input.item);
-    this.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+    this.addMenuItem(this._separator);
 
     this._onControlStateChanged();
   },
 
   scroll: function(event) {
     this._output.scroll(event);
+  },
+
+  separatorLastItem: function(last) {
+    log("separatorLastItem");
+    log(last);
+
+    this._separator.destroy();
+    this._separator = new PopupMenu.PopupSeparatorMenuItem();
+
+    if (last) {
+      this.addMenuItem(this._separator, 999);
+    } else {
+      this.addMenuItem(this._separator, 2);
+    }
   },
 
   _streamAdded: function(control, id) {

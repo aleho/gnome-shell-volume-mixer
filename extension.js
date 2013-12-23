@@ -17,10 +17,13 @@ const Mixer = AVM.imports.mixer;
 
 let menu;
 let advMixer;
+let orgIndicator;
 
 function init() {
   menu = null;
   advMixer = null;
+  orgIndicator = null;
+
   Settings.init();
   Settings.gsettings.connect("changed::", function() {
     disable();
@@ -45,12 +48,25 @@ function enable() {
       Main.panel.addToStatusArea("AdvancedVolumeMixer", menu);
     }
   } else {
+    advMixer.separatorLastItem(true);
+
+    orgIndicator = Main.panel.statusArea.aggregateMenu._volume;
+    orgIndicator.menu.addMenuItem(advMixer);
+    orgIndicator._volumeMenu.actor.hide();
+    //Main.panel.statusArea.aggregateMenu._volume = advMixer;
   }
 
 }
 
 
 function disable() {
+  if (orgIndicator) {
+    //orgIndicator.menu.addMenuItem(orgIndicator._volumeMenu);
+    orgIndicator._volumeMenu.actor.show();
+  //  Main.panel.statusArea.aggregateMenu._volume = orgIndicator;
+    orgIndicator = null;
+  }
+
   if (advMixer) {
     advMixer.destroy();
   }

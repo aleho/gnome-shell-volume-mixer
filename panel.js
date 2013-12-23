@@ -44,10 +44,8 @@ const AdvancedVolumeMixerStatusButton = new Lang.Class({
     this.actor.connect('scroll-event', Lang.bind(this, this._onScrollEvent));
 
     this._mixer.connect("icon-changed", Lang.bind(this, this._onIconChanged));
+    this.menu.actor.add_style_class_name("AdvancedVolumeMixer");
     this.menu.addMenuItem(this._mixer);
-  },
-
-  setMixer: function (mixer) {
   },
 
   _onScrollEvent: function (actor, event) {
