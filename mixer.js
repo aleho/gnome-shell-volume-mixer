@@ -80,7 +80,6 @@ const AdvancedVolumeMixer = new Lang.Class({
     this.addMenuItem(this._separator);
 
     this._onControlStateChanged();
-    log("AdvVolumeMixer init");
   },
 
   scroll: function(event) {
@@ -92,15 +91,14 @@ const AdvancedVolumeMixer = new Lang.Class({
   },
 
   separatorLastItem: function(last) {
-    log("separatorLastItem");
-    log(last);
-
-    this._separator.destroy();
-    this._separator = new PopupMenu.PopupSeparatorMenuItem();
+    if (this._separator) {
+      this._separator.destroy();
+    }
 
     if (last) {
-      this.addMenuItem(this._separator, 999);
+      this._separator = null;
     } else {
+      this._separator = new PopupMenu.PopupSeparatorMenuItem();
       this.addMenuItem(this._separator, 2);
     }
   },

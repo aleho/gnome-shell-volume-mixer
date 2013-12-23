@@ -35,9 +35,13 @@ function init() {
 function enable() {
   advMixer = new Mixer.AdvancedVolumeMixer();
 
+  orgIndicator = Main.panel.statusArea.aggregateMenu._volume;
+  orgIndicator._volumeMenu.actor.hide();
+
   let pos = Settings.gsettings.get_enum("position");
 
   if (pos <= 2) {
+    orgIndicator._primaryIndicator.hide();
     menu = new Panel.AdvancedVolumeMixerStatusButton(advMixer);
 
     if (pos == 0) {
@@ -50,9 +54,7 @@ function enable() {
   } else {
     advMixer.separatorLastItem(true);
 
-    orgIndicator = Main.panel.statusArea.aggregateMenu._volume;
     orgIndicator.menu.addMenuItem(advMixer);
-    orgIndicator._volumeMenu.actor.hide();
   }
 
 }
@@ -61,6 +63,7 @@ function enable() {
 function disable() {
   if (orgIndicator) {
     orgIndicator._volumeMenu.actor.show();
+    orgIndicator._primaryIndicator.show();
     orgIndicator = null;
   }
 

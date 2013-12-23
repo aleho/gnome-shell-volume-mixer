@@ -30,8 +30,8 @@ function init() {
       type: "e",
       label: _("Type of output slider"),
       list: [
-        {nick: "OutputStreamSlider", name: _("Default"), id: 0},
-        {nick: "AppOutputStreamSlider", name: _("New"), id: 1},
+        {nick: "default", name: _("Default"), id: 0},
+        {nick: "advItem", name: _("AdvItem"), id: 1},
       ]
     }
   };
