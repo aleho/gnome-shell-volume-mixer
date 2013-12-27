@@ -1,5 +1,5 @@
 
-VERSION=0.13
+VERSION=0.14
 PKG=AdvancedVolumeMixer@harry.karvonen.gmail.com
 JSON=metadata.json
 JS=extension.js  lib.js  mixer.js  panel.js  prefs.js  settings.js  widget.js
