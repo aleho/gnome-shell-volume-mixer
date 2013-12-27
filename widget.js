@@ -21,11 +21,13 @@ const AppOutputStreamSlider = new Lang.Class({
   Name: "AppOutputStreamSlider",
   Extends: Volume.OutputStreamSlider,
 
-  _init: function(control, oldStyle) {
+  _init: function(control, oldStyle, stream_name_func) {
     this.parent(control);
     log("AppOutputStreamSlider");
 
     this.item.destroy();
+
+    this.stream_name = stream_name_func || function (stream) { return stream.get_name() || stream.get_description(); };
 
     this.oldStyle = oldStyle || false;
     this.item = new PopupMenu.PopupBaseMenuItem({ activate: false });
@@ -78,7 +80,7 @@ const AppOutputStreamSlider = new Lang.Class({
   _connectStream: function(stream) {
     this.parent(stream);
 
-    this._label.text = stream.get_name() || stream.get_description();
+    this._label.text = this.stream_name(stream);
     this._updateSliderIcon();
     this.item.actor.stream = stream;
   }

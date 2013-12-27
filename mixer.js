@@ -130,7 +130,7 @@ const AdvancedVolumeMixer = new Lang.Class({
         }
       );
     } else if (stream instanceof Gvc.MixerSink) {
-      let s = new Widget.AppOutputStreamSlider(this._control);
+      let s = new Widget.AppOutputStreamSlider(this._control, false, function (st) { return st.get_description(); });
       s.stream = stream;
       s.item.setOrnament(this._output.stream.id == s.stream.id);
       this._outputs[id] = s;
