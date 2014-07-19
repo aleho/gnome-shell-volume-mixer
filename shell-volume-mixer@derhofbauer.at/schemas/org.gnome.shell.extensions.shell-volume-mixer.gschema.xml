@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE schemalist SYSTEM "/usr/share/glib-2.0/schemas/gschema.dtd">
+<schemalist gettext-domain="gnome-shell-extensions-shell-volume-mixer">
+    <enum id="org.gnome.shell.extensions.shell-volume-mixer.position">
+        <value value="0" nick="aggregateMenu" />
+        <value value="1" nick="left" />
+        <value value="2" nick="center" />
+        <value value="3" nick="right" />
+    </enum>
+    <enum id="org.gnome.shell.extensions.shell-volume-mixer.outputType">
+        <value value="0" nick="default" />
+        <value value="1" nick="advItem" />
+    </enum>
+    <schema path="/org/gnome/shell/extensions/shell-volume-mixer/"
+            id="org.gnome.shell.extensions.shell-volume-mixer">
+        <key name="position" enum="org.gnome.shell.extensions.shell-volume-mixer.position">
+            <!-- FIXME tarkista voiko olla ilman hipsuja -->
+            <default>'aggregateMenu'</default>
+            <summary>Position of volume mixer</summary>
+            <description>Whether to put the applet in a separate menu or replace the master volume mixer already present</description>
+        </key>
+        <key name="remove-original" type="b">
+            <default>false</default>
+            <summary>Remove original slider</summary>
+            <description>Whether to remove the master volume slider from status menu</description>
+        </key>
+        <key name="output-type"
+                enum="org.gnome.shell.extensions.shell-volume-mixer.outputType">
+            <default>'default'</default>
+            <summary>Output stream type</summary>
+            <description>Select type of output stream</description>
+        </key>
+        <!-- FIXME other settings like max label length etc. -->
+    </schema>
+</schemalist>

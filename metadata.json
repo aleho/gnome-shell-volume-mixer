@@ -1,8 +1,0 @@
-{
-  "shell-version": ["3.10"],
-  "uuid": "AdvancedVolumeMixer@harry.karvonen.gmail.com",
-  "orginal-author": "harry.karvonen@gmail.com",
-  "name": "Advanced Volume Mixer",
-  "description": "Control programs' volume and output\nSource: http://repo.or.cz/w/AdvancedVolumeMixer.git",
-  "url": "http://repo.or.cz/w/AdvancedVolumeMixer.git"
-}

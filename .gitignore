@@ -1,2 +1,5 @@
 *.swp
-AdvancedVolumeMixer-*.zip
+.project
+.settings
+gschemas.compiled
+shell-volume-mixer-*.zip

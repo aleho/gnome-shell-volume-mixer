@@ -1,16 +1,39 @@
+VERSION = 0.1
+EXTENSION = shell-volume-mixer@derhofbauer.at
 
-VERSION=0.14
-PKG=AdvancedVolumeMixer@harry.karvonen.gmail.com
-JSON=metadata.json
-JS=extension.js  lib.js  mixer.js  panel.js  prefs.js  settings.js  widget.js
-SCHEMA_COMP=schemas/gschemas.compiled
-GSCHEMA=schemas/org.gnome.shell.extensions.AdvancedVolumeMixer.gschema.xml
+SRCDIR = $(EXTENSION)
+PACKAGE = shell-volume-mixer-$(VERSION).zip
 
-deploy: AdvancedVolumeMixer-$(VERSION).zip
+FILES = LICENSE README.md
 
-$(SCHEMA_COMP): $(GSCHEMA)
-	glib-compile-schemas --targetdir=schemas schemas
+SOURCES =  \
+	metadata.json \
+	extension.js \
+	mixer.js \
+	panel.js \
+	prefs.js \
+	settings.js \
+	widget.js \
+	stylesheet.css \
+	$(GSCHEMA) $(SCHEMA_COMP)
 
-AdvancedVolumeMixer-$(VERSION).zip: $(JSON) $(JS) stylesheet.css $(SCHEMA_COMP) $(GSCHEMA)
-	zip AdvancedVolumeMixer-$(VERSION).zip $(JSON) $(JS) stylesheet.css $(SCHEMA_COMP) $(GSCHEMA)
+SCHEMA_COMP = schemas/gschemas.compiled
+GSCHEMA = schemas/org.gnome.shell.extensions.shell-volume-mixer.gschema.xml
 
+
+SRCFILES = $(addprefix $(SRCDIR)/, $(SOURCES) $(GSCHEMA) $(GSCHEMA_COMP))
+
+dist: clean $(PACKAGE)
+
+$(SRCDIR)/$(SCHEMA_COMP): $(SRCDIR)/$(GSCHEMA)
+	glib-compile-schemas --targetdir=$(SRCDIR)/schemas $(SRCDIR)/schemas
+
+$(PACKAGE): $(SRCFILES) $(FILES)
+	cd $(SRCDIR) && zip ../$(PACKAGE) $(SOURCES)
+	zip $(PACKAGE) $(FILES)
+
+clean:
+	-@rm $(SRCDIR)/$(SCHEMA_COMP) 2>/dev/null
+	-@rm $(PACKAGE) 2>/dev/null
+
+.PHONY: clean
