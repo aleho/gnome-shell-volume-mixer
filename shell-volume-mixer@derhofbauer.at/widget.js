@@ -51,21 +51,18 @@ const AppOutputStreamSlider = new Lang.Class({
         this._bubbleMiddleButton();
     },
 
+    /**
+     * Evil monkey patching to allow middle click events to bubble up.
+     */
     _bubbleMiddleButton: function() {
-        // evil monkey patching
         this._slider._orgStartDragging = this._slider.startDragging;
-        this._slider.startDragging = function() {};
-        this._slider._startDragging = Lang.bind(this._slider, function(actor, event) {
-            return this._orgStartDragging(event);
-        });
 
-        this.item.actor.connect('button-press-event', Lang.bind(this, function(actor, event) {
-            if (event.get_button() != 2) {
-                return this._slider._orgStartDragging(event);
-            } else {
+        this._slider.startDragging = Lang.bind(this._slider, function(event) {
+            if (event.get_button() == 2) {
                 return false;
             }
-        }));
+            return this._orgStartDragging(event);
+        });
     },
 
     _updateSliderIcon: function() {
