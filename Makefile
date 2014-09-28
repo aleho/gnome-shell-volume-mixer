@@ -33,7 +33,7 @@ $(PACKAGE): $(SRCFILES) $(FILES)
 	zip $(PACKAGE) $(FILES)
 
 clean:
-	-@rm $(SRCDIR)/$(SCHEMA_COMP) 2>/dev/null
-	-@rm $(PACKAGE) 2>/dev/null
+	@test ! -f "$(SRCDIR)/$(SCHEMA_COMP)" || rm $(SRCDIR)/$(SCHEMA_COMP)
+	@test ! -f "$(PACKAGE)" || rm $(PACKAGE)
 
 .PHONY: clean
