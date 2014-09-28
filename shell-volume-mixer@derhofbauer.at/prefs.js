@@ -18,8 +18,11 @@ const _ = Gettext.gettext;
 const Settings = Extension.imports.settings;
 
 let prefs;
+let settings;
 
 function init() {
+    settings = new Settings.Settings();
+
     prefs = {
         position: {
             type: 'e',
@@ -48,7 +51,7 @@ function init() {
             type: 'b',
             label: _('Remove original slider'),
             sensitive: function() {
-                return Settings.gsettings().get_enum('position') !== 0;
+                return settings.get_enum('position') !== 0;
             }
         },
         output_type: {
@@ -124,7 +127,7 @@ function createEnumSetting(pref, name) {
         let item = pref.list[i];
         let iter = model.append();
         model.set(iter, [0, 1], [item.id, item.name]);
-        if (item.id == Settings.gsettings().get_enum(key)) {
+        if (item.id == settings.get_enum(key)) {
             setting_enum.set_active(item.id);
         }
     }
@@ -137,7 +140,7 @@ function createEnumSetting(pref, name) {
 
         let id = model.get_value(iter, 0);
 
-        Settings.gsettings().set_enum(key, id);
+        settings.set_enum(key, id);
 
         if (typeof pref.onChange == 'function') {
             pref.onChange(id, pref, name);
@@ -175,11 +178,11 @@ function createBoolSetting(pref, name) {
     });
 
     let setting_switch = new Gtk.Switch({
-        active: Settings.gsettings().get_boolean(key)
+        active: settings.get_boolean(key)
     });
 
     setting_switch.connect('notify::active', function(button) {
-        Settings.gsettings().set_boolean(key, button.active);
+        settings.set_boolean(key, button.active);
     });
 
     if (pref.help) {

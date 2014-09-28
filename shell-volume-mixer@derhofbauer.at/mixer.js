@@ -28,7 +28,7 @@ const Menu = new Lang.Class({
 
         this._sinks = {};
         this._outputs = {};
-        this._settings = Settings.gsettings();
+        this._settings = new Settings.Settings();
 
         let advanced = this._settings.get_enum('output-type') === 0;
 
