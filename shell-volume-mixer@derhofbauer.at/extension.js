@@ -7,7 +7,7 @@
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported init */
+/* exported init, enable, disable */
 
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Main = imports.ui.main;
@@ -16,6 +16,8 @@ const PopupMenu = imports.ui.popupMenu;
 const Mixer = Extension.imports.mixer;
 const Panel = Extension.imports.panel;
 const Settings = Extension.imports.settings;
+
+let settings;
 
 let statusMenu;
 let volumeMenu;
@@ -27,22 +29,23 @@ let menuSection;
 let separator;
 
 function init() {
+    settings = new Settings.Settings();
     statusMenu = Main.panel.statusArea.aggregateMenu;
     volumeMenu = Main.panel.statusArea.aggregateMenu._volume;
     volumeMixer = volumeMenu._volumeMenu.actor;
     volumeIcon = volumeMenu._primaryIndicator;
+}
 
-    Settings.gsettings().connect('changed::', function() {
+function enable() {
+    settings.connectChanged(function() {
         let isEnabled = Extension.state === 1;
         disable();
         if (isEnabled) {
             enable();
         }
     });
-}
 
-function enable() {
-    let pos = Settings.gsettings().get_enum('position');
+    let pos = settings.get_enum('position');
 
 
     if (pos === 0) {
@@ -53,7 +56,7 @@ function enable() {
         statusMenu.menu.addMenuItem(separator, 1);
 
     } else {
-        let removeOriginal = Settings.gsettings().get_boolean('remove-original');
+        let removeOriginal = settings.get_boolean('remove-original');
         if (removeOriginal) {
             volumeMixer.hide();
             volumeIcon.hide();
@@ -91,4 +94,6 @@ function disable() {
         menu.destroy();
         menu = null;
     }
+
+    settings.disconnectAll();
 }
