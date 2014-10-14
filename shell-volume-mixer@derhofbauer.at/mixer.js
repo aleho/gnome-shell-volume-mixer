@@ -39,7 +39,7 @@ const Menu = new Lang.Class({
         this._control.connect('stream-added', Lang.bind(this, this._streamAdded));
         this._control.connect('stream-removed', Lang.bind(this, this._streamRemoved));
 
-        this._output = new Widget.OutputStreamSlider(this._control, advanced);
+        this._output = new Widget.MasterSlider(this._control, advanced);
         this._output.connect('stream-updated', Lang.bind(this, function() {
             this.emit('icon-changed');
         }));
@@ -122,7 +122,7 @@ const Menu = new Lang.Class({
             // do nothing
 
         } else if (stream instanceof Gvc.MixerSinkInput) {
-            let s = new Widget.AppOutputStreamSlider(this._control);
+            let s = new Widget.AdvOutputStreamSlider(this._control);
             s.stream = stream;
             this._sinks[id] = s;
             this.addMenuItem(s.item);
@@ -133,7 +133,9 @@ const Menu = new Lang.Class({
             });
 
         } else if (stream instanceof Gvc.MixerSink) {
-            let s = new Widget.AppOutputStreamSlider(this._control, false, function (st) { return st.get_description(); });
+            let s = new Widget.AdvOutputStreamSlider(this._control, false, function(st) {
+                return st.get_description();
+            });
             s.stream = stream;
 
             let isDefault = this._output.stream

@@ -7,7 +7,7 @@
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported OutputStreamSlider */
+/* exported AdvOutputStreamSlider, MasterSlider */
 
 const Lang = imports.lang;
 const PopupMenu = imports.ui.popupMenu;
@@ -16,8 +16,8 @@ const St = imports.gi.St;
 const Volume = imports.ui.status.volume;
 
 
-const AppOutputStreamSlider = new Lang.Class({
-    Name: 'AppOutputStreamSlider',
+const AdvOutputStreamSlider = new Lang.Class({
+    Name: 'AdvOutputStreamSlider',
     Extends: Volume.OutputStreamSlider,
 
     _init: function(control, oldStyle, stream_name_func) {
@@ -126,9 +126,9 @@ const AdvSubMenuItem = new Lang.Class({
 });
 
 
-const OutputStreamSlider = new Lang.Class({
-    Name: 'VolumeMixerOutputStreamSlider',
-    Extends: AppOutputStreamSlider,
+const MasterSlider = new Lang.Class({
+    Name: 'MasterSlider',
+    Extends: AdvOutputStreamSlider,
 
     _init: function(control, oldStyle) {
         this.parent(control, oldStyle);
