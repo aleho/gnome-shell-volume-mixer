@@ -26,7 +26,7 @@ const AdvOutputStreamSlider = new Lang.Class({
         this.item.destroy();
 
         this.stream_name = stream_name_func
-                || function (stream) {
+                || function(stream) {
                     return stream.get_name() || stream.get_description();
                 };
 
@@ -102,7 +102,7 @@ const AdvSubMenuItem = new Lang.Class({
 
         if (!showName) {
             this.actor.add_child(this.icon);
-            this.actor.add(this.slider.actor, {expand: true});
+            this.actor.add(this.slider.actor, { expand: true });
             this.actor.add_child(this._triangleBin);
         } else {
             this._vbox = new St.BoxLayout({ vertical: true });
@@ -118,7 +118,7 @@ const AdvSubMenuItem = new Lang.Class({
         }
     },
 
-    _onButtonReleaseEvent: function (actor, event) {
+    _onButtonReleaseEvent: function(actor, event) {
         if (event.get_button() != 2) {
             this._setOpenState(!this._getOpenState());
         }

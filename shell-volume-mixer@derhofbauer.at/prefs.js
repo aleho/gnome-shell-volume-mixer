@@ -28,10 +28,10 @@ function init() {
             type: 'e',
             label: _('Position of volume mixer'),
             list: [
-                {nick: 'aggregateMenu', name: _('Status Menu'), id: Settings.POS_MENU},
-                {nick: 'left', name: _('Left'), id: Settings.POS_LEFT},
-                {nick: 'center', name: _('Center'), id: Settings.POS_CENTER},
-                {nick: 'right', name: _('Right'), id: Settings.POS_RIGHT}
+                { nick: 'aggregateMenu', name: _('Status Menu'), id: Settings.POS_MENU },
+                { nick: 'left', name: _('Left'), id: Settings.POS_LEFT },
+                { nick: 'center', name: _('Center'), id: Settings.POS_CENTER },
+                { nick: 'right', name: _('Right'), id: Settings.POS_RIGHT }
             ],
             onChange: function(value) {
                 let checkbox = prefs['remove-original'].hbox;

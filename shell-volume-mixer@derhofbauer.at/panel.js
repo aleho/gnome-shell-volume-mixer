@@ -47,11 +47,11 @@ const Button = new Lang.Class({
         this._onIconChanged();
     },
 
-    _onScrollEvent: function (actor, event) {
+    _onScrollEvent: function(actor, event) {
         this.mixer.scroll(event);
     },
 
-    _onIconChanged: function () {
+    _onIconChanged: function() {
         if (this.mixer.outputHasHeadphones()) {
             this.setIcon('audio-headphones-symbolic');
         } else {
@@ -59,7 +59,7 @@ const Button = new Lang.Class({
         }
     },
 
-    setIcon: function (icon_name) {
+    setIcon: function(icon_name) {
         this._icon.icon_name = icon_name;
     }
 });

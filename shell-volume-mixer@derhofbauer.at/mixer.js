@@ -122,7 +122,7 @@ const Menu = new Lang.Class({
             s.stream = stream;
             this._sinks[id] = s;
             this.addMenuItem(s.item);
-            s.item.actor.connect('button-press-event', function (actor, event) {
+            s.item.actor.connect('button-press-event', function(actor, event) {
                 if (event.get_button() == 2) {
                     actor.stream.change_is_muted(!actor.stream.is_muted);
                 }
@@ -141,7 +141,7 @@ const Menu = new Lang.Class({
             this._outputs[id] = s;
             this._output.item.menu.addMenuItem(s.item);
 
-            s.item.actor.connect('button-press-event', function (actor, event) {
+            s.item.actor.connect('button-press-event', function(actor, event) {
                 if (event.get_button() == 1) {
                     control.set_default_sink(actor.stream);
                 } else if (event.get_button() == 2) {
