@@ -15,7 +15,6 @@ const Lang = imports.lang;
 const PopupMenu = imports.ui.popupMenu;
 const Volume = imports.ui.status.volume;
 
-const Settings = Extension.imports.settings;
 const Widget = Extension.imports.widget;
 
 
@@ -23,14 +22,11 @@ const Menu = new Lang.Class({
     Name: 'ShellVolumeMixerMenu',
     Extends: PopupMenu.PopupMenuSection,
 
-    _init: function(separateSinks) {
+    _init: function(separateSinks, showName) {
         this.parent();
 
         this._sinks = {};
         this._outputs = {};
-        this._settings = new Settings.Settings();
-
-        let advanced = this._settings.get_enum('output-type') === 0;
 
         this._control = Volume.getMixerControl();
         this._control.connect('state-changed', Lang.bind(this, this._onControlStateChanged));
@@ -39,7 +35,7 @@ const Menu = new Lang.Class({
         this._control.connect('stream-added', Lang.bind(this, this._streamAdded));
         this._control.connect('stream-removed', Lang.bind(this, this._streamRemoved));
 
-        this._output = new Widget.MasterSlider(this._control, advanced);
+        this._output = new Widget.MasterSlider(this._control, showName);
         this._output.connect('stream-updated', Lang.bind(this, function() {
             this.emit('icon-changed');
         }));

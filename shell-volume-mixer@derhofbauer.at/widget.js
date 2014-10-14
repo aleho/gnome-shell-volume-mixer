@@ -20,7 +20,7 @@ const AdvOutputStreamSlider = new Lang.Class({
     Name: 'AdvOutputStreamSlider',
     Extends: Volume.OutputStreamSlider,
 
-    _init: function(control, oldStyle, stream_name_func) {
+    _init: function(control, showName, stream_name_func) {
         this.parent(control);
 
         this.item.destroy();
@@ -30,7 +30,7 @@ const AdvOutputStreamSlider = new Lang.Class({
                     return stream.get_name() || stream.get_description();
                 };
 
-        this.oldStyle = oldStyle || false;
+        this._showName = showName || false;
         this.item = new PopupMenu.PopupBaseMenuItem({ activate: false });
 
         this._vbox = new St.BoxLayout({ vertical: true });
@@ -66,7 +66,7 @@ const AdvOutputStreamSlider = new Lang.Class({
     },
 
     _updateSliderIcon: function() {
-        if (this._stream && !this.oldStyle) {
+        if (this._stream && !this._showName) {
             this._icon.gicon = this._stream.get_gicon();
         } else {
             this.parent();
@@ -88,7 +88,7 @@ const AdvSubMenuItem = new Lang.Class({
     Name: 'AdvSubMenuItem',
     Extends: PopupMenu.PopupSubMenuMenuItem,
 
-    _init: function(oldStyle) {
+    _init: function(showName) {
         this.parent('', true);
 
         this.slider = new Slider.Slider(0);
@@ -100,7 +100,7 @@ const AdvSubMenuItem = new Lang.Class({
             }
         }));
 
-        if (oldStyle) {
+        if (!showName) {
             this.actor.add_child(this.icon);
             this.actor.add(this.slider.actor, {expand: true});
             this.actor.add_child(this._triangleBin);
@@ -130,11 +130,11 @@ const MasterSlider = new Lang.Class({
     Name: 'MasterSlider',
     Extends: AdvOutputStreamSlider,
 
-    _init: function(control, oldStyle) {
-        this.parent(control, oldStyle);
+    _init: function(control, showName) {
+        this.parent(control, showName);
 
         this.item.destroy();
-        this.item = new AdvSubMenuItem(this.oldStyle);
+        this.item = new AdvSubMenuItem(showName);
 
         this._slider.actor.destroy();
         this._slider = this.item.slider;

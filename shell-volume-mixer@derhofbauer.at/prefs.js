@@ -7,7 +7,7 @@
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported init,buildPrefsWidget */
+/* exported init, buildPrefsWidget */
 
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Gettext = imports.gettext.domain('gnome-shell-extensions-shell-volume-mixer');
@@ -28,13 +28,13 @@ function init() {
             type: 'e',
             label: _('Position of volume mixer'),
             list: [
-                {nick: 'aggregateMenu', name: _('Status Menu'), id: 0},
-                {nick: 'left', name: _('Left'), id: 1},
-                {nick: 'center', name: _('Center'), id: 2},
-                {nick: 'right', name: _('Right'), id: 3}
+                {nick: 'aggregateMenu', name: _('Status Menu'), id: Settings.POS_MENU},
+                {nick: 'left', name: _('Left'), id: Settings.POS_LEFT},
+                {nick: 'center', name: _('Center'), id: Settings.POS_CENTER},
+                {nick: 'right', name: _('Right'), id: Settings.POS_RIGHT}
             ],
             onChange: function(value) {
-                let checkbox = prefs.remove_original.hbox;
+                let checkbox = prefs['remove-original'].hbox;
 
                 if (!checkbox) {
                     return;
@@ -51,16 +51,12 @@ function init() {
             type: 'b',
             label: _('Remove original slider'),
             sensitive: function() {
-                return settings.get_enum('position') !== 0;
+                return settings.get_enum('position') !== Settings.POS_MENU;
             }
         },
-        'output_type': {
-            type: 'e',
-            label: _('Type of output slider'),
-            list: [
-                {nick: 'default', name: _('Default'), id: 0},
-                {nick: 'advItem', name: _('AdvItem'), id: 1}
-            ]
+        'show-detailed-sliders': {
+            type: 'b',
+            label: _('Show detailed sliders')
         }
     };
 }
@@ -102,7 +98,7 @@ function buildHbox(prefs, name) {
 }
 
 
-function createEnumSetting(pref, key) {
+function createEnumSetting(pref, name) {
     let hbox = new Gtk.Box({
         orientation: Gtk.Orientation.HORIZONTAL,
         margin_top: 5
@@ -125,7 +121,7 @@ function createEnumSetting(pref, key) {
         let item = pref.list[i];
         let iter = model.append();
         model.set(iter, [0, 1], [item.id, item.name]);
-        if (item.id == settings.get_enum(key)) {
+        if (item.id == settings.get_enum(name)) {
             setting_enum.set_active(item.id);
         }
     }
@@ -138,7 +134,7 @@ function createEnumSetting(pref, key) {
 
         let id = model.get_value(iter, 0);
 
-        settings.set_enum(key, id);
+        settings.set_enum(name, id);
 
         if (typeof pref.onChange == 'function') {
             pref.onChange(id, pref, name);
@@ -156,7 +152,7 @@ function createEnumSetting(pref, key) {
     return hbox;
 }
 
-function createBoolSetting(pref, key) {
+function createBoolSetting(pref, name) {
     let sensitive = true;
     if (typeof pref.sensitive == 'function') {
         sensitive = pref.sensitive();
@@ -174,11 +170,11 @@ function createBoolSetting(pref, key) {
     });
 
     let setting_switch = new Gtk.Switch({
-        active: settings.get_boolean(key)
+        active: settings.get_boolean(name)
     });
 
     setting_switch.connect('notify::active', function(button) {
-        settings.set_boolean(key, button.active);
+        settings.set_boolean(name, button.active);
     });
 
     if (pref.help) {

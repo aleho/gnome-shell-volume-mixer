@@ -7,10 +7,6 @@
         <value value="2" nick="center" />
         <value value="3" nick="right" />
     </enum>
-    <enum id="org.gnome.shell.extensions.shell-volume-mixer.outputType">
-        <value value="0" nick="default" />
-        <value value="1" nick="advItem" />
-    </enum>
     <schema path="/org/gnome/shell/extensions/shell-volume-mixer/"
             id="org.gnome.shell.extensions.shell-volume-mixer">
         <key name="position" enum="org.gnome.shell.extensions.shell-volume-mixer.position">
@@ -24,12 +20,10 @@
             <summary>Remove original slider</summary>
             <description>Whether to remove the master volume slider from status menu</description>
         </key>
-        <key name="output-type"
-                enum="org.gnome.shell.extensions.shell-volume-mixer.outputType">
-            <default>'default'</default>
-            <summary>Output stream type</summary>
-            <description>Select type of output stream</description>
+        <key name="show-detailed-sliders" type="b">
+            <default>false</default>
+            <summary>Show detailed sliders</summary>
+            <description>Whether to show detailed sliders with different icons and the stream's description</description>
         </key>
-        <!-- FIXME other settings like max label length etc. -->
     </schema>
 </schemalist>

@@ -7,11 +7,17 @@
  */
 
 /* exported Settings */
+/* exported POS_MENU, POS_LEFT, POS_CENTER, POS_RIGHT */
 
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Lang = imports.lang;
+
+const POS_MENU = 0;
+const POS_LEFT = 1;
+const POS_CENTER = 2;
+const POS_RIGHT = 3;
 
 let gsettings;
 let signals = [];

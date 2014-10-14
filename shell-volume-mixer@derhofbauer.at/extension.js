@@ -46,11 +46,11 @@ function enable() {
     });
 
     let pos = settings.get_enum('position');
+    let showName = settings.get_boolean('show-detailed-sliders');
 
-
-    if (pos === 0) {
+    if (pos === Settings.POS_MENU) {
         separator = new PopupMenu.PopupSeparatorMenuItem();
-        menuSection = new Mixer.Menu(false);
+        menuSection = new Mixer.Menu(false, showName);
         volumeMixer.hide();
         volumeMenu.menu.addMenuItem(menuSection, 0);
         statusMenu.menu.addMenuItem(separator, 1);
@@ -61,12 +61,12 @@ function enable() {
             volumeMixer.hide();
             volumeIcon.hide();
         }
-        menuSection = new Mixer.Menu(true);
+        menuSection = new Mixer.Menu(true, showName);
         menu = new Panel.Button(menuSection);
 
-        if (pos === 1) {
+        if (pos === Settings.POS_LEFT) {
             Main.panel.addToStatusArea('ShellVolumeMixer', menu, 999, 'left');
-        } else if (pos === 2) {
+        } else if (pos === Settings.POS_CENTER) {
             Main.panel.addToStatusArea('ShellVolumeMixer', menu, 999, 'center');
         } else {
             Main.panel.addToStatusArea('ShellVolumeMixer', menu);
