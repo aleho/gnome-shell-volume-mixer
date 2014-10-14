@@ -24,7 +24,7 @@ function init() {
     settings = new Settings.Settings();
 
     prefs = {
-        position: {
+        'position': {
             type: 'e',
             label: _('Position of volume mixer'),
             list: [
@@ -47,14 +47,14 @@ function init() {
                 }
             }
         },
-        remove_original: {
+        'remove-original': {
             type: 'b',
             label: _('Remove original slider'),
             sensitive: function() {
                 return settings.get_enum('position') !== 0;
             }
         },
-        output_type: {
+        'output_type': {
             type: 'e',
             label: _('Type of output slider'),
             list: [
@@ -102,9 +102,7 @@ function buildHbox(prefs, name) {
 }
 
 
-function createEnumSetting(pref, name) {
-    let key = name.replace('_', '-');
-
+function createEnumSetting(pref, key) {
     let hbox = new Gtk.Box({
         orientation: Gtk.Orientation.HORIZONTAL,
         margin_top: 5
@@ -158,9 +156,7 @@ function createEnumSetting(pref, name) {
     return hbox;
 }
 
-function createBoolSetting(pref, name) {
-    let key = name.replace('_', '-');
-
+function createBoolSetting(pref, key) {
     let sensitive = true;
     if (typeof pref.sensitive == 'function') {
         sensitive = pref.sensitive();
