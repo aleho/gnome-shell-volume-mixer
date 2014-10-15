@@ -12,6 +12,7 @@
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
+const Volume = imports.ui.status.volume;
 
 const Mixer = Extension.imports.mixer;
 const Panel = Extension.imports.panel;
@@ -23,6 +24,7 @@ let statusMenu;
 let volumeMenu;
 let volumeMixer;
 let volumeIcon;
+let mixerControl;
 
 let menu;
 let menuSection;
@@ -34,23 +36,31 @@ function init() {
     volumeMenu = Main.panel.statusArea.aggregateMenu._volume;
     volumeMixer = volumeMenu._volumeMenu.actor;
     volumeIcon = volumeMenu._primaryIndicator;
+    mixerControl = Volume.getMixerControl();
 }
 
 function enable() {
     settings.connectChanged(function() {
-        let isEnabled = Extension.state === 1;
         disable();
-        if (isEnabled) {
-            enable();
-        }
+        enable();
     });
 
     let pos = settings.get_enum('position');
-    let showName = settings.get_boolean('show-detailed-sliders');
+    let detailed = settings.get_boolean('show-detailed-sliders');
+    let boostVolume = settings.get_boolean('use-volume-boost');
+
+    // monkey patch maximum volume calculations
+    if (boostVolume && !mixerControl._org_get_vol_max_norm) {
+        mixerControl._org_get_vol_max_norm = mixerControl.get_vol_max_norm;
+        mixerControl.get_vol_max_norm = mixerControl.get_vol_max_amplified;
+    }
 
     if (pos === Settings.POS_MENU) {
         separator = new PopupMenu.PopupSeparatorMenuItem();
-        menuSection = new Mixer.Menu(false, showName);
+        menuSection = new Mixer.Menu(mixerControl, {
+            separator: false,
+            detailed: detailed
+        });
         volumeMixer.hide();
         volumeMenu.menu.addMenuItem(menuSection, 0);
         statusMenu.menu.addMenuItem(separator, 1);
@@ -61,7 +71,10 @@ function enable() {
             volumeMixer.hide();
             volumeIcon.hide();
         }
-        menuSection = new Mixer.Menu(true, showName);
+        menuSection = new Mixer.Menu(mixerControl, {
+            separator: true,
+            detailed: detailed
+        });
         menu = new Panel.Button(menuSection);
 
         if (pos === Settings.POS_LEFT) {
@@ -96,4 +109,10 @@ function disable() {
     }
 
     settings.disconnectAll();
+
+    // undo monkey patch
+    if (typeof mixerControl._org_get_vol_max_norm == 'function') {
+        mixerControl.get_vol_max_norm = mixerControl._org_get_vol_max_norm;
+        delete mixerControl._org_get_vol_max_norm;
+    }
 }

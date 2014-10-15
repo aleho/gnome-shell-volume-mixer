@@ -20,17 +20,11 @@ const AdvOutputStreamSlider = new Lang.Class({
     Name: 'AdvOutputStreamSlider',
     Extends: Volume.OutputStreamSlider,
 
-    _init: function(control, showName, stream_name_func) {
+    _init: function(control, options) {
         this.parent(control);
+        this.options = options || {};
 
         this.item.destroy();
-
-        this.stream_name = stream_name_func
-                || function(stream) {
-                    return stream.get_name() || stream.get_description();
-                };
-
-        this._showName = showName || false;
         this.item = new PopupMenu.PopupBaseMenuItem({ activate: false });
 
         this._vbox = new St.BoxLayout({ vertical: true });
@@ -66,7 +60,7 @@ const AdvOutputStreamSlider = new Lang.Class({
     },
 
     _updateSliderIcon: function() {
-        if (this._stream && !this._showName) {
+        if (this._stream && this.options.detailed) {
             this._icon.gicon = this._stream.get_gicon();
         } else {
             this.parent();
@@ -78,7 +72,14 @@ const AdvOutputStreamSlider = new Lang.Class({
     _connectStream: function(stream) {
         this.parent(stream);
 
-        this._label.text = this.stream_name(stream);
+        var text = '';
+        if (typeof this.options.name == 'function') {
+            text = this.options.name(stream);
+        } else {
+            text = stream.get_name() || stream.get_description();
+        }
+
+        this._label.text = text;
         this._updateSliderIcon();
         this.item.actor.stream = stream;
     }
@@ -88,7 +89,7 @@ const AdvSubMenuItem = new Lang.Class({
     Name: 'AdvSubMenuItem',
     Extends: PopupMenu.PopupSubMenuMenuItem,
 
-    _init: function(showName) {
+    _init: function(detailed) {
         this.parent('', true);
 
         this.slider = new Slider.Slider(0);
@@ -100,7 +101,7 @@ const AdvSubMenuItem = new Lang.Class({
             }
         }));
 
-        if (!showName) {
+        if (!detailed) {
             this.actor.add_child(this.icon);
             this.actor.add(this.slider.actor, { expand: true });
             this.actor.add_child(this._triangleBin);
@@ -130,11 +131,11 @@ const MasterSlider = new Lang.Class({
     Name: 'MasterSlider',
     Extends: AdvOutputStreamSlider,
 
-    _init: function(control, showName) {
-        this.parent(control, showName);
+    _init: function(control, options) {
+        this.parent(control, options);
 
         this.item.destroy();
-        this.item = new AdvSubMenuItem(showName);
+        this.item = new AdvSubMenuItem(this.options.detailed);
 
         this._slider.actor.destroy();
         this._slider = this.item.slider;

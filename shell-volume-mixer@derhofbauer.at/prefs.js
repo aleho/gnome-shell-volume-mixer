@@ -57,6 +57,10 @@ function init() {
         'show-detailed-sliders': {
             type: 'b',
             label: _('Show detailed sliders')
+        },
+        'use-volume-boost': {
+            type: 'b',
+            label: _('Use volume boost')
         }
     };
 }

@@ -25,5 +25,10 @@
             <summary>Show detailed sliders</summary>
             <description>Whether to show detailed sliders with different icons and the stream's description</description>
         </key>
+        <key name="use-volume-boost" type="b">
+            <default>false</default>
+            <summary>Use volume boost</summary>
+            <description>Use PulseAudio's boost to allow the volume to be set above 100%</description>
+        </key>
     </schema>
 </schemalist>

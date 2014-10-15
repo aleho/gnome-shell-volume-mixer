@@ -22,20 +22,24 @@ const Menu = new Lang.Class({
     Name: 'ShellVolumeMixerMenu',
     Extends: PopupMenu.PopupMenuSection,
 
-    _init: function(separateSinks, showName) {
+    _init: function(control, options) {
+        this._control = control;
+        this.options = options || {};
         this.parent();
 
         this._sinks = {};
         this._outputs = {};
 
-        this._control = Volume.getMixerControl();
         this._control.connect('state-changed', Lang.bind(this, this._onControlStateChanged));
         this._control.connect('default-sink-changed', Lang.bind(this, this._readOutput));
         this._control.connect('default-source-changed', Lang.bind(this, this._readInput));
         this._control.connect('stream-added', Lang.bind(this, this._streamAdded));
         this._control.connect('stream-removed', Lang.bind(this, this._streamRemoved));
 
-        this._output = new Widget.MasterSlider(this._control, showName);
+        this._output = new Widget.MasterSlider(this._control, {
+            detailed: this.options.detailed
+        });
+
         this._output.connect('stream-updated', Lang.bind(this, function() {
             this.emit('icon-changed');
         }));
@@ -52,7 +56,7 @@ const Menu = new Lang.Class({
         this._input = new Volume.InputStreamSlider(this._control);
         this.addMenuItem(this._input.item);
 
-        if (separateSinks) {
+        if (this.options.separator) {
             this._addSeparator();
         }
 
@@ -107,8 +111,7 @@ const Menu = new Lang.Class({
     },
 
     _streamAdded: function(control, id) {
-        if (id in this._sinks
-                || id in this._outputs) {
+        if (id in this._sinks || id in this._outputs) {
             return;
         }
 
@@ -118,8 +121,22 @@ const Menu = new Lang.Class({
             // do nothing
 
         } else if (stream instanceof Gvc.MixerSinkInput) {
-            let s = new Widget.AdvOutputStreamSlider(this._control);
+            let s = new Widget.AdvOutputStreamSlider(this._control, {
+                detailed: this.options.detailed,
+                name: Lang.bind(this, function(stream) {
+                    var name = '';
+                    if (this.options.detailed) {
+                        name = stream.get_description();
+                    }
+                    if (!name) {
+                        name = stream.get_name();
+                    }
+                    return name;
+                })
+            });
+
             s.stream = stream;
+
             this._sinks[id] = s;
             this.addMenuItem(s.item);
             s.item.actor.connect('button-press-event', function(actor, event) {
@@ -129,9 +146,13 @@ const Menu = new Lang.Class({
             });
 
         } else if (stream instanceof Gvc.MixerSink) {
-            let s = new Widget.AdvOutputStreamSlider(this._control, false, function(st) {
-                return st.get_description();
+            let s = new Widget.AdvOutputStreamSlider(this._control, {
+                detailed: this.options.detailed,
+                name: Lang.bind(this, function(stream) {
+                    return stream.get_description() || stream.get_name();
+                })
             });
+
             s.stream = stream;
 
             let isDefault = this._output.stream
