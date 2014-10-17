@@ -1,7 +1,19 @@
-.ShellVolumeMixer {
+.shellvolumemixer {
     width: 360px;
 }
 
-.ShellVolumeMixer .slider {
-    width: 1em;
+.masterslider .slider {
+    width: 267px;
+}
+
+.masterslider .masterlabel {
+    width: 251px;
+}
+
+.masterlabel {
+    width: 251px;
+}
+
+.selected-stream {
+	font-weight: bold;
 }

@@ -36,12 +36,11 @@ const Button = new Lang.Class({
         this._box.add(this._bin);
 
         this.actor.add_actor(this._box);
-        this.actor.add_style_class_name('panel-status-button');
         this.actor.connect('scroll-event', Lang.bind(this, this._onScrollEvent));
 
         this.mixer.connect('icon-changed', Lang.bind(this, this._onIconChanged));
 
-        this.menu.actor.add_style_class_name('ShellVolumeMixer');
+        this.menu.actor.add_style_class_name('shellvolumemixer');
         this.menu.addMenuItem(this.mixer);
 
         this._onIconChanged();

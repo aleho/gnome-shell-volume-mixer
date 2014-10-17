@@ -7,7 +7,7 @@
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported AdvOutputStreamSlider, MasterSlider */
+/* exported MasterSlider, InputSlider, OutputSlider */
 
 const Lang = imports.lang;
 const PopupMenu = imports.ui.popupMenu;
@@ -16,8 +16,12 @@ const St = imports.gi.St;
 const Volume = imports.ui.status.volume;
 
 
-const AdvOutputStreamSlider = new Lang.Class({
-    Name: 'AdvOutputStreamSlider',
+/**
+ * Advanced OutputStreamSlider, extending and monkey patching the default
+ * implementation.
+ */
+let OutputStreamSlider = new Lang.Class({
+    Name: 'OutputStreamSlider',
     Extends: Volume.OutputStreamSlider,
 
     _init: function(control, options) {
@@ -43,6 +47,10 @@ const AdvOutputStreamSlider = new Lang.Class({
         this.item.actor.connect('scroll-event', Lang.bind(this._slider, this._slider._onScrollEvent));
 
         this._bubbleMiddleButton();
+
+        if (options.stream) {
+            this.stream = options.stream;
+        }
     },
 
     /**
@@ -72,16 +80,13 @@ const AdvOutputStreamSlider = new Lang.Class({
     _connectStream: function(stream) {
         this.parent(stream);
 
-        var text = '';
-        if (typeof this.options.name == 'function') {
-            text = this.options.name(stream);
-        } else {
-            text = stream.get_name() || stream.get_description();
-        }
-
-        this._label.text = text;
+        this._updateLabel(stream);
         this._updateSliderIcon();
         this.item.actor.stream = stream;
+    },
+
+    _updateLabel: function(stream) {
+        this._label.text = stream.get_name() || stream.get_description();
     }
 });
 
@@ -89,34 +94,30 @@ const AdvSubMenuItem = new Lang.Class({
     Name: 'AdvSubMenuItem',
     Extends: PopupMenu.PopupSubMenuMenuItem,
 
-    _init: function(detailed) {
+    _init: function() {
         this.parent('', true);
 
         this.slider = new Slider.Slider(0);
 
-        // Remove actors except ornament
+        // remove actors except ornament (indentation of menu)
         this.actor.get_children().map(Lang.bind(this, function(child) {
             if (!child.has_style_class_name('popup-menu-ornament')) {
                 this.actor.remove_actor(child);
             }
         }));
 
-        if (!detailed) {
-            this.actor.add_child(this.icon);
-            this.actor.add(this.slider.actor, { expand: true });
-            this.actor.add_child(this._triangleBin);
-        } else {
-            this._vbox = new St.BoxLayout({ vertical: true });
-            this._hbox = new St.BoxLayout({ vertical: false });
+        this.label.add_style_class_name('masterlabel');
 
-            this._hbox.add(this.label);
-            this._hbox.add(this._triangleBin);
-            this._vbox.add(this._hbox);
-            this._vbox.add(this.slider.actor);
+        this._vbox = new St.BoxLayout({ vertical: true });
+        this._hbox = new St.BoxLayout({ vertical: false });
 
-            this.actor.add_child(this.icon);
-            this.actor.add_child(this._vbox);
-        }
+        this._hbox.add(this.label);
+        this._hbox.add(this._triangleBin);
+        this._vbox.add(this._hbox);
+        this._vbox.add(this.slider.actor);
+
+        this.actor.add_child(this.icon);
+        this.actor.add_child(this._vbox);
     },
 
     _onButtonReleaseEvent: function(actor, event) {
@@ -127,15 +128,18 @@ const AdvSubMenuItem = new Lang.Class({
 });
 
 
+/**
+ * Slider replacing the master volume slider.
+ */
 const MasterSlider = new Lang.Class({
     Name: 'MasterSlider',
-    Extends: AdvOutputStreamSlider,
+    Extends: OutputStreamSlider,
 
     _init: function(control, options) {
         this.parent(control, options);
 
         this.item.destroy();
-        this.item = new AdvSubMenuItem(this.options.detailed);
+        this.item = new AdvSubMenuItem();
 
         this._slider.actor.destroy();
         this._slider = this.item.slider;
@@ -147,8 +151,88 @@ const MasterSlider = new Lang.Class({
         this._label.destroy();
         this._label = this.item.label;
 
+        this.item.actor.add_style_class_name('masterslider');
+
         this.item.actor.connect('scroll-event', Lang.bind(this._slider, this._slider._onScrollEvent));
 
         this._bubbleMiddleButton();
+    },
+
+    _updateLabel: function(stream) {
+        this._label.text = stream.get_description();
+    }
+});
+
+
+/**
+ * Slider for input sinks (e.g. applications).
+ */
+const InputSlider = new Lang.Class({
+    Name: 'InputSlider',
+    Extends: OutputStreamSlider,
+
+    _init: function(control, options) {
+        this.parent(control, options);
+
+        this.item.actor.connect('button-press-event', function(actor, event) {
+            if (event.get_button() == 2) {
+                actor.stream.change_is_muted(!actor.stream.is_muted);
+            }
+        });
+    },
+
+    _updateLabel: function(stream) {
+        let label = stream.get_name();
+        let description = stream.get_description();
+        if (this.options.detailed && label != description) {
+            label += ' | ' + description;
+        }
+
+        this._label.text = label;
+    }
+});
+
+
+/**
+ * Slider for output sinks (e.g. alsa devices, different ports).
+ */
+const OutputSlider = new Lang.Class({
+    Name: 'OutputSlider',
+    Extends: OutputStreamSlider,
+
+    _init: function(control, options) {
+        if (options.detailed) {
+            this._details = new St.Label({ text: '' });
+        }
+
+        this.parent(control, options);
+
+        this.item.actor.connect('button-press-event', function(actor, event) {
+            if (event.get_button() == 1) {
+                control.set_default_sink(actor.stream);
+            } else if (event.get_button() == 2) {
+                actor.stream.change_is_muted(!actor.stream.is_muted);
+            }
+        });
+    },
+
+    _updateLabel: function(stream) {
+        let text = stream.get_description();
+        let description = stream.get_name();
+
+        this._label.text = text;
+
+        if (this.options.detailed && text != description) {
+            this._details.text = description;
+            this._vbox.insert_child_at_index(this._details, 1);
+        }
+    },
+
+    setSelected: function(selected) {
+        if (selected !== false) {
+            this._label.add_style_class_name('selected-stream');
+        } else {
+            this._label.remove_style_class_name('selected-stream');
+        }
     }
 });

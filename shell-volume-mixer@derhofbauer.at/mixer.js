@@ -85,7 +85,7 @@ const Menu = new Lang.Class({
         this._output.stream = this._control.get_default_sink();
 
         for (let output in this._outputs) {
-            this._outputs[output].item.setOrnament(this._output.stream.id == output);
+            this._outputs[output].setSelected(this._output.stream.id == output);
         }
     },
 
@@ -118,57 +118,30 @@ const Menu = new Lang.Class({
         let stream = control.lookup_stream_id(id);
 
         if (stream['is-event-stream']) {
-            // do nothing
+            return;
+        }
 
-        } else if (stream instanceof Gvc.MixerSinkInput) {
-            let s = new Widget.AdvOutputStreamSlider(this._control, {
+        if (stream instanceof Gvc.MixerSinkInput) {
+            let slider = new Widget.InputSlider(this._control, {
                 detailed: this.options.detailed,
-                name: Lang.bind(this, function(stream) {
-                    var name = '';
-                    if (this.options.detailed) {
-                        name = stream.get_description();
-                    }
-                    if (!name) {
-                        name = stream.get_name();
-                    }
-                    return name;
-                })
+                stream: stream
             });
 
-            s.stream = stream;
-
-            this._sinks[id] = s;
-            this.addMenuItem(s.item);
-            s.item.actor.connect('button-press-event', function(actor, event) {
-                if (event.get_button() == 2) {
-                    actor.stream.change_is_muted(!actor.stream.is_muted);
-                }
-            });
+            this._sinks[id] = slider;
+            this.addMenuItem(slider.item);
 
         } else if (stream instanceof Gvc.MixerSink) {
-            let s = new Widget.AdvOutputStreamSlider(this._control, {
+            let slider = new Widget.OutputSlider(this._control, {
                 detailed: this.options.detailed,
-                name: Lang.bind(this, function(stream) {
-                    return stream.get_description() || stream.get_name();
-                })
+                stream: stream
             });
-
-            s.stream = stream;
 
             let isDefault = this._output.stream
-                    && this._output.stream.id == s.stream.id;
-            s.item.setOrnament(isDefault);
+                    && this._output.stream.id == stream.id;
+            slider.setSelected(isDefault);
 
-            this._outputs[id] = s;
-            this._output.item.menu.addMenuItem(s.item);
-
-            s.item.actor.connect('button-press-event', function(actor, event) {
-                if (event.get_button() == 1) {
-                    control.set_default_sink(actor.stream);
-                } else if (event.get_button() == 2) {
-                    actor.stream.change_is_muted(!actor.stream.is_muted);
-                }
-            });
+            this._outputs[id] = slider;
+            this._output.item.menu.addMenuItem(slider.item);
         }
     },
 
