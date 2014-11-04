@@ -10,17 +10,32 @@
 /* exported init, buildPrefsWidget */
 
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
-const Gettext = imports.gettext.domain('gnome-shell-extensions-shell-volume-mixer');
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
-const _ = Gettext.gettext;
+
+const DOMAIN = 'gnome-shell-extensions-shell-volume-mixer';
+const Gettext = imports.gettext;
+const _ = Gettext.domain(DOMAIN).gettext;
 
 const Settings = Extension.imports.settings;
 
 let prefs;
 let settings;
 
+
+function initGettext() {
+    domain = Extension.metadata['gettext-domain'] || DOMAIN;
+    let localeDir = Extension.dir.get_child('locale');
+
+    if (localeDir.query_exists(null)) {
+        Gettext.bindtextdomain(domain, localeDir.get_path());
+    } else {
+        Gettext.bindtextdomain(domain, Config.LOCALEDIR);
+    }
+}
+
 function init() {
+    initGettext();
     settings = new Settings.Settings();
 
     prefs = {

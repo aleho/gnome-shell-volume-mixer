@@ -1,0 +1,56 @@
+# German translation for GNOME Shell Volume Mixer.
+# Copyright (C) 2014
+# This file is distributed under the same license as the GNOME Shell Volume Mixer.
+# Jonatan Zedler <jonatan_zedler@gmx.de>, 2014.
+# Alexander Hofbauer <alex@derhofbauer.at>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: GNOME Shell Volume Mixer\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-11-04 20:51+0100\n"
+"PO-Revision-Date: 2014-11-04 20:56+0100\n"
+"Last-Translator: Alexander Hofbauer <ah@die-softwaremanufaktur.com>\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.10\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Basepath: ../../../\n"
+"X-Poedit-KeywordsList: _\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: prefs.js:44
+msgid "Position of volume mixer"
+msgstr "Position des Lautstärkereglers"
+
+#: prefs.js:46
+msgid "Status Menu"
+msgstr "Statusmenü"
+
+#: prefs.js:47
+msgid "Left"
+msgstr "Links"
+
+#: prefs.js:48
+msgid "Center"
+msgstr "Zentriert"
+
+#: prefs.js:49
+msgid "Right"
+msgstr "Rechts"
+
+#: prefs.js:67
+msgid "Remove original slider"
+msgstr "Originalen Lautstärkeregler entfernen"
+
+#: prefs.js:74
+msgid "Show detailed sliders"
+msgstr "Details an den Schiebereglern anzeigen"
+
+#: prefs.js:78
+msgid "Use volume boost"
+msgstr "Verstärkung nutzen"
