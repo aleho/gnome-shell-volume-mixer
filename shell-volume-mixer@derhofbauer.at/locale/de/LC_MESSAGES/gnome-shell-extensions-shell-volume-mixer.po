@@ -1,0 +1,51 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Volume mixer GNOME Shell extension\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-11-04 10:21+0100\n"
+"PO-Revision-Date: 2014-11-04 10:25+0100\n"
+"Last-Translator: Jonatan Zeidler <jonatan_zeidler@gmx.de>\n"
+"Language-Team: GERMAN <jonatan_zedler@gmx.de>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: prefs.js:29
+msgid "Position of volume mixer"
+msgstr "Position des Lautstärkereglers"
+
+#: prefs.js:31
+msgid "Status Menu"
+msgstr "Statusmenü"
+
+#: prefs.js:32
+msgid "Left"
+msgstr "Links"
+
+#: prefs.js:33
+msgid "Center"
+msgstr "Zentriert"
+
+#: prefs.js:34
+msgid "Right"
+msgstr "Rechts"
+
+#: prefs.js:52
+msgid "Remove original slider"
+msgstr "Originalen Lautstärkeregler entfernen"
+
+#: prefs.js:59
+msgid "Show detailed sliders"
+msgstr "Details an den Schiebereglern anzeigen"
+
+#: prefs.js:63
+msgid "Use volume boost"
+msgstr "Verstärkung nutzen"

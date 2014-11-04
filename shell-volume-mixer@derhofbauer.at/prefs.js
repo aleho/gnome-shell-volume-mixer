@@ -15,6 +15,9 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const _ = Gettext.gettext;
 
+const Me = imports.misc.extensionUtils.getCurrentExtension();
+const Convenience = Me.imports.convenience;
+
 const Settings = Extension.imports.settings;
 
 let prefs;
@@ -22,6 +25,7 @@ let settings;
 
 function init() {
     settings = new Settings.Settings();
+	Convenience.initTranslations("gnome-shell-extensions-shell-volume-mixer");
 
     prefs = {
         'position': {
