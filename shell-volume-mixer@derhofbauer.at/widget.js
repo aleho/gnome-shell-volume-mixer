@@ -17,40 +17,96 @@ const Volume = imports.ui.status.volume;
 
 
 /**
- * Advanced OutputStreamSlider, extending and monkey patching the default
- * implementation.
+ * Submenu item for the sink selection menu.
  */
-let OutputStreamSlider = new Lang.Class({
+const MasterMenuItem = new Lang.Class({
+    Name: 'MasterMenuItem',
+    Extends: PopupMenu.PopupSubMenuMenuItem,
+
+    _init: function() {
+        this.parent('', true);
+
+        this.slider = new Slider.Slider(0);
+
+        // remove actors except ornament (indentation of menu)
+        this.actor.get_children().map(Lang.bind(this, function(child) {
+            if (!child.has_style_class_name('popup-menu-ornament')) {
+                this.actor.remove_actor(child);
+            }
+        }));
+
+        this._vbox = new St.BoxLayout({ vertical: true });
+        this._hbox = new St.BoxLayout({ vertical: false });
+
+        this._hbox.add(this.label);
+        this._hbox.add(this._triangleBin);
+        this._vbox.add(this._hbox);
+        this._vbox.add(this.slider.actor);
+
+        this.actor.add_child(this.icon);
+        this.actor.add_child(this._vbox);
+
+        this.label.add_style_class_name('masterlabel');
+        this.actor.add_style_class_name('masterslider');
+    },
+
+    _onButtonReleaseEvent: function(actor, event) {
+        if (event.get_button() == 2) {
+            return false;
+        }
+        return this.parent(actor, event);
+    }
+});
+
+
+/**
+ * Basic StreamSlider implementation for Input- and OutputStreams.
+ *
+ * We can extend (and monkey patch) Volume.OutputStreamSlider because
+ * Volume.InputStreamSlider is meant for microphones only.
+ */
+const StreamSlider = new Lang.Class({
     Name: 'OutputStreamSlider',
     Extends: Volume.OutputStreamSlider,
 
     _init: function(control, options) {
-        this.parent(control);
         this.options = options || {};
+        this._control = control;
 
-        this.item.destroy();
-        this.item = new PopupMenu.PopupBaseMenuItem({ activate: false });
+        if (!this.item) {
+            this.item = new PopupMenu.PopupBaseMenuItem({ activate: false });
+        }
 
-        this._vbox = new St.BoxLayout({ vertical: true });
+        if (!this._icon) {
+            this._icon = new St.Icon({ style_class: 'popup-menu-icon' });
+            this.item.actor.add(this._icon);
+        }
 
-        this._slider = new Slider.Slider(0);
+        if (!this._vbox) {
+            this._vbox = new St.BoxLayout({ vertical: true });
+            this.item.actor.add(this._vbox, { expand: true });
+        }
+
+        if (!this._label) {
+            this._label = new St.Label({ text: '' });
+            this._vbox.add(this._label);
+        }
+
+        if (!this._slider) {
+            this._slider = new Slider.Slider(0);
+            this._vbox.add(this._slider.actor);
+        }
+
         this._slider.connect('value-changed', Lang.bind(this, this._sliderChanged));
         this._slider.connect('drag-end', Lang.bind(this, this._notifyVolumeChange));
 
-        this._icon = new St.Icon({ style_class: 'popup-menu-icon' });
-        this._label = new St.Label({ text: '' });
-        this.item.actor.add(this._icon);
-        this._vbox.add(this._label);
-        this._vbox.add(this._slider.actor);
-        this.item.actor.add(this._vbox, { expand: true });
-
+        this.item.actor.connect('button-press-event', Lang.bind(this, this._onButtonPress));
+        this.item.actor.connect('key-press-event', Lang.bind(this, this._onKeyPress));
         this.item.actor.connect('scroll-event', Lang.bind(this._slider, this._slider._onScrollEvent));
 
         this._bubbleMiddleButton();
 
-        if (options.stream) {
-            this.stream = options.stream;
-        }
+        this.stream = options.stream || null;
     },
 
     /**
@@ -67,6 +123,10 @@ let OutputStreamSlider = new Lang.Class({
         });
     },
 
+    _onKeyPress: function(actor, event) {
+        return this._slider.onKeyPressEvent(actor, event);
+    },
+
     _updateSliderIcon: function() {
         if (this._stream && this.options.detailed) {
             this._icon.gicon = this._stream.get_gicon();
@@ -80,50 +140,12 @@ let OutputStreamSlider = new Lang.Class({
     _connectStream: function(stream) {
         this.parent(stream);
 
-        this._updateLabel(stream);
+        this._updateLabel();
         this._updateSliderIcon();
-        this.item.actor.stream = stream;
     },
 
-    _updateLabel: function(stream) {
-        this._label.text = stream.get_name() || stream.get_description();
-    }
-});
-
-const AdvSubMenuItem = new Lang.Class({
-    Name: 'AdvSubMenuItem',
-    Extends: PopupMenu.PopupSubMenuMenuItem,
-
-    _init: function() {
-        this.parent('', true);
-
-        this.slider = new Slider.Slider(0);
-
-        // remove actors except ornament (indentation of menu)
-        this.actor.get_children().map(Lang.bind(this, function(child) {
-            if (!child.has_style_class_name('popup-menu-ornament')) {
-                this.actor.remove_actor(child);
-            }
-        }));
-
-        this.label.add_style_class_name('masterlabel');
-
-        this._vbox = new St.BoxLayout({ vertical: true });
-        this._hbox = new St.BoxLayout({ vertical: false });
-
-        this._hbox.add(this.label);
-        this._hbox.add(this._triangleBin);
-        this._vbox.add(this._hbox);
-        this._vbox.add(this.slider.actor);
-
-        this.actor.add_child(this.icon);
-        this.actor.add_child(this._vbox);
-    },
-
-    _onButtonReleaseEvent: function(actor, event) {
-        if (event.get_button() != 2) {
-            this._setOpenState(!this._getOpenState());
-        }
+    _updateLabel: function() {
+        this.label.text = this._stream.name || this._stream.description || '';
     }
 });
 
@@ -133,62 +155,26 @@ const AdvSubMenuItem = new Lang.Class({
  */
 const MasterSlider = new Lang.Class({
     Name: 'MasterSlider',
-    Extends: OutputStreamSlider,
+    Extends: StreamSlider,
 
     _init: function(control, options) {
-        this.parent(control, options);
-
-        this.item.destroy();
-        this.item = new AdvSubMenuItem();
-
-        this._slider.actor.destroy();
+        this.item = new MasterMenuItem();
         this._slider = this.item.slider;
-        this._slider.connect('value-changed', Lang.bind(this, this._sliderChanged));
-        this._slider.connect('drag-end', Lang.bind(this, this._notifyVolumeChange));
-
-        this._icon.destroy();
         this._icon = this.item.icon;
-        this._label.destroy();
         this._label = this.item.label;
 
-        this.item.actor.add_style_class_name('masterslider');
-
-        this.item.actor.connect('scroll-event', Lang.bind(this._slider, this._slider._onScrollEvent));
-
-        this._bubbleMiddleButton();
-    },
-
-    _updateLabel: function(stream) {
-        this._label.text = stream.get_description();
-    }
-});
-
-
-/**
- * Slider for input sinks (e.g. applications).
- */
-const InputSlider = new Lang.Class({
-    Name: 'InputSlider',
-    Extends: OutputStreamSlider,
-
-    _init: function(control, options) {
         this.parent(control, options);
-
-        this.item.actor.connect('button-press-event', function(actor, event) {
-            if (event.get_button() == 2) {
-                actor.stream.change_is_muted(!actor.stream.is_muted);
-            }
-        });
     },
 
-    _updateLabel: function(stream) {
-        let label = stream.get_name();
-        let description = stream.get_description();
-        if (this.options.detailed && label != description) {
-            label += ' | ' + description;
+    _onButtonPress: function(actor, event) {
+        if (event.get_button() == 2) {
+            this._stream.change_is_muted(!this._stream.is_muted);
         }
+        return false;
+    },
 
-        this._label.text = label;
+    _updateLabel: function() {
+        this._label.text = this._stream.description || '';
     }
 });
 
@@ -198,7 +184,7 @@ const InputSlider = new Lang.Class({
  */
 const OutputSlider = new Lang.Class({
     Name: 'OutputSlider',
-    Extends: OutputStreamSlider,
+    Extends: StreamSlider,
 
     _init: function(control, options) {
         if (options.detailed) {
@@ -206,23 +192,29 @@ const OutputSlider = new Lang.Class({
         }
 
         this.parent(control, options);
-
-        this.item.actor.connect('button-press-event', function(actor, event) {
-            if (event.get_button() == 1) {
-                control.set_default_sink(actor.stream);
-            } else if (event.get_button() == 2) {
-                actor.stream.change_is_muted(!actor.stream.is_muted);
-            }
-        });
     },
 
-    _updateLabel: function(stream) {
-        let text = stream.get_description();
-        let description = stream.get_name();
+    _onButtonPress: function(actor, event) {
+        if (event.get_button() == 1) {
+            this._control.set_default_sink(this._stream);
+            return true;
+        } else {
+            return this.parent(actor, event);
+        }
+    },
+
+    _updateLabel: function() {
+        let text = this._stream.description;
+        let description = this._stream.name;
 
         this._label.text = text;
 
-        if (this.options.detailed && text != description) {
+        if (this.options.detailed && text != description && description) {
+            let parts = description.split('.');
+            parts.shift();
+            if (parts.length) {
+                description = parts.join('.');
+            }
             this._details.text = description;
             this._vbox.insert_child_at_index(this._details, 1);
         }
@@ -234,5 +226,33 @@ const OutputSlider = new Lang.Class({
         } else {
             this._label.remove_style_class_name('selected-stream');
         }
+    }
+});
+
+
+/**
+ * Slider for input sinks (e.g. recorders, media players).
+ */
+const InputSlider = new Lang.Class({
+    Name: 'InputSlider',
+    Extends: StreamSlider,
+
+    _onButtonPress: function(actor, event) {
+        if (event.get_button() == 2) {
+            this._stream.change_is_muted(!this._stream.is_muted);
+            return false;
+        }
+        return this._slider.startDragging(event);
+    },
+
+    _updateLabel: function() {
+        let text = this._stream.name;
+        let description = this._stream.description;
+
+        if (this.options.detailed && text != description) {
+            text += ' | ' + description;
+        }
+
+        this._label.text = text || '';
     }
 });

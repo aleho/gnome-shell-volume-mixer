@@ -17,19 +17,20 @@ const Volume = imports.ui.status.volume;
 
 const Widget = Extension.imports.widget;
 
-
 const Menu = new Lang.Class({
     Name: 'ShellVolumeMixerMenu',
-    Extends: PopupMenu.PopupMenuSection,
+    Extends: Volume.VolumeMenu,
 
     _init: function(control, options) {
-        this._control = control;
+
+        // no this.parent(); shouldn't go through VolumeMenu's setup
+        PopupMenu.PopupMenuSection.prototype._init.call(this);
+
         this.options = options || {};
-        this.parent();
-
-        this._sinks = {};
         this._outputs = {};
+        this._inputs = {};
 
+        this._control = control;
         this._control.connect('state-changed', Lang.bind(this, this._onControlStateChanged));
         this._control.connect('default-sink-changed', Lang.bind(this, this._readOutput));
         this._control.connect('default-source-changed', Lang.bind(this, this._readInput));
@@ -39,19 +40,10 @@ const Menu = new Lang.Class({
         this._output = new Widget.MasterSlider(this._control, {
             detailed: this.options.detailed
         });
-
         this._output.connect('stream-updated', Lang.bind(this, function() {
             this.emit('icon-changed');
         }));
         this.addMenuItem(this._output.item);
-
-        this._output.item.actor.connect('button-press-event', Lang.bind(this, function(actor, event) {
-            if (event.get_button() == 2) {
-                actor.stream.change_is_muted(!actor.stream.is_muted);
-                return true;
-            }
-            return false;
-        }));
 
         this._input = new Volume.InputStreamSlider(this._control);
         this.addMenuItem(this._input.item);
@@ -61,40 +53,6 @@ const Menu = new Lang.Class({
         }
 
         this._onControlStateChanged();
-    },
-
-    scroll: function(event) {
-        this._output.scroll(event);
-    },
-
-    _onControlStateChanged: function() {
-        if (this._control.get_state() == Gvc.MixerControlState.READY) {
-            this._readInput();
-            this._readOutput();
-
-            let streams = this._control.get_streams();
-            for (let i = 0; i < streams.length; i++) {
-                this._streamAdded(this._control, streams[i].id);
-            }
-        } else {
-            this.emit('icon-changed');
-        }
-    },
-
-    _readOutput: function() {
-        this._output.stream = this._control.get_default_sink();
-
-        for (let output in this._outputs) {
-            this._outputs[output].setSelected(this._output.stream.id == output);
-        }
-    },
-
-    _readInput: function() {
-        this._input.stream = this._control.get_default_source();
-    },
-
-    getIcon: function() {
-        return this._output.getIcon();
     },
 
     outputHasHeadphones: function() {
@@ -110,45 +68,69 @@ const Menu = new Lang.Class({
         this.addMenuItem(this._separator, 2);
     },
 
-    _streamAdded: function(control, id) {
-        if (id in this._sinks || id in this._outputs) {
+    _onControlStateChanged: function() {
+        this.parent();
+
+        if (this._control.get_state() != Gvc.MixerControlState.READY) {
             return;
         }
 
-        let stream = control.lookup_stream_id(id);
+        let streams = this._control.get_streams();
+        for (let k in streams) {
+            this._addStream(this._control, streams[k]);
+        }
+    },
 
-        if (stream['is-event-stream']) {
+    _readOutput: function() {
+        this.parent();
+
+        for (let id in this._outputs) {
+            this._outputs[id].setSelected(this._output.stream.id == id);
+        }
+    },
+
+    _addStream: function(control, stream) {
+        if (stream.id in this._inputs || stream.id in this._outputs
+                || stream.is_event_stream
+                || stream instanceof Gvc.MixerEventRole) {
             return;
         }
 
+        // input stream
         if (stream instanceof Gvc.MixerSinkInput) {
-            let slider = new Widget.InputSlider(this._control, {
+            let slider = new Widget.InputSlider(control, {
                 detailed: this.options.detailed,
                 stream: stream
             });
 
-            this._sinks[id] = slider;
+            this._inputs[stream.id] = slider;
             this.addMenuItem(slider.item);
 
+        // output stream
         } else if (stream instanceof Gvc.MixerSink) {
-            let slider = new Widget.OutputSlider(this._control, {
+            let slider = new Widget.OutputSlider(control, {
                 detailed: this.options.detailed,
                 stream: stream
             });
 
-            let isDefault = this._output.stream
+            let isSelected = this._output.stream
                     && this._output.stream.id == stream.id;
-            slider.setSelected(isDefault);
+            slider.setSelected(isSelected);
 
-            this._outputs[id] = slider;
+            this._outputs[stream.id] = slider;
             this._output.item.menu.addMenuItem(slider.item);
         }
     },
 
+    _streamAdded: function(control, id) {
+        let stream = control.lookup_stream_id(id);
+        this._addStream(control, stream);
+    },
+
     _streamRemoved: function(control, id) {
-        if (id in this._sinks) {
-            this._sinks[id].item.destroy();
-            delete this._sinks[id];
+        if (id in this._inputs) {
+            this._inputs[id].item.destroy();
+            delete this._inputs[id];
         } else if (id in this._outputs) {
             this._outputs[id].item.destroy();
             delete this._outputs[id];
