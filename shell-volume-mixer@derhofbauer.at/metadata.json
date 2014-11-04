@@ -1,9 +1,9 @@
 {
-	"uuid": "shell-volume-mixer@derhofbauer.at",
-	"name": "Volume Mixer",
-	"description": "Mixer applet allowing separate configuration of pulseaudio mixers",
-	"shell-version": [
-		"3.12", "3.14"
-	],
-	"url": "https://github.com/aleho/gnome-shell-volume-mixer"
+    "uuid": "shell-volume-mixer@derhofbauer.at",
+    "name": "Volume Mixer",
+    "description": "Mixer applet allowing separate configuration of pulseaudio mixers",
+    "shell-version": [
+        "3.12", "3.14"
+    ],
+    "url": "https://github.com/aleho/gnome-shell-volume-mixer"
 }
