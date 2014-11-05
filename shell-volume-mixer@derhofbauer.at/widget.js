@@ -211,10 +211,17 @@ const OutputSlider = new Lang.Class({
 
         if (this.options.detailed && text != description && description) {
             let parts = description.split('.');
-            parts.shift();
-            if (parts.length) {
-                description = parts.join('.');
+
+            if (parts.length > 1) {
+                if (parts[0] == 'alsa_output') {
+                    // remove the common first (and uninteresting) part
+                    parts.shift();
+                }
+                // the last segment of the path if the most interesting one
+                description = parts.pop();
+                description += ' | ' + parts.join('.');
             }
+
             this._details.text = description;
             this._vbox.insert_child_at_index(this._details, 1);
         }
