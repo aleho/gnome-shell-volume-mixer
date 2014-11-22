@@ -9,6 +9,7 @@
 
 /* exported init, buildPrefsWidget */
 
+const Config = imports.misc.config;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
@@ -24,7 +25,7 @@ let settings;
 
 
 function initGettext() {
-    domain = Extension.metadata['gettext-domain'] || DOMAIN;
+    let domain = Extension.metadata['gettext-domain'] || DOMAIN;
     let localeDir = Extension.dir.get_child('locale');
 
     if (localeDir.query_exists(null)) {
