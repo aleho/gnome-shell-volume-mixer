@@ -1,4 +1,4 @@
-VERSION = 0.4
+VERSION = 0.4.90
 EXTENSION = shell-volume-mixer@derhofbauer.at
 
 SRCDIR = $(EXTENSION)
@@ -7,14 +7,20 @@ PACKAGE = shell-volume-mixer-$(VERSION).zip
 FILES = LICENSE README.md
 
 SOURCES =  \
-	metadata.json \
+	locale/*/*/*.mo \
+	pautils/cardinfo.py \
+	pautils/pa.py \
 	extension.js \
+	menu.js \
+	metadata.json \
 	mixer.js \
 	panel.js \
 	prefs.js \
+	prefs.ui \
 	settings.js \
-	widget.js \
 	stylesheet.css \
+	utils.js \
+	widget.js \
 	$(GSCHEMA) $(SCHEMA_COMP)
 
 SCHEMA_COMP = schemas/gschemas.compiled
@@ -29,7 +35,7 @@ $(SRCDIR)/$(SCHEMA_COMP): $(SRCDIR)/$(GSCHEMA)
 	glib-compile-schemas --targetdir=$(SRCDIR)/schemas $(SRCDIR)/schemas
 
 $(PACKAGE): $(SRCFILES) $(FILES)
-	cd $(SRCDIR) && zip ../$(PACKAGE) $(SOURCES)
+	cd $(SRCDIR) && zip -r ../$(PACKAGE) $(SOURCES)
 	zip $(PACKAGE) $(FILES)
 
 clean:
