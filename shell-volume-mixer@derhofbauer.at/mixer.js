@@ -126,8 +126,8 @@ const Mixer = new Lang.Class({
         }
 
         let cards = this._control.get_cards();
-        for (let id in cards) {
-            this._addCard(cards[id]);
+        for (let card of cards) {
+            this._addCard(card);
         }
     },
 
@@ -145,8 +145,7 @@ const Mixer = new Lang.Class({
         let profile = card.card.profile;
         this._currentCycle = null;
 
-        for (let k in this._cycled) {
-            let entry = this._cycled[k];
+        for (let entry of this._cycled) {
             if (entry.card == card.name && entry.profile == profile) {
                 this._currentCycle = entry;
                 break;
@@ -182,8 +181,7 @@ const Mixer = new Lang.Class({
             let card = cards[k];
             let profiles = {};
             // normalize profiles
-            for (let l in card.profiles) {
-                let profile = card.profiles[l];
+            for (let profile of card.profiles) {
                 profiles[profile.name] = profile.description;
             }
             card.profiles = profiles;
@@ -200,8 +198,8 @@ const Mixer = new Lang.Class({
         let visible = [];
         let cycled = [];
 
-        for (let k in data) {
-            let item = JSON.parse(data[k]);
+        for (let entry of data) {
+            let item = JSON.parse(entry);
             if (item.show) {
                 visible.push(item);
             }
@@ -217,8 +215,7 @@ const Mixer = new Lang.Class({
             cycled[len - 1].next = cycled[0];
 
             let prev;
-            for (let k in cycled) {
-                let profile = cycled[k];
+            for (let profile of cycled) {
                 if (prev) {
                     profile.prev = prev;
                     prev.next = profile;
@@ -271,8 +268,7 @@ const Mixer = new Lang.Class({
         let sinks = this._control.get_sinks();
         let newSink = null;
 
-        for (let k in sinks) {
-            let sink = sinks[k];
+        for (let sink of sinks) {
             let result = this._streamMatchesProfile(sink.name, cardName, profileName);
             if (result === STREAM_MATCHES) {
                 newSink = sink;

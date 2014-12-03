@@ -77,8 +77,8 @@ const Menu = new Lang.Class({
         }
 
         let streams = this._control.get_streams();
-        for (let k in streams) {
-            this._addStream(this._control, streams[k]);
+        for (let stream of streams) {
+            this._addStream(this._control, stream);
         }
     },
 

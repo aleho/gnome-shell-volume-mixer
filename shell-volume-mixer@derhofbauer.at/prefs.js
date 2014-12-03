@@ -97,15 +97,12 @@ const Preferences = new Lang.Class({
 
         for (let k in cards) {
             let card = cards[k];
-
             let row = this._devices.append(null);
             this._devices.set(row, [0, 1, 2], [card.description, '', '']);
 
             let profiles = {};
 
-            for (let l in card.profiles) {
-                let profile = card.profiles[l];
-
+            for (let profile of card.profiles) {
                 if (profile.name == 'off' || profile.available === false) {
                     continue;
                 }
@@ -113,8 +110,8 @@ const Preferences = new Lang.Class({
                 let invalid = false;
 
                 let test = profile.name.split('+');
-                for (let k in test) {
-                    let [part] = test[k].split(':', 1);
+                for (let parts of test) {
+                    let [part] = parts.split(':', 1);
                     // profiles containing 'input' won't be accepted by Gvc
                     if (part == 'input') {
                         invalid = true;
