@@ -1,7 +1,7 @@
 /**
  * Shell Volume Mixer
  *
- * Advanced mixer extension.
+ * Mixer widgets.
  *
  * @author Harry Karvonen <harry.karvonen@gmail.com>
  * @author Alexander Hofbauer <alex@derhofbauer.at>
@@ -180,7 +180,7 @@ const MasterSlider = new Lang.Class({
 
 
 /**
- * Slider for output sinks (e.g. alsa devices, different ports).
+ * Slider for output sinks (e.g. alsa devices, different profiles).
  */
 const OutputSlider = new Lang.Class({
     Name: 'OutputSlider',
@@ -217,7 +217,7 @@ const OutputSlider = new Lang.Class({
                     // remove the common first (and uninteresting) part
                     parts.shift();
                 }
-                // the last segment of the path if the most interesting one
+                // the last segment of the path is the most interesting one
                 description = parts.pop();
                 description += ' | ' + parts.join('.');
             }

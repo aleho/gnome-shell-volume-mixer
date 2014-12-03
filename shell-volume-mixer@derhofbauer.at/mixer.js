@@ -1,139 +1,330 @@
 /**
  * Shell Volume Mixer
  *
- * Advanced mixer extension.
+ * Mixer class wrapping the mixer control.
  *
- * @author Harry Karvonen <harry.karvonen@gmail.com>
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported Menu */
+/* exported Mixer */
 
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
+const Gio = imports.gi.Gio;
 const Gvc = imports.gi.Gvc;
 const Lang = imports.lang;
-const PopupMenu = imports.ui.popupMenu;
+const Main = imports.ui.main;
+const Meta = imports.gi.Meta;
+const Shell = imports.gi.Shell;
 const Volume = imports.ui.status.volume;
 
-const Widget = Extension.imports.widget;
+const Utils = Extension.imports.utils;
 
-const Menu = new Lang.Class({
-    Name: 'ShellVolumeMixerMenu',
-    Extends: Volume.VolumeMenu,
+const signals = [];
+const STREAM_NO_MATCH = 0;
+const STREAM_MATCHES = 1;
+const STREAM_CARD_MATCHES = 2;
+var get_vol_max_norm;
 
-    _init: function(control, options) {
 
-        // no this.parent(); shouldn't go through VolumeMenu's setup
-        PopupMenu.PopupMenuSection.prototype._init.call(this);
+const Mixer = new Lang.Class({
+    Name: 'ShellVolumeMixerMixer',
 
-        this.options = options || {};
-        this._outputs = {};
-        this._inputs = {};
+    _init: function(options) {
+        this._settings = options.settings;
 
-        this._control = control;
-        this._control.connect('state-changed', Lang.bind(this, this._onControlStateChanged));
-        this._control.connect('default-sink-changed', Lang.bind(this, this._readOutput));
-        this._control.connect('default-source-changed', Lang.bind(this, this._readInput));
-        this._control.connect('stream-added', Lang.bind(this, this._streamAdded));
-        this._control.connect('stream-removed', Lang.bind(this, this._streamRemoved));
+        this._cardNames = {};
+        this._cards = this._getCardDetails();
+        [this._pinned, this._cycled] = this._parsePinnedProfiles();
 
-        this._output = new Widget.MasterSlider(this._control, {
-            detailed: this.options.detailed
-        });
-        this._output.connect('stream-updated', Lang.bind(this, function() {
-            this.emit('icon-changed');
-        }));
-        this.addMenuItem(this._output.item);
+        this._control = Volume.getMixerControl();
+        this._state = this._control.get_state();
 
-        this._input = new Volume.InputStreamSlider(this._control);
-        this.addMenuItem(this._input.item);
+        this.connect('state-changed', Lang.bind(this, this._onStateChanged));
+        this.connect('card-added', Lang.bind(this, this._onCardAdded));
+        this.connect('card-removed', Lang.bind(this, this._onCardRemoved));
+        this.connect('default-sink-changed', Lang.bind(this, this._onDefaultSinkChanged));
 
-        if (this.options.separator) {
-            this._addSeparator();
+        Main.wm.addKeybinding('profile-switcher-hotkey',
+                this._settings._settings,
+                Meta.KeyBindingFlags.NONE,
+                Shell.KeyBindingMode.ALL,
+                Lang.bind(this, this._switchProfile));
+
+        this._onStateChanged(this._control, this._state);
+    },
+
+    get control() {
+        return this._control;
+    },
+
+    connect: function(signal, callback) {
+        let id = this._control.connect(signal, callback);
+        signals.push(id);
+    },
+
+    disconnectAll: function() {
+        while (signals.length > 0) {
+            this._control.disconnect(signals.pop());
         }
 
-        this._onControlStateChanged();
+        Main.wm.removeKeybinding('profile-switcher-hotkey');
     },
 
-    outputHasHeadphones: function() {
-        return this._output._hasHeadphones;
-    },
-
-    _addSeparator: function() {
-        if (this._separator) {
-            this._separator.destroy();
-        }
-
-        this._separator = new PopupMenu.PopupSeparatorMenuItem();
-        this.addMenuItem(this._separator, 2);
-    },
-
-    _onControlStateChanged: function() {
-        this.parent();
-
-        if (this._control.get_state() != Gvc.MixerControlState.READY) {
+    /**
+     * Monkey patch for maximum volume calculations (needed for other parts
+     * of the UI, like volume overlay).
+     */
+    enableVolumeBoost: function() {
+        if (get_vol_max_norm) {
+            // we've already patched the control
             return;
         }
 
-        let streams = this._control.get_streams();
-        for (let k in streams) {
-            this._addStream(this._control, streams[k]);
-        }
+        get_vol_max_norm = this._control.get_vol_max_norm;
+        this._control.get_vol_max_norm = this._control.get_vol_max_amplified;
     },
 
-    _readOutput: function() {
-        this.parent();
-
-        for (let id in this._outputs) {
-            this._outputs[id].setSelected(this._output.stream.id == id);
-        }
-    },
-
-    _addStream: function(control, stream) {
-        if (stream.id in this._inputs || stream.id in this._outputs
-                || stream.is_event_stream
-                || stream instanceof Gvc.MixerEventRole) {
+    /**
+     * Undoes the monkey patching of get vol max norm.
+     */
+    disableVolumeBoost: function() {
+        if (!get_vol_max_norm) {
+            // apparently we never patched get_vol_max_norm
             return;
         }
 
-        // input stream
-        if (stream instanceof Gvc.MixerSinkInput) {
-            let slider = new Widget.InputSlider(control, {
-                detailed: this.options.detailed,
-                stream: stream
-            });
+        this._control.get_vol_max_norm = get_vol_max_norm;
+        get_vol_max_norm = undefined;
+    },
 
-            this._inputs[stream.id] = slider;
-            this.addMenuItem(slider.item);
 
-        // output stream
-        } else if (stream instanceof Gvc.MixerSink) {
-            let slider = new Widget.OutputSlider(control, {
-                detailed: this.options.detailed,
-                stream: stream
-            });
+    /**
+     * Adds a card to our array of cards.
+     *
+     * @param card Card to add.
+     */
+    _addCard: function(card) {
+        let index = card.index;
 
-            let isSelected = this._output.stream
-                    && this._output.stream.id == stream.id;
-            slider.setSelected(isSelected);
+        if (!this._cards[index]) {
+            let pacards = Utils.getCards();
+            this._cards[index] = pacards[index];
+        }
 
-            this._outputs[stream.id] = slider;
-            this._output.item.menu.addMenuItem(slider.item);
+        this._cards[index].card = card;
+        this._cardNames[this._cards[index].name] = index;
+    },
+
+    /**
+     * Callback for state changes.
+     */
+    _onStateChanged: function(control, state) {
+        this._state = state;
+
+        if (state !== Gvc.MixerControlState.READY) {
+            return;
+        }
+
+        let cards = this._control.get_cards();
+        for (let id in cards) {
+            this._addCard(cards[id]);
         }
     },
 
-    _streamAdded: function(control, id) {
+    /**
+     * Callback for default source changes.
+     */
+    _onDefaultSinkChanged: function(control, id) {
         let stream = control.lookup_stream_id(id);
-        this._addStream(control, stream);
+        if (!stream) {
+            // we might get a sink id without being able to lookup
+            return;
+        }
+
+        let card = this._cards[stream.card_index];
+        let profile = card.card.profile;
+        this._currentCycle = null;
+
+        for (let k in this._cycled) {
+            let entry = this._cycled[k];
+            if (entry.card == card.name && entry.profile == profile) {
+                this._currentCycle = entry;
+                break;
+            }
+        }
     },
 
-    _streamRemoved: function(control, id) {
-        if (id in this._inputs) {
-            this._inputs[id].item.destroy();
-            delete this._inputs[id];
-        } else if (id in this._outputs) {
-            this._outputs[id].item.destroy();
-            delete this._outputs[id];
+    /**
+     * Signal for added cards.
+     */
+    _onCardAdded: function(control, id) {
+        let card = control.lookup_card_id(id);
+        this._addCard(card);
+    },
+
+    /**
+     * Signal for removed cards.
+     */
+    _onCardRemoved: function(control, id) {
+        if (id in this._cards) {
+            delete this._cards[id];
         }
+    },
+
+
+    /**
+     * Retrieves a list of all cards available, using our Python helper.
+     */
+    _getCardDetails: function() {
+        let cards = Utils.getCards();
+
+        for (let k in cards) {
+            let card = cards[k];
+            let profiles = {};
+            // normalize profiles
+            for (let l in card.profiles) {
+                let profile = card.profiles[l];
+                profiles[profile.name] = profile.description;
+            }
+            card.profiles = profiles;
+        }
+
+        return cards;
+    },
+
+    /**
+     * Reads all pinned profiles from settings.
+     */
+    _parsePinnedProfiles: function() {
+        let data = this._settings.get_array('pinned-profiles');
+        let visible = [];
+        let cycled = [];
+
+        for (let k in data) {
+            let item = JSON.parse(data[k]);
+            if (item.show) {
+                visible.push(item);
+            }
+            if (item.switcher) {
+                cycled.push(item);
+            }
+        }
+
+        // link profiles cycle
+        let len = cycled.length;
+        if (len) {
+            cycled[0].prev = cycled[len - 1];
+            cycled[len - 1].next = cycled[0];
+
+            let prev;
+            for (let k in cycled) {
+                let profile = cycled[k];
+                if (prev) {
+                    profile.prev = prev;
+                    prev.next = profile;
+                }
+                prev = profile;
+            }
+        }
+
+        return [visible, cycled];
+    },
+
+
+    /**
+     * Hotkey handler to switch between profiles.
+     */
+    _switchProfile: function() {
+        if (this._state !== Gvc.MixerControlState.READY) {
+            return;
+        }
+
+        if (this._cycled.length === 0) {
+            return;
+        }
+
+        if (!this._currentCycle) {
+            this._currentCycle = this._cycled[0];
+        }
+
+        let next = this._currentCycle.next;
+        let cardName = next.card;
+        let profileName = next.profile;
+        let index = this._cardNames[cardName];
+        let card = this._cards[index];
+
+        if (!card || !card.card) {
+            // we don't know this card, we won't be able to set its profile
+            return;
+        }
+
+        card.card.change_profile(profileName);
+
+        let cardDescription = card.description;
+        let profileDescription = card.profiles[profileName];
+        this._showNotification(cardDescription + '\n' + profileDescription);
+
+        // default sink changes will update current cycle, profile changes won't
+        this._currentCycle = next;
+
+        // profile's changed, now get that new sink
+        let sinks = this._control.get_sinks();
+        let newSink = null;
+
+        for (let k in sinks) {
+            let sink = sinks[k];
+            let result = this._streamMatchesProfile(sink.name, cardName, profileName);
+            if (result === STREAM_MATCHES) {
+                newSink = sink;
+                break;
+            }
+            if (result === STREAM_CARD_MATCHES || !newSink) {
+                // maybe we can use this stream later, but we'll keep searching
+                newSink = sink;
+            }
+        }
+
+        if (!newSink) {
+            // we couldn't retrieve a sink with matching profile name
+            return;
+        }
+
+        this._control.set_default_sink(newSink);
+    },
+
+    /**
+     * Tries to find out whether a certain stream matches profile for a card.
+     */
+    _streamMatchesProfile: function(streamName, cardName, profileName) {
+        let [streamAlsa, streamAddr, streamIndex, streamProfile] = streamName.split('.');
+        let [cardAlsa, cardAddr, cardIndex] = cardName.split('.');
+
+        profileName = profileName.split(':');
+        // remove direction
+        profileName.shift();
+        let profile = profileName.join(':');
+
+        if (streamAddr != cardAddr
+                || streamIndex != cardIndex) {
+            // cards don't match, certainly no hit
+            return STREAM_NO_MATCH;
+        }
+
+        if (streamProfile != profile) {
+            return STREAM_CARD_MATCHES;
+        }
+
+        return STREAM_MATCHES;
+    },
+
+    /**
+     * Shows a notification window through Shell's OSD Window Manager.
+     *
+     * @param text Text to display
+     */
+    _showNotification: function(text) {
+        let monitor = -1;
+        let icon = Gio.Icon.new_for_string('audio-speakers-symbolic');
+        Main.osdWindowManager.show(monitor, icon, text);
     }
 });

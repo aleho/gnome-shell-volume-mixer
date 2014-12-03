@@ -12,8 +12,8 @@
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
-const Volume = imports.ui.status.volume;
 
+const Menu = Extension.imports.menu;
 const Mixer = Extension.imports.mixer;
 const Panel = Extension.imports.panel;
 const Settings = Extension.imports.settings;
@@ -22,9 +22,9 @@ let settings;
 
 let statusMenu;
 let volumeMenu;
-let volumeMixer;
+let volumeActor;
 let volumeIcon;
-let mixerControl;
+let mixer;
 
 let menu;
 let menuSection;
@@ -34,9 +34,8 @@ function init() {
     settings = new Settings.Settings();
     statusMenu = Main.panel.statusArea.aggregateMenu;
     volumeMenu = Main.panel.statusArea.aggregateMenu._volume;
-    volumeMixer = volumeMenu._volumeMenu.actor;
+    volumeActor = volumeMenu._volumeMenu.actor;
     volumeIcon = volumeMenu._primaryIndicator;
-    mixerControl = Volume.getMixerControl();
 }
 
 function enable() {
@@ -49,47 +48,49 @@ function enable() {
     let detailed = settings.get_boolean('show-detailed-sliders');
     let boostVolume = settings.get_boolean('use-volume-boost');
 
-    // monkey patch maximum volume calculations
-    if (boostVolume && !mixerControl._org_get_vol_max_norm) {
-        mixerControl._org_get_vol_max_norm = mixerControl.get_vol_max_norm;
-        mixerControl.get_vol_max_norm = mixerControl.get_vol_max_amplified;
+    mixer = new Mixer.Mixer({
+        settings: settings
+    });
+
+    if (boostVolume) {
+        mixer.enableVolumeBoost();
     }
 
     if (pos === Settings.POS_MENU) {
         separator = new PopupMenu.PopupSeparatorMenuItem();
-        menuSection = new Mixer.Menu(mixerControl, {
+        menuSection = new Menu.Menu(mixer, {
             separator: false,
             detailed: detailed
         });
-        volumeMixer.hide();
+        volumeActor.hide();
         volumeMenu.menu.addMenuItem(menuSection, 0);
         statusMenu.menu.addMenuItem(separator, 1);
 
     } else {
         let removeOriginal = settings.get_boolean('remove-original');
         if (removeOriginal) {
-            volumeMixer.hide();
+            volumeActor.hide();
             volumeIcon.hide();
         }
-        menuSection = new Mixer.Menu(mixerControl, {
+        menuSection = new Menu.Menu(mixer, {
             separator: true,
             detailed: detailed
         });
         menu = new Panel.Button(menuSection);
 
         if (pos === Settings.POS_LEFT) {
-            Main.panel.addToStatusArea('ShellVolumeMixer', menu, 999, 'left');
+            Main.panel.addToStatusArea('ShellvolumeActor', menu, 999, 'left');
         } else if (pos === Settings.POS_CENTER) {
-            Main.panel.addToStatusArea('ShellVolumeMixer', menu, 999, 'center');
+            Main.panel.addToStatusArea('ShellvolumeActor', menu, 999, 'center');
         } else {
-            Main.panel.addToStatusArea('ShellVolumeMixer', menu);
+            Main.panel.addToStatusArea('ShellvolumeActor', menu);
         }
     }
 }
 
 function disable() {
     if (volumeMenu) {
-        volumeMixer.show();
+        volumeActor.show();
         volumeIcon.show();
     }
 
@@ -108,11 +109,11 @@ function disable() {
         menu = null;
     }
 
-    settings.disconnectAll();
-
-    // undo monkey patch
-    if (typeof mixerControl._org_get_vol_max_norm == 'function') {
-        mixerControl.get_vol_max_norm = mixerControl._org_get_vol_max_norm;
-        delete mixerControl._org_get_vol_max_norm;
+    if (mixer) {
+        mixer.disableVolumeBoost();
+        mixer.disconnectAll();
+        mixer = null;
     }
+
+    settings.disconnectAll();
 }
