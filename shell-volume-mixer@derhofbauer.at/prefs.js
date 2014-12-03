@@ -1,209 +1,427 @@
 /**
  * Shell Volume Mixer
  *
- * Advanced mixer extension.
+ * Preferences widget.
  *
- * @author Harry Karvonen <harry.karvonen@gmail.com>
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
 /* exported init, buildPrefsWidget */
 
-const Config = imports.misc.config;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
-const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
-
-const DOMAIN = 'gnome-shell-extensions-shell-volume-mixer';
-const Gettext = imports.gettext;
-const _ = Gettext.domain(DOMAIN).gettext;
+const Lang = imports.lang;
 
 const Settings = Extension.imports.settings;
+const Utils = Extension.imports.utils;
 
-let prefs;
-let settings;
+let preferences;
+
+const Preferences = new Lang.Class({
+    Name: 'ShellVolumeMixerPreferences',
+
+    _objects: {
+        cmbPosition: null,
+        swRemoveOriginal: null,
+        swShowDetailedSliders: null,
+        swUseVolumeBoost: null,
+        txtProfileSwitch: null,
+        treeDevices: null,
+        treePinned: null,
+        btnAddDevice: null,
+        btnRemoveDevice: null,
+        rndQuickswitch: null,
+        rndDisplay: null
+    },
+
+    _init: function() {
+        Utils.initGettext();
+        this._settings = new Settings.Settings();
+    },
+
+    buildWidget: function() {
+        this.builder = new Gtk.Builder();
+        this.builder.add_from_file(Utils.getExtensionPath('prefs.ui'));
+
+        this._devices = this.builder.get_object('storeDevices');
+        this._pinned = this.builder.get_object('storePinned');
+
+        this._connectAndInitUi();
+        this._initCards();
+        this._populatePinned();
+
+        return this.builder.get_object('tabs');
+    },
+
+    _connectAndInitUi: function() {
+        for (let k in this._objects) {
+            this._objects[k] = this.builder.get_object(k);
+        }
+
+        this._deviceSelection = this._objects.treeDevices.get_selection();
+        this._deviceSelection.set_select_function(Lang.bind(this, this.onDeviceSelection));
+        this._deviceSelection.connect('changed', Lang.bind(this, this.onDeviceSelectionChanged));
+
+        this._pinnedSelection = this._objects.treePinned.get_selection();
+        this._pinnedSelection.connect('changed', Lang.bind(this, this.onPinnedSelectionChanged));
+
+        this._objects.rndQuickswitch.connect('toggled', Lang.bind(this, this.onQuickswitchToggled));
+        this._objects.rndDisplay.connect('toggled', Lang.bind(this, this.onDisplayToggled));
+
+        this._objects.cmbPosition.set_active(this._settings.get_enum('position'));
+        this._objects.swRemoveOriginal.set_active(this._settings.get_boolean('remove-original'));
+        this._objects.swShowDetailedSliders.set_active(this._settings.get_boolean('show-detailed-sliders'));
+        this._objects.swUseVolumeBoost.set_active(this._settings.get_boolean('use-volume-boost'));
+        this._objects.txtProfileSwitch.set_text(this._settings.get_array('profile-switcher-hotkey')[0] || '');
+
+        this._bindSignal('cmbPosition', 'changed', this.onPositionChanged, 'position');
+        this._bindSignal('swRemoveOriginal', 'notify::active', this.onSwitchActivate, 'remove-original');
+        this._bindSignal('swShowDetailedSliders', 'notify::active', this.onSwitchActivate, 'show-detailed-sliders');
+        this._bindSignal('swUseVolumeBoost', 'notify::active', this.onSwitchActivate, 'use-volume-boost');
+        this._bindSignal('txtProfileSwitch', 'changed', this.onProfileSwitchChanged, 'profile-switcher-hotkey');
+        this._bindSignal('btnAddDevice', 'clicked', this.onAddDevice);
+        this._bindSignal('btnRemoveDevice', 'clicked', this.onRemoveDevice);
+
+        this.onPositionChanged(this._objects.cmbPosition);
+    },
 
 
-function initGettext() {
-    let domain = Extension.metadata['gettext-domain'] || DOMAIN;
-    let localeDir = Extension.dir.get_child('locale');
+    /**
+     * Initializes the content of the cards / profiles selection tree.
+     */
+    _initCards: function() {
+        this._cards = {};
+        let cards = Utils.getCards();
 
-    if (localeDir.query_exists(null)) {
-        Gettext.bindtextdomain(domain, localeDir.get_path());
-    } else {
-        Gettext.bindtextdomain(domain, Config.LOCALEDIR);
-    }
-}
+        let details = this._objects.swShowDetailedSliders.active;
 
-function init() {
-    initGettext();
-    settings = new Settings.Settings();
+        for (let k in cards) {
+            let card = cards[k];
 
-    prefs = {
-        'position': {
-            type: 'e',
-            label: _('Position of volume mixer'),
-            list: [
-                { nick: 'aggregateMenu', name: _('Status Menu'), id: Settings.POS_MENU },
-                { nick: 'left', name: _('Left'), id: Settings.POS_LEFT },
-                { nick: 'center', name: _('Center'), id: Settings.POS_CENTER },
-                { nick: 'right', name: _('Right'), id: Settings.POS_RIGHT }
-            ],
-            onChange: function(value) {
-                let checkbox = prefs['remove-original'].hbox;
+            let row = this._devices.append(null);
+            this._devices.set(row, [0, 1, 2], [card.description, '', '']);
 
-                if (!checkbox) {
-                    return;
+            let profiles = {};
+
+            for (let l in card.profiles) {
+                let profile = card.profiles[l];
+
+                if (profile.name == 'off' || profile.available === false) {
+                    continue;
                 }
 
-                if (value === 0) {
-                    checkbox.set_sensitive(false);
-                } else {
-                    checkbox.set_sensitive(true);
+                let invalid = false;
+
+                let test = profile.name.split('+');
+                for (let k in test) {
+                    let [part] = test[k].split(':', 1);
+                    // profiles containing 'input' won't be accepted by Gvc
+                    if (part == 'input') {
+                        invalid = true;
+                        break;
+                    }
                 }
+
+                if (invalid) {
+                    continue;
+                }
+
+                let profiletext = profile.description;
+                if (details) {
+                    profiletext += '\n' + profile.name;
+                }
+
+                this._devices.set(this._devices.append(row), [0, 1, 2],
+                        [profiletext, card.name, profile.name]);
+
+                profiles[profile.name] = {
+                    description: profile.description,
+                    pinned: false
+                };
             }
-        },
-        'remove-original': {
-            type: 'b',
-            label: _('Remove original slider'),
-            sensitive: function() {
-                return settings.get_enum('position') !== Settings.POS_MENU;
+
+            this._cards[card.name] = {
+                description: card.description,
+                profiles: profiles
+            };
+        }
+
+        this._objects.treeDevices.expand_all();
+    },
+
+    /**
+     * Updates the content of the selection list with all values from the
+     * settings key.
+     */
+    _populatePinned: function() {
+        let pinned = this._settings.get_array('pinned-profiles');
+        this._pinned.clear();
+
+        for (let i in pinned) {
+            let entry = JSON.parse(pinned[i]);
+            if (!entry.card || !entry.profile) {
+                continue;
             }
-        },
-        'show-detailed-sliders': {
-            type: 'b',
-            label: _('Show detailed sliders')
-        },
-        'use-volume-boost': {
-            type: 'b',
-            label: _('Use volume boost')
+
+            let card = this._cards[entry.card];
+            if (!card) {
+                continue;
+            }
+
+            let profile = card.profiles[entry.profile];
+            if (!profile) {
+                continue;
+            }
+
+            profile.pinned = true;
+
+            this._pinned.set(this._pinned.append(), [0, 1, 2, 3, 4, 5], [
+                card.description, profile.description,
+                entry.switcher, entry.show,
+                entry.card, entry.profile
+            ]);
         }
-    };
-}
+    },
 
-function buildPrefsWidget() {
-    let frame = new Gtk.Box({
-        orientation: Gtk.Orientation.VERTICAL,
-        border_width: 10
-    });
-    let vbox = new Gtk.Box({
-        orientation: Gtk.Orientation.VERTICAL,
-        margin: 20, margin_top: 10
-    });
-    let hbox;
+    /**
+     * Returns the entries in the selection list as array of strings.
+     */
+    _storePinned: function() {
+        let values = [];
+        let [success, iter] = this._pinned.get_iter_first();
 
-    for (let pref in prefs) {
-        hbox = buildHbox(prefs, pref);
-        prefs[pref].hbox = hbox;
-        vbox.add(hbox);
-    }
-
-    frame.add(vbox);
-    frame.show_all();
-
-    return frame;
-}
-
-function buildHbox(prefs, name) {
-    let hbox;
-    let pref = prefs[name];
-
-    if (pref.type == 'b') {
-        hbox = createBoolSetting(pref, name);
-    } else if (pref.type == 'e') {
-        hbox = createEnumSetting(pref, name);
-    }
-
-    return hbox;
-}
-
-
-function createEnumSetting(pref, name) {
-    let hbox = new Gtk.Box({
-        orientation: Gtk.Orientation.HORIZONTAL,
-        margin_top: 5
-    });
-
-    let setting_label = new Gtk.Label({
-        label: pref.label,
-        xalign: 0
-    });
-
-    let model = new Gtk.ListStore();
-    model.set_column_types([GObject.TYPE_INT, GObject.TYPE_STRING]);
-    let setting_enum = new Gtk.ComboBox({ model: model });
-    setting_enum.get_style_context().add_class(Gtk.STYLE_CLASS_RAISED);
-    let renderer = new Gtk.CellRendererText();
-    setting_enum.pack_start(renderer, true);
-    setting_enum.add_attribute(renderer, 'text', 1);
-
-    for (let i = 0; i < pref.list.length; i++) {
-        let item = pref.list[i];
-        let iter = model.append();
-        model.set(iter, [0, 1], [item.id, item.name]);
-        if (item.id == settings.get_enum(name)) {
-            setting_enum.set_active(item.id);
+        while (iter && success) {
+            values.push(JSON.stringify({
+                card: this._pinned.get_value(iter, 4),
+                profile: this._pinned.get_value(iter, 5),
+                switcher: this._pinned.get_value(iter, 2),
+                show: this._pinned.get_value(iter, 3)
+            }));
+            success = this._pinned.iter_next(iter);
         }
-    }
 
-    setting_enum.connect('changed', function() {
-        let [success, iter] = setting_enum.get_active_iter();
+        this._settings.set_array('pinned-profiles', values);
+    },
+
+
+    /**
+     * Binds a signal to an object, passing the object and additionally the
+     * settings key to the callback.
+     *
+     * @param id Object, identified by id.
+     * @param signal
+     * @param callback
+     * @param setting Key in settings, passed to the callback.
+     */
+    _bindSignal: function(id, signal, callback, setting) {
+        this._objects[id].connect(signal, Lang.bind(this, function(el) {
+            callback.apply(this, [el, setting]);
+        }));
+    },
+
+
+    /**
+     * Callback for change event of combobox.
+     */
+    onPositionChanged: function(cmbPosition, setting) {
+        let value = cmbPosition.get_active();
+
+        if (setting) {
+            this._settings.set_enum(setting, value);
+        }
+
+        let checkbox = this._objects.swRemoveOriginal;
+        if (!checkbox) {
+            return;
+        }
+
+        if (value === Settings.POS_MENU) {
+            checkbox.set_sensitive(false);
+        } else {
+            checkbox.set_sensitive(true);
+        }
+    },
+
+    /**
+     * Callback for all switches.
+     */
+    onSwitchActivate: function(widget, setting) {
+        this._settings.set_boolean(setting, widget.active);
+    },
+
+    /**
+     * Callback for change event of profile switcher.
+     */
+    onProfileSwitchChanged: function(widget, setting) {
+        let entry = widget.get_text().trim();
+
+        if (!entry) {
+            this._settings.set_array(setting, []);
+            return;
+        }
+
+        let [key, mods] = Gtk.accelerator_parse(entry);
+        if (key === 0) {
+            return;
+        }
+
+        let hotkey = Gtk.accelerator_name(key, mods);
+        if (!hotkey) {
+            return;
+        }
+
+        widget.set_text(hotkey);
+        // Main.wm.addKeybinding expects an array
+        this._settings.set_array(setting, [hotkey]);
+    },
+
+
+    /**
+     * Selection event for devices, before selection is set.
+     */
+    onDeviceSelection: function(selection, model, path) {
+        if (!path || path.get_depth() < 2) {
+            return false;
+        }
+
+        return true;
+    },
+
+    /**
+     * Determines whether selection allows to enable the add button.
+     */
+    onDeviceSelectionChanged: function(selection) {
+        this._objects.btnAddDevice.set_sensitive(false);
+
+        if (selection.count_selected_rows() <= 0) {
+            return;
+        }
+
+        let [success, store, iter] = selection.get_selected();
+
         if (!success) {
             return;
         }
 
-        let id = model.get_value(iter, 0);
+        let cardid = store.get_value(iter, 1);
+        let profileid = store.get_value(iter, 2);
 
-        settings.set_enum(name, id);
-
-        if (typeof pref.onChange == 'function') {
-            pref.onChange(id, pref, name);
+        if (this._cards[cardid].profiles[profileid].pinned) {
+            // don't allow pinning of already pinned profiles
+            return;
         }
-    });
 
-    if (pref.help) {
-        setting_label.set_tooltip_text(pref.help);
-        setting_enum.set_tooltip_text(pref.help);
+        this._objects.btnAddDevice.set_sensitive(true);
+    },
+
+    /**
+     * Determines whether selection allows to enable the remove button.
+     */
+    onPinnedSelectionChanged: function(selection) {
+        if (selection.count_selected_rows() > 0) {
+            this._objects.btnRemoveDevice.set_sensitive(true);
+        } else {
+            this._objects.btnRemoveDevice.set_sensitive(false);
+        }
+    },
+
+
+    /**
+     * Callback for add button.
+     */
+    onAddDevice: function(widget) {
+        widget.set_sensitive(false);
+
+        let [isSelected, store, iter] = this._deviceSelection.get_selected();
+
+        if (!isSelected) {
+            return;
+        }
+
+        let cardid = store.get_value(iter, 1);
+        let profileid = store.get_value(iter, 2);
+
+        let card = this._cards[cardid];
+        let profile = this._cards[cardid].profiles[profileid];
+
+        if (profile.pinned) {
+            // safety check, we should never reach this anyway
+            return;
+        }
+
+        profile.pinned = true;
+
+        this._pinned.set(this._pinned.append(), [0, 1, 2, 3, 4, 5],
+                [card.description, profile.description, true, true, cardid, profileid]);
+        this._storePinned();
+    },
+
+    /**
+     * Callback for remove button.
+     */
+    onRemoveDevice: function() {
+        let [isSelected, store, iter] = this._pinnedSelection.get_selected();
+
+        if (!isSelected) {
+            return;
+        }
+
+        let cardid = store.get_value(iter, 4);
+        let profileid = store.get_value(iter, 5);
+
+        this._cards[cardid].profiles[profileid].pinned = false;
+
+        store.remove(iter);
+        this._storePinned();
+
+        // now check for the currently selected entry in devices list
+        let [isSelected, store, iter] = this._deviceSelection.get_selected();
+
+        if (!isSelected) {
+            return;
+        }
+
+        let cardidSel = store.get_value(iter, 1);
+        let profileidSel = store.get_value(iter, 2);
+
+        if (cardid == cardidSel && profileid == profileidSel) {
+            this._objects.btnAddDevice.set_sensitive(true);
+        }
+    },
+
+
+    /**
+     * Toggle event for quickswitch switches.
+     */
+    onQuickswitchToggled: function(widget, path) {
+        let active = !widget.active;
+        let [success, iter] = this._pinned.get_iter_from_string(path);
+        if (!success) {
+            return;
+        }
+        this._pinned.set_value(iter, 2, active);
+        this._storePinned();
+    },
+
+    /**
+     * Toggle event for display switches.
+     */
+    onDisplayToggled: function(widget, path) {
+        let active = !widget.active;
+        let [success, iter] = this._pinned.get_iter_from_string(path);
+        if (!success) {
+            return;
+        }
+        this._pinned.set_value(iter, 3, active);
+        this._storePinned();
     }
+});
 
-    hbox.pack_start(setting_label, true, true, 0);
-    hbox.add(setting_enum);
 
-    return hbox;
+function init() {
+    preferences = new Preferences();
 }
 
-function createBoolSetting(pref, name) {
-    let sensitive = true;
-    if (typeof pref.sensitive == 'function') {
-        sensitive = pref.sensitive();
-    }
-
-    let hbox = new Gtk.Box({
-        orientation: Gtk.Orientation.HORIZONTAL,
-        margin_top: 5,
-        sensitive: sensitive
-    });
-
-    let setting_label = new Gtk.Label({
-        label: pref.label,
-        xalign: 0
-    });
-
-    let setting_switch = new Gtk.Switch({
-        active: settings.get_boolean(name)
-    });
-
-    setting_switch.connect('notify::active', function(button) {
-        settings.set_boolean(name, button.active);
-    });
-
-    if (pref.help) {
-        setting_label.set_tooltip_text(pref.help);
-        setting_switch.set_tooltip_text(pref.help);
-    }
-
-    hbox.pack_start(setting_label, true, true, 0);
-    hbox.add(setting_switch);
-
-    return hbox;
+function buildPrefsWidget() {
+    return preferences.buildWidget();
 }

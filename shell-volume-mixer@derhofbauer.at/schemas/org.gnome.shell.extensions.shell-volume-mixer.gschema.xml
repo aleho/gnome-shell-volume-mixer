@@ -10,7 +10,6 @@
     <schema path="/org/gnome/shell/extensions/shell-volume-mixer/"
             id="org.gnome.shell.extensions.shell-volume-mixer">
         <key name="position" enum="org.gnome.shell.extensions.shell-volume-mixer.position">
-            <!-- FIXME tarkista voiko olla ilman hipsuja -->
             <default>'aggregateMenu'</default>
             <summary>Position of volume mixer</summary>
             <description>Whether to put the applet in a separate menu or replace the master volume mixer already present</description>
@@ -29,6 +28,16 @@
             <default>false</default>
             <summary>Use volume boost</summary>
             <description>Use PulseAudio's boost to allow the volume to be set above 100%</description>
+        </key>
+        <key name="profile-switcher-hotkey" type="as">
+            <default>[]</default>
+            <summary>Profile switcher hotkey</summary>
+            <description>Global hotkey to switch / circle pinned profiles</description>
+        </key>
+        <key name="pinned-profiles" type="as">
+            <default>[]</default>
+            <summary>Pinned profiles</summary>
+            <description>Profiles to always show in the list of devices, even if they're not retrieved through Gvc.MixerControl</description>
         </key>
     </schema>
 </schemalist>
