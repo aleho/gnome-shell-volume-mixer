@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNOME Shell Volume Mixer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-04 20:51+0100\n"
-"PO-Revision-Date: 2014-11-04 20:56+0100\n"
+"POT-Creation-Date: 2014-12-03 17:23+0100\n"
+"PO-Revision-Date: 2014-12-03 17:23+0100\n"
 "Last-Translator: Alexander Hofbauer <ah@die-softwaremanufaktur.com>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -20,37 +20,69 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Basepath: ../../../\n"
-"X-Poedit-KeywordsList: _\n"
+"X-Poedit-KeywordsList: _;title;label\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: prefs.js:44
+#: prefs.ui:49
 msgid "Position of volume mixer"
 msgstr "Position des Lautstärkereglers"
 
-#: prefs.js:46
+#: prefs.ui:62
 msgid "Status Menu"
 msgstr "Statusmenü"
 
-#: prefs.js:47
+#: prefs.ui:63
 msgid "Left"
 msgstr "Links"
 
-#: prefs.js:48
+#: prefs.ui:64
 msgid "Center"
 msgstr "Zentriert"
 
-#: prefs.js:49
+#: prefs.ui:65
 msgid "Right"
 msgstr "Rechts"
 
-#: prefs.js:67
+#: prefs.ui:79
 msgid "Remove original slider"
 msgstr "Originalen Lautstärkeregler entfernen"
 
-#: prefs.js:74
+#: prefs.ui:92
 msgid "Show detailed sliders"
 msgstr "Details an den Schiebereglern anzeigen"
 
-#: prefs.js:78
+#: prefs.ui:105
 msgid "Use volume boost"
 msgstr "Verstärkung nutzen"
+
+#: prefs.ui:158
+msgid "Hotkey for profile switcher"
+msgstr "Hotkey für Profilumschalter"
+
+#: prefs.ui:200
+msgid "(e.g. \"<Super>p\")"
+msgstr "(z.B. \"<Super>p\")"
+
+#: prefs.ui:228
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: prefs.ui:265 prefs.ui:432
+msgid "Devices"
+msgstr "Geräte"
+
+#: prefs.ui:316
+msgid "Card"
+msgstr "Karte"
+
+#: prefs.ui:330
+msgid "Profile"
+msgstr "Profil"
+
+#: prefs.ui:343
+msgid "Switch"
+msgstr "Umschalter"
+
+#: prefs.ui:356
+msgid "Display"
+msgstr "Anzeigen"
