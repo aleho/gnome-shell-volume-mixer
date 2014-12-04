@@ -6,7 +6,7 @@
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported getCards, log, debug, repeatString, getExtensionPath, initGettext */
+/* exported getCards, l, d, error, repeatString, getExtensionPath, initGettext */
 
 const Config = imports.misc.config;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
@@ -52,13 +52,20 @@ function getCards() {
         return null;
     }
 
-    let ret = GLib.spawn_command_line_sync('python ' + pautil);
+    let [success, output] = GLib.spawn_command_line_sync('python ' + pautil);
 
-    if (!ret || ret[0] !== true || !ret[1]) {
+    if (success !== true || !output) {
         return null;
     }
 
-    return JSON.parse(ret[1]);
+    let ret = null;
+    try {
+        ret = JSON.parse(output);
+    } catch (e) {
+        error('utils', 'getCards', e.message);
+    }
+
+    return ret;
 }
 
 /**
@@ -66,8 +73,8 @@ function getCards() {
  *
  * @param string, ...
  */
-function log() {
-    global.log('LOG\n'
+function l() {
+    log('LOG\n'
             + SEP
             + '\n\n' + Array.prototype.slice.call(arguments).join(' ')
             + '\n\n' + SEP);
@@ -79,9 +86,36 @@ function log() {
  * @param object
  * @param maxDepth
  */
-function debug(object, maxDepth) {
+function d(object, maxDepth) {
     maxDepth = maxDepth || 8;
-    log(_dumpObject(object, maxDepth));
+    l(_dumpObject(object, maxDepth));
+}
+
+/**
+ * Logs an error message.
+ *
+ * @param module Module the error occurred in.
+ * @param context Optional.
+ * @param message Error message.
+ */
+function error(module, context, message) {
+    if (module && !context && !message) {
+        message = module;
+        module = undefined;
+        context = undefined;
+    }
+    if (context && !message) {
+        message = context;
+        context = undefined;
+    }
+    let output = '### Shell Volume Mixer ERROR | ';
+    if (module) {
+        output += module + '.js | ';
+    }
+    if (context) {
+        output += context + '() | ';
+    }
+    l(output + message);
 }
 
 /**

@@ -44,11 +44,7 @@ const Mixer = new Lang.Class({
         this.connect('card-removed', Lang.bind(this, this._onCardRemoved));
         this.connect('default-sink-changed', Lang.bind(this, this._onDefaultSinkChanged));
 
-        Main.wm.addKeybinding('profile-switcher-hotkey',
-                this._settings._settings,
-                Meta.KeyBindingFlags.NONE,
-                Shell.KeyBindingMode.ALL,
-                Lang.bind(this, this._switchProfile));
+        this._bindHotkey();
 
         this._onStateChanged(this._control, this._state);
     },
@@ -67,6 +63,24 @@ const Mixer = new Lang.Class({
             this._control.disconnect(signals.pop());
         }
 
+        this._unbindHotkey();
+    },
+
+    _bindHotkey: function() {
+        if (!this._pinned.length) {
+            return;
+        }
+        Main.wm.addKeybinding('profile-switcher-hotkey',
+                this._settings._settings,
+                Meta.KeyBindingFlags.NONE,
+                Shell.KeyBindingMode.ALL,
+                Lang.bind(this, this._switchProfile));
+    },
+
+    _unbindHotkey: function() {
+        if (!this._pinned.length) {
+            return;
+        }
         Main.wm.removeKeybinding('profile-switcher-hotkey');
     },
 
@@ -108,6 +122,10 @@ const Mixer = new Lang.Class({
 
         if (!this._cards[index]) {
             let pacards = Utils.getCards();
+            if (!pacards) {
+                Utils.error('mixer', '_addCard', 'Could not retrieve PA card details');
+                return;
+            }
             this._cards[index] = pacards[index];
         }
 
@@ -176,6 +194,10 @@ const Mixer = new Lang.Class({
      */
     _getCardDetails: function() {
         let cards = Utils.getCards();
+        if (!cards) {
+            Utils.error('mixer', '_getCardDetails', 'Could not retrieve PA card details');
+            return {};
+        }
 
         for (let k in cards) {
             let card = cards[k];
@@ -194,12 +216,21 @@ const Mixer = new Lang.Class({
      * Reads all pinned profiles from settings.
      */
     _parsePinnedProfiles: function() {
-        let data = this._settings.get_array('pinned-profiles');
+        let data = this._settings.get_array('pinned-profiles') || [];
         let visible = [];
         let cycled = [];
 
         for (let entry of data) {
-            let item = JSON.parse(entry);
+            let item = null;
+            try {
+                item = JSON.parse(entry);
+            } catch (e) {
+                Utils.error('mixer', '_parsePinnedProfiles', e.message);
+            }
+            if (!item) {
+                continue;
+            }
+
             if (item.show) {
                 visible.push(item);
             }

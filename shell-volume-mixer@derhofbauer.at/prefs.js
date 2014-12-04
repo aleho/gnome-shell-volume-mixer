@@ -154,9 +154,17 @@ const Preferences = new Lang.Class({
         let pinned = this._settings.get_array('pinned-profiles');
         this._pinned.clear();
 
-        for (let i in pinned) {
-            let entry = JSON.parse(pinned[i]);
-            if (!entry.card || !entry.profile) {
+        for (let item of pinned) {
+            if (!item) {
+                continue;
+            }
+            let entry = null;
+            try {
+                entry = JSON.parse(item);
+            } catch (e) {
+                Utils.error('prefs', '_populatePinned', e.message);
+            }
+            if (!entry || !entry.card || !entry.profile) {
                 continue;
             }
 
