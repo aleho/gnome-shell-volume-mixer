@@ -155,9 +155,9 @@ context_get_card_info_list.restype = POINTER(operation)
 context_get_card_info_list.argtypes = [POINTER(context), card_info_cb_t, c_void_p]
 
 proplist_gets = lib.pa_proplist_gets
-proplist_gets.restype = c_char_p
-proplist_gets.argtypes = [POINTER(proplist), c_char_p]
+proplist_gets.restype = STRING
+proplist_gets.argtypes = [POINTER(proplist), STRING]
 
 proplist_to_string = lib.pa_proplist_to_string
-proplist_to_string.restype = c_char_p
+proplist_to_string.restype = STRING
 proplist_to_string.argtypes = [POINTER(proplist)]

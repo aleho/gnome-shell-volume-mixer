@@ -42,7 +42,7 @@ class PulseAudio():
         self.pa_mainloop = pa.mainloop_new()
         self.pa_mainloop_api = pa.mainloop_get_api(self.pa_mainloop)
 
-        self._context = pa.context_new(self.pa_mainloop_api, self._name)
+        self._context = pa.context_new(self.pa_mainloop_api, b'self._name')
         self._context_notify_cb = pa.context_notify_cb_t(self.context_notify_cb)
 
         pa.context_set_state_callback(self._context, self._context_notify_cb, None)
@@ -88,7 +88,7 @@ class PulseAudio():
                     operation = pa.context_get_card_info_by_name(self._context,
                             name, self._pa_card_info_cb, None)
 
-                elif index >= 0:
+                elif index and index >= 0:
                     operation = pa.context_get_card_info_by_index(self._context,
                             index, self._pa_card_info_cb, None)
 
@@ -112,25 +112,30 @@ class PulseAudio():
             return
 
         pacard = struct[0]
+        description = None
+
+        cardName = pacard.name.decode('utf8')
 
         try:
-            description = pa.proplist_gets(pacard.proplist, 'device.description');
+            description = pa.proplist_gets(pacard.proplist, b'device.description')
         except:
             pass
 
         if not description:
             try:
-                description = pa.proplist_gets(pacard.proplist, 'alsa.card_name');
+                description = pa.proplist_gets(pacard.proplist, b'alsa.card_name')
             except:
                 pass
 
-        if not description:
-            description = pacard.name;
+        if description:
+            description = description.decode('utf8')
+        else:
+            description = cardName
 
 
         card = {
             'index': pacard.index,
-            'name': pacard.name,
+            'name': cardName,
             'description': description,
             'active_profile': None,
             'profiles': [
@@ -139,15 +144,15 @@ class PulseAudio():
 
         if pacard.active_profile and pacard.active_profile[0]:
             ap = pacard.active_profile[0]
-            card['active_profile'] = ap.name
+            card['active_profile'] = ap.name.decode('utf8')
 
-        for index in xrange(0, pacard.n_profiles):
+        for index in range(0, pacard.n_profiles):
             if not pacard.profiles2[index] or not pacard.profiles2[index][0]:
                 continue
             profile = pacard.profiles2[index][0]
             card['profiles'].append({
-                'name': profile.name,
-                'description': profile.description,
+                'name': profile.name.decode('utf8'),
+                'description': profile.description.decode('utf8'),
                 'available': bool(profile.available),
             })
 
@@ -174,6 +179,6 @@ if len(sys.argv) > 1:
 
 
 with PulseAudio() as pulse:
-    card = pulse.get_card_info(index = index, name = name)
-#    print(json.dumps(card, indent = 4, separators = (',', ': ')))
-    print(json.dumps(card))
+    info = pulse.get_card_info(index = index, name = name)
+#    print(json.dumps(info, indent = 4, separators = (',', ': ')))
+    print(json.dumps(info))

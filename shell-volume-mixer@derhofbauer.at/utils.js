@@ -52,7 +52,7 @@ function getCards() {
         return null;
     }
 
-    let ret = GLib.spawn_command_line_sync(pautil);
+    let ret = GLib.spawn_command_line_sync('python ' + pautil);
 
     if (!ret || ret[0] !== true || !ret[1]) {
         return null;
