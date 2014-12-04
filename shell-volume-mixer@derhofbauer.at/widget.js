@@ -9,11 +9,68 @@
 
 /* exported MasterSlider, InputSlider, OutputSlider */
 
+const GLib = imports.gi.GLib;
 const Lang = imports.lang;
+const Main = imports.ui.main;
+const Mainloop = imports.mainloop;
 const PopupMenu = imports.ui.popupMenu;
 const Slider = imports.ui.slider;
 const St = imports.gi.St;
+const Tweener = imports.ui.tweener;
 const Volume = imports.ui.status.volume;
+
+/**
+ * A tooltip-like label to display the current value of a slider.
+ *
+ * Shamelessly stolen from gnome-shell/js/ui/dash.js.
+ */
+const FloatingLabel = new Lang.Class({
+    Name: 'FloatingLabel',
+
+    _init: function() {
+        this._label = new St.Label({ style_class: 'dash-label floating-label' });
+        this._label.hide();
+        Main.layoutManager.addChrome(this._label);
+    },
+
+    get text() {
+        return this._label.get_text();
+    },
+
+    set text(text) {
+        this._label.set_text(text);
+    },
+
+    show: function(x, y) {
+        this._label.opacity = 0;
+        this._label.show();
+        this._label.raise_top();
+
+        let labelHeight = this._label.get_height();
+        let labelWidth = this._label.get_width();
+
+        x = Math.floor(x - labelWidth / 2);
+        y = y - labelHeight;
+        this._label.set_position(x, y);
+
+        Tweener.addTween(this._label, {
+            opacity: 255,
+            time: 0.15,
+            transition: 'easeOutQuad'
+        });
+    },
+
+    hide: function() {
+        Tweener.addTween(this._label, {
+            opacity: 0,
+            time: 0.1,
+            transition: 'easeOutQuad',
+            onComplete: Lang.bind(this, function() {
+                this._label.hide();
+            })
+        });
+    }
+});
 
 
 /**
@@ -72,6 +129,7 @@ const StreamSlider = new Lang.Class({
     _init: function(control, options) {
         this.options = options || {};
         this._control = control;
+        this._mixer = options.mixer;
 
         if (!this.item) {
             this.item = new PopupMenu.PopupBaseMenuItem({ activate: false });
@@ -96,6 +154,8 @@ const StreamSlider = new Lang.Class({
             this._slider = new Slider.Slider(0);
             this._vbox.add(this._slider.actor);
         }
+
+        this._volumeInfo = new FloatingLabel();
 
         this._slider.connect('value-changed', Lang.bind(this, this._sliderChanged));
         this._slider.connect('drag-end', Lang.bind(this, this._notifyVolumeChange));
@@ -146,6 +206,43 @@ const StreamSlider = new Lang.Class({
 
     _updateLabel: function() {
         this.label.text = this._stream.name || this._stream.description || '';
+    },
+
+    _sliderChanged: function(slider, value, property) {
+        this.parent(slider, value, property);
+
+        if (!this._stream || !this._volumeInfo) {
+            return;
+        }
+
+        if (this.options.boostVolume) {
+            value = this._stream.get_volume() / this._mixer.getVolMaxNorm();
+        }
+
+        this._showVolumeInfo(parseInt(value * 100));
+    },
+
+    _showVolumeInfo: function(value) {
+        this._volumeInfo.text = value + '%';
+
+        if (this._labelTimeoutId) {
+            Mainloop.source_remove(this._labelTimeoutId);
+            this._labelTimeoutId = undefined;
+        }
+
+        if (!this._infoShowing) {
+            this._infoShowing = true;
+            let [x, y] = this._slider.actor.get_transformed_position();
+            x = x + Math.floor(this._slider.actor.get_width() / 2);
+            this._volumeInfo.show(x, y);
+        }
+
+        this._labelTimeoutId = Mainloop.timeout_add(1000, Lang.bind(this, function() {
+            this._infoShowing = false;
+            this._labelTimeoutId = undefined;
+            this._volumeInfo.hide();
+            return GLib.SOURCE_REMOVE;
+        }));
     }
 });
 

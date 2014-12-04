@@ -111,6 +111,15 @@ const Mixer = new Lang.Class({
         get_vol_max_norm = undefined;
     },
 
+    /**
+     * Returns the "real" normalized max volume.
+     */
+    getVolMaxNorm: function() {
+        if (get_vol_max_norm) {
+            return get_vol_max_norm.call(this._control);
+        }
+        return this._control.get_vol_max_norm();
+    },
 
     /**
      * Adds a card to our array of cards.

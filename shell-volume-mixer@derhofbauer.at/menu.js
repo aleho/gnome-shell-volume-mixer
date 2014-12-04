@@ -39,7 +39,9 @@ const Menu = new Lang.Class({
         mixer.connect('stream-removed', Lang.bind(this, this._streamRemoved));
 
         this._output = new Widget.MasterSlider(this._control, {
-            detailed: this.options.detailed
+            mixer: mixer,
+            detailed: this.options.detailed,
+            boostVolume: this.options.boostVolume
         });
         this._output.connect('stream-updated', Lang.bind(this, function() {
             this.emit('icon-changed');
@@ -105,7 +107,9 @@ const Menu = new Lang.Class({
         // input stream
         if (stream instanceof Gvc.MixerSinkInput) {
             let slider = new Widget.InputSlider(control, {
+                mixer: this._mixer,
                 detailed: this.options.detailed,
+                boostVolume: this.options.boostVolume,
                 stream: stream
             });
 
@@ -115,7 +119,9 @@ const Menu = new Lang.Class({
         // output stream
         } else if (stream instanceof Gvc.MixerSink) {
             let slider = new Widget.OutputSlider(control, {
+                mixer: this._mixer,
                 detailed: this.options.detailed,
+                boostVolume: this.options.boostVolume,
                 stream: stream
             });
 

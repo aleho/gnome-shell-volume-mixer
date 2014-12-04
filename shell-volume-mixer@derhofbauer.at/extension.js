@@ -60,7 +60,8 @@ function enable() {
         separator = new PopupMenu.PopupSeparatorMenuItem();
         menuSection = new Menu.Menu(mixer, {
             separator: false,
-            detailed: detailed
+            detailed: detailed,
+            boostVolume: boostVolume
         });
         volumeActor.hide();
         volumeMenu.menu.addMenuItem(menuSection, 0);
@@ -74,7 +75,8 @@ function enable() {
         }
         menuSection = new Menu.Menu(mixer, {
             separator: true,
-            detailed: detailed
+            detailed: detailed,
+            boostVolume: boostVolume
         });
         menu = new Panel.Button(menuSection);
 
