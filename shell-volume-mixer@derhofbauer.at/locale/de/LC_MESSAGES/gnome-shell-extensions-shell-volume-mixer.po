@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNOME Shell Volume Mixer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-03 17:23+0100\n"
-"PO-Revision-Date: 2014-12-03 17:23+0100\n"
-"Last-Translator: Alexander Hofbauer <ah@die-softwaremanufaktur.com>\n"
+"POT-Creation-Date: 2014-12-22 16:24+0100\n"
+"PO-Revision-Date: 2014-12-22 16:26+0100\n"
+"Last-Translator: Alexander Hofbauer <alex@derhofbauer.at>\n"
 "Language-Team: German\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -22,6 +22,14 @@ msgstr ""
 "X-Poedit-Basepath: ../../../\n"
 "X-Poedit-KeywordsList: _;title;label\n"
 "X-Poedit-SearchPath-0: .\n"
+
+#: prefs.js:271
+msgid "Error retrieving card details"
+msgstr "Fehler beim Abfragen der Karten"
+
+#: prefs.js:272
+msgid "Helper script did not return valid card data."
+msgstr "Hilfsprogramm gab keine gültigen Daten zurück."
 
 #: prefs.ui:49
 msgid "Position of volume mixer"

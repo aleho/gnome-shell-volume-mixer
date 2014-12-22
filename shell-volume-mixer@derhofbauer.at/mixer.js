@@ -32,12 +32,12 @@ const Mixer = new Lang.Class({
     _init: function(options) {
         this._settings = options.settings;
 
+        this._control = Volume.getMixerControl();
+        this._state = this._control.get_state();
+
         this._cardNames = {};
         this._cards = this._getCardDetails();
         [this._pinned, this._cycled] = this._parsePinnedProfiles();
-
-        this._control = Volume.getMixerControl();
-        this._state = this._control.get_state();
 
         this.connect('state-changed', Lang.bind(this, this._onStateChanged));
         this.connect('card-added', Lang.bind(this, this._onCardAdded));
@@ -129,17 +129,31 @@ const Mixer = new Lang.Class({
     _addCard: function(card) {
         let index = card.index;
 
-        if (!this._cards[index]) {
+        if (!this._cards[index] || this._cards[index].fake) {
             let pacards = Utils.getCards();
             if (!pacards) {
                 Utils.error('mixer', '_addCard', 'Could not retrieve PA card details');
-                return;
+            } else {
+                this._cards[index] = pacards[index];
             }
-            this._cards[index] = pacards[index];
         }
 
-        this._cards[index].card = card;
-        this._cardNames[this._cards[index].name] = index;
+        if (!this._cards[index]) {
+            Utils.error('mixer', '_addCard', 'GVC card not found through Python helper');
+
+            // external script couldn't get card info, fake it
+            this._cards[index] = {
+                // card name (human name) won't be useful, we'll set it anyway
+                name: card.name,
+                index: index,
+                profiles: [],
+                fake: true
+            };
+        }
+
+        let pacard = this._cards[index];
+        pacard.card = card;
+        this._cardNames[pacard.name] = index;
     },
 
     /**
@@ -183,17 +197,22 @@ const Mixer = new Lang.Class({
     /**
      * Signal for added cards.
      */
-    _onCardAdded: function(control, id) {
-        let card = control.lookup_card_id(id);
+    _onCardAdded: function(control, index) {
+        // we're actually looking up card.index
+        let card = control.lookup_card_id(index);
         this._addCard(card);
     },
 
     /**
      * Signal for removed cards.
      */
-    _onCardRemoved: function(control, id) {
-        if (id in this._cards) {
-            delete this._cards[id];
+    _onCardRemoved: function(control, index) {
+        if (index in this._cards) {
+            let card = this._cards[index];
+            if (card.name in this._cardNames) {
+                delete this._cardNames[card.name];
+            }
+            delete this._cards[index];
         }
     },
 
@@ -284,6 +303,7 @@ const Mixer = new Lang.Class({
             this._currentCycle = this._cycled[0];
         }
 
+        // lookup card indirectly via name (indexes aren't UUIDs)
         let next = this._currentCycle.next;
         let cardName = next.card;
         let profileName = next.profile;

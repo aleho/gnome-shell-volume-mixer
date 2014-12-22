@@ -16,11 +16,13 @@ const Settings = Extension.imports.settings;
 const Utils = Extension.imports.utils;
 
 let preferences;
+let _;
 
 const Preferences = new Lang.Class({
     Name: 'ShellVolumeMixerPreferences',
 
     _objects: {
+        tabs: null,
         cmbPosition: null,
         swRemoveOriginal: null,
         swShowDetailedSliders: null,
@@ -35,7 +37,7 @@ const Preferences = new Lang.Class({
     },
 
     _init: function() {
-        Utils.initGettext();
+        _ = Utils.initGettext();
         this._settings = new Settings.Settings();
     },
 
@@ -50,7 +52,8 @@ const Preferences = new Lang.Class({
         this._initCards();
         this._populatePinned();
 
-        return this.builder.get_object('tabs');
+        this._widget = this._objects.tabs;
+        return this._widget;
     },
 
     _connectAndInitUi: function() {
@@ -74,6 +77,7 @@ const Preferences = new Lang.Class({
         this._objects.swUseVolumeBoost.set_active(this._settings.get_boolean('use-volume-boost'));
         this._objects.txtProfileSwitch.set_text(this._settings.get_array('profile-switcher-hotkey')[0] || '');
 
+        this._bindSignal('tabs', 'switch-page', this.onSwitchPage);
         this._bindSignal('cmbPosition', 'changed', this.onPositionChanged, 'position');
         this._bindSignal('swRemoveOriginal', 'notify::active', this.onSwitchActivate, 'remove-original');
         this._bindSignal('swShowDetailedSliders', 'notify::active', this.onSwitchActivate, 'show-detailed-sliders');
@@ -136,6 +140,8 @@ const Preferences = new Lang.Class({
                     pinned: false
                 };
             }
+
+            this._hasCards = true;
 
             this._cards[card.name] = {
                 description: card.description,
@@ -210,6 +216,29 @@ const Preferences = new Lang.Class({
 
 
     /**
+     * Shows a message dialog bound to the parent window.
+     */
+    _showMessage: function(title, text, type) {
+        type = type || 'WARNING';
+        Utils.l(Gtk.MessageType[type]);
+
+        let dialog = new Gtk.MessageDialog({
+            text: title,
+            secondary_text: text,
+            message_type: Gtk.MessageType[type],
+            buttons: Gtk.ButtonsType.OK,
+            transient_for: this._widget.get_toplevel(),
+            modal: true
+        });
+
+        dialog.connect('response', function() {
+            dialog.destroy();
+        });
+        dialog.show();
+    },
+
+
+    /**
      * Binds a signal to an object, passing the object and additionally the
      * settings key to the callback.
      *
@@ -219,11 +248,30 @@ const Preferences = new Lang.Class({
      * @param setting Key in settings, passed to the callback.
      */
     _bindSignal: function(id, signal, callback, setting) {
-        this._objects[id].connect(signal, Lang.bind(this, function(el) {
-            callback.apply(this, [el, setting]);
+        this._objects[id].connect(signal, Lang.bind(this, function(widget) {
+            callback.apply(this, [widget, setting]);
         }));
     },
 
+
+    /**
+     * Callback for notebook tab selection.
+     */
+    onSwitchPage: function(tabs) {
+        if (this._hasCards || this._cardsWarningShown) {
+            return;
+        }
+
+        let curr = tabs.get_current_page();
+
+        if (curr == 1) {
+            return;
+        }
+
+        this._showMessage(_('Error retrieving card details'),
+                _('Helper script did not return valid card data.'))
+        this._cardsWarningShown = true;
+    },
 
     /**
      * Callback for change event of combobox.
