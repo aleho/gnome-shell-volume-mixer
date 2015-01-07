@@ -219,7 +219,7 @@ const StreamSlider = new Lang.Class({
             value = this._stream.get_volume() / this._mixer.getVolMaxNorm();
         }
 
-        this._showVolumeInfo(parseInt(value * 100));
+        this._showVolumeInfo(Math.round(value * 100));
     },
 
     _showVolumeInfo: function(value) {
