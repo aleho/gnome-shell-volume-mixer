@@ -29,6 +29,12 @@
             <summary>Use volume boost</summary>
             <description>Use PulseAudio's boost to allow the volume to be set above 100%</description>
         </key>
+        <key name="volume-step" type="i">
+            <default>6</default>
+            <range min="1" max="20"/>
+            <summary>Size of volume step</summary>
+            <description>Size of the volume step for sliders</description>
+        </key>
         <key name="profile-switcher-hotkey" type="as">
             <default>[]</default>
             <summary>Profile switcher hotkey</summary>
