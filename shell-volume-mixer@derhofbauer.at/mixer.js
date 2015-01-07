@@ -17,6 +17,7 @@ const Meta = imports.gi.Meta;
 const Shell = imports.gi.Shell;
 const Volume = imports.ui.status.volume;
 
+const Settings = Extension.imports.settings;
 const Utils = Extension.imports.utils;
 
 const signals = [];
@@ -29,8 +30,8 @@ var get_vol_max_norm;
 const Mixer = new Lang.Class({
     Name: 'ShellVolumeMixerMixer',
 
-    _init: function(options) {
-        this._settings = options.settings;
+    _init: function() {
+        this._settings = new Settings.Settings();
 
         this._control = Volume.getMixerControl();
         this._state = this._control.get_state();

@@ -48,9 +48,7 @@ function enable() {
     let detailed = settings.get_boolean('show-detailed-sliders');
     let boostVolume = settings.get_boolean('use-volume-boost');
 
-    mixer = new Mixer.Mixer({
-        settings: settings
-    });
+    mixer = new Mixer.Mixer();
 
     if (boostVolume) {
         mixer.enableVolumeBoost();
