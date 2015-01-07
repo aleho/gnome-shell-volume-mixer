@@ -9,6 +9,7 @@
 
 /* exported MasterSlider, InputSlider, OutputSlider */
 
+const Clutter = imports.gi.Clutter;
 const GLib = imports.gi.GLib;
 const Lang = imports.lang;
 const Main = imports.ui.main;
@@ -112,6 +113,19 @@ const MasterMenuItem = new Lang.Class({
             return false;
         }
         return this.parent(actor, event);
+    },
+
+    /**
+     * Change volume on left / right.
+     */
+    _onKeyPressEvent: function(actor, event) {
+        let symbol = event.get_key_symbol();
+
+        if (symbol == Clutter.KEY_Right || symbol == Clutter.KEY_Left) {
+            return this.slider.onKeyPressEvent(actor, event);
+        }
+
+        return this.parent(actor, event);
     }
 });
 
@@ -185,6 +199,14 @@ const StreamSlider = new Lang.Class({
 
     _onKeyPress: function(actor, event) {
         return this._slider.onKeyPressEvent(actor, event);
+    },
+
+    _onButtonPress: function(actor, event) {
+        if (event.get_button() == 2) {
+            this._stream.change_is_muted(!this._stream.is_muted);
+            return false;
+        }
+        return this._slider.startDragging(event);
     },
 
     _updateSliderIcon: function() {
@@ -264,6 +286,7 @@ const MasterSlider = new Lang.Class({
     },
 
     _onButtonPress: function(actor, event) {
+        // override default behavior to make sure the menu can be opened
         if (event.get_button() == 2) {
             this._stream.change_is_muted(!this._stream.is_muted);
         }
@@ -293,11 +316,20 @@ const OutputSlider = new Lang.Class({
 
     _onButtonPress: function(actor, event) {
         if (event.get_button() == 1) {
-            this._control.set_default_sink(this._stream);
+            this._setAsDefault();
             return true;
-        } else {
-            return this.parent(actor, event);
         }
+        return this.parent(actor, event);
+    },
+
+    _onKeyPress: function(actor, event) {
+        let symbol = event.get_key_symbol();
+        if (symbol == Clutter.KEY_space || symbol == Clutter.KEY_Return) {
+            this._setAsDefault();
+            return false;
+        }
+
+        return this.parent(actor, event);
     },
 
     _updateLabel: function() {
@@ -330,6 +362,10 @@ const OutputSlider = new Lang.Class({
         } else {
             this._label.remove_style_class_name('selected-stream');
         }
+    },
+
+    _setAsDefault: function() {
+        this._control.set_default_sink(this._stream);
     }
 });
 
@@ -340,14 +376,6 @@ const OutputSlider = new Lang.Class({
 const InputSlider = new Lang.Class({
     Name: 'InputSlider',
     Extends: StreamSlider,
-
-    _onButtonPress: function(actor, event) {
-        if (event.get_button() == 2) {
-            this._stream.change_is_muted(!this._stream.is_muted);
-            return false;
-        }
-        return this._slider.startDragging(event);
-    },
 
     _updateLabel: function() {
         let text = this._stream.name;
