@@ -10,6 +10,7 @@
 /* exported MasterSlider, InputSlider, OutputSlider */
 
 const Clutter = imports.gi.Clutter;
+const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const GLib = imports.gi.GLib;
 const Lang = imports.lang;
 const Main = imports.ui.main;
@@ -19,6 +20,8 @@ const Slider = imports.ui.slider;
 const St = imports.gi.St;
 const Tweener = imports.ui.tweener;
 const Volume = imports.ui.status.volume;
+
+const Settings = Extension.imports.settings;
 
 /**
  * A tooltip-like label to display the current value of a slider.
@@ -75,6 +78,63 @@ const FloatingLabel = new Lang.Class({
 
 
 /**
+ * Slider with configurable steps.
+ */
+const VolumeSlider = new Lang.Class({
+    Name: 'VolumeSlider',
+    Extends: Slider.Slider,
+
+    _init: function(value) {
+        this._settings = new Settings.Settings();
+        this._volumeStep = this._settings.getVolumeStep();
+        this.parent(value);
+    },
+
+    scroll: function(event) {
+        let direction = event.get_scroll_direction();
+        let delta;
+
+        if (event.is_pointer_emulated())
+            return Clutter.EVENT_PROPAGATE;
+
+        if (direction == Clutter.ScrollDirection.DOWN) {
+            delta = -this._volumeStep;
+        } else if (direction == Clutter.ScrollDirection.UP) {
+            delta = +this._volumeStep;
+        } else if (direction == Clutter.ScrollDirection.SMOOTH) {
+            let [dx, dy] = event.get_scroll_delta();
+            if (dy > 0) {
+                delta = +this._volumeStep;
+            } else {
+                delta = -this._volumeStep;
+            }
+        }
+
+        delta /= 100;
+        this._value = Math.min(Math.max(0, this._value + delta), 1);
+
+        this.actor.queue_repaint();
+        this.emit('value-changed', this._value);
+        return Clutter.EVENT_STOP;
+    },
+
+    onKeyPressEvent: function(actor, event) {
+        let key = event.get_key_symbol();
+        if (key == Clutter.KEY_Right || key == Clutter.KEY_Left) {
+            let delta = key == Clutter.KEY_Right ? +this._volumeStep : -this._volumeStep;
+            delta /= 100;
+            this._value = Math.max(0, Math.min(this._value + delta, 1));
+            this.actor.queue_repaint();
+            this.emit('value-changed', this._value);
+            this.emit('drag-end');
+            return Clutter.EVENT_STOP;
+        }
+        return Clutter.EVENT_PROPAGATE;
+    }
+});
+
+
+/**
  * Submenu item for the sink selection menu.
  */
 const MasterMenuItem = new Lang.Class({
@@ -84,7 +144,7 @@ const MasterMenuItem = new Lang.Class({
     _init: function() {
         this.parent('', true);
 
-        this.slider = new Slider.Slider(0);
+        this.slider = new VolumeSlider(0);
 
         // remove actors except ornament (indentation of menu)
         this.actor.get_children().map(Lang.bind(this, function(child) {
@@ -165,7 +225,7 @@ const StreamSlider = new Lang.Class({
         }
 
         if (!this._slider) {
-            this._slider = new Slider.Slider(0);
+            this._slider = new VolumeSlider(0);
             this._vbox.add(this._slider.actor);
         }
 
