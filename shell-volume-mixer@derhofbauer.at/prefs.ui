@@ -103,19 +103,6 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="lblUseVolumeBoost">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="valign">baseline</property>
-            <property name="xalign">0</property>
-            <property name="label" translatable="yes">Use volume boost</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">3</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkSwitch" id="swRemoveOriginal">
             <property name="visible">True</property>
             <property name="sensitive">False</property>
@@ -143,19 +130,6 @@
           </packing>
         </child>
         <child>
-          <object class="GtkSwitch" id="swUseVolumeBoost">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="halign">center</property>
-            <property name="valign">center</property>
-            <signal name="notify::active" handler="onUseVolumeBoostActivate" swapped="no"/>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">3</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkLabel" id="lblProfileSwitch">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -165,7 +139,7 @@
           </object>
           <packing>
             <property name="left_attach">0</property>
-            <property name="top_attach">6</property>
+            <property name="top_attach">8</property>
           </packing>
         </child>
         <child>
@@ -176,7 +150,7 @@
           </object>
           <packing>
             <property name="left_attach">1</property>
-            <property name="top_attach">6</property>
+            <property name="top_attach">8</property>
           </packing>
         </child>
         <child>
@@ -187,7 +161,7 @@
           </object>
           <packing>
             <property name="left_attach">2</property>
-            <property name="top_attach">6</property>
+            <property name="top_attach">8</property>
           </packing>
         </child>
         <child>
@@ -197,7 +171,7 @@
           </object>
           <packing>
             <property name="left_attach">0</property>
-            <property name="top_attach">5</property>
+            <property name="top_attach">7</property>
           </packing>
         </child>
         <child>
@@ -207,7 +181,7 @@
           </object>
           <packing>
             <property name="left_attach">1</property>
-            <property name="top_attach">5</property>
+            <property name="top_attach">7</property>
           </packing>
         </child>
         <child>
@@ -217,7 +191,7 @@
           </object>
           <packing>
             <property name="left_attach">2</property>
-            <property name="top_attach">5</property>
+            <property name="top_attach">7</property>
           </packing>
         </child>
         <child>
@@ -230,7 +204,7 @@
           </object>
           <packing>
             <property name="left_attach">0</property>
-            <property name="top_attach">4</property>
+            <property name="top_attach">6</property>
           </packing>
         </child>
         <child>
@@ -243,8 +217,90 @@
           </object>
           <packing>
             <property name="left_attach">1</property>
+            <property name="top_attach">6</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="lblUseVolumeBoost">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="valign">baseline</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">Use volume boost</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSwitch" id="swUseVolumeBoost">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <signal name="notify::active" handler="onUseVolumeBoostActivate" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="lblShowSystemSounds">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="valign">baseline</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">Show system sounds</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
             <property name="top_attach">4</property>
           </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="lblUseSymbolicIcons">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="valign">baseline</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">Use symbolic icons</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSwitch" id="swUseSymbolicIcons">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSwitch" id="swShowSystemSounds">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">4</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
         </child>
         <child>
           <placeholder/>

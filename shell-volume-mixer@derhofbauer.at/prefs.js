@@ -26,6 +26,8 @@ const Preferences = new Lang.Class({
         cmbPosition: null,
         swRemoveOriginal: null,
         swShowDetailedSliders: null,
+        swShowSystemSounds: null,
+        swUseSymbolicIcons: null,
         swUseVolumeBoost: null,
         spnVolumeStep: null,
         txtProfileSwitch: null,
@@ -75,6 +77,8 @@ const Preferences = new Lang.Class({
         this._objects.cmbPosition.set_active(this._settings.get_enum('position'));
         this._objects.swRemoveOriginal.set_active(this._settings.get_boolean('remove-original'));
         this._objects.swShowDetailedSliders.set_active(this._settings.get_boolean('show-detailed-sliders'));
+        this._objects.swShowSystemSounds.set_active(this._settings.get_boolean('show-system-sounds'));
+        this._objects.swUseSymbolicIcons.set_active(this._settings.get_boolean('use-symbolic-icons'));
         this._objects.swUseVolumeBoost.set_active(this._settings.get_boolean('use-volume-boost'));
         this._objects.spnVolumeStep.set_value(this._settings.getVolumeStep());
         this._objects.txtProfileSwitch.set_text(this._settings.get_array('profile-switcher-hotkey')[0] || '');
@@ -83,6 +87,8 @@ const Preferences = new Lang.Class({
         this._bindSignal('cmbPosition', 'changed', this.onPositionChanged, 'position');
         this._bindSignal('swRemoveOriginal', 'notify::active', this.onSwitchActivate, 'remove-original');
         this._bindSignal('swShowDetailedSliders', 'notify::active', this.onSwitchActivate, 'show-detailed-sliders');
+        this._bindSignal('swShowSystemSounds', 'notify::active', this.onSwitchActivate, 'show-system-sounds');
+        this._bindSignal('swUseSymbolicIcons', 'notify::active', this.onSwitchActivate, 'use-symbolic-icons');
         this._bindSignal('swUseVolumeBoost', 'notify::active', this.onSwitchActivate, 'use-volume-boost');
         this._bindSignal('spnVolumeStep', 'changed', this.onVolumeStepChanged);
         this._bindSignal('txtProfileSwitch', 'changed', this.onProfileSwitchChanged, 'profile-switcher-hotkey');

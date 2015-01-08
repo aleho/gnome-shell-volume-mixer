@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNOME Shell Volume Mixer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-08 15:40+0100\n"
-"PO-Revision-Date: 2015-01-08 15:40+0100\n"
+"POT-Creation-Date: 2015-01-08 22:53+0100\n"
+"PO-Revision-Date: 2015-01-08 22:54+0100\n"
 "Last-Translator: Alexander Hofbauer <alex@derhofbauer.at>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -23,11 +23,11 @@ msgstr ""
 "X-Poedit-KeywordsList: _;title;label\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: prefs.js:274
+#: prefs.js:280
 msgid "Error retrieving card details"
 msgstr "Fehler beim Abfragen der Karten"
 
-#: prefs.js:275
+#: prefs.js:281
 msgid "Helper script did not return valid card data."
 msgstr "Hilfsprogramm gab keine gültigen Daten zurück."
 
@@ -59,42 +59,50 @@ msgstr "Originalen Lautstärkeregler entfernen"
 msgid "Show detailed sliders"
 msgstr "Details an den Schiebereglern anzeigen"
 
-#: prefs.ui:111
-msgid "Use volume boost"
-msgstr "Verstärkung nutzen"
-
-#: prefs.ui:164
+#: prefs.ui:138
 msgid "Hotkey for profile switcher"
 msgstr "Hotkey für Profilumschalter"
 
-#: prefs.ui:186
+#: prefs.ui:160
 msgid "(e.g. \"<Super>p\")"
 msgstr "(z.B. \"<Super>p\")"
 
-#: prefs.ui:229
+#: prefs.ui:203
 msgid "Volume Steps (%)"
 msgstr "Lautstärke-Schritte (%)"
 
-#: prefs.ui:270
+#: prefs.ui:229
+msgid "Use volume boost"
+msgstr "Verstärkung nutzen"
+
+#: prefs.ui:255
+msgid "Show system sounds"
+msgstr "Systemklänge anzeigen"
+
+#: prefs.ui:280
+msgid "Use symbolic icons"
+msgstr "Symbolische Icons verwenden"
+
+#: prefs.ui:326
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: prefs.ui:307 prefs.ui:474
+#: prefs.ui:363 prefs.ui:530
 msgid "Devices"
 msgstr "Geräte"
 
-#: prefs.ui:358
+#: prefs.ui:414
 msgid "Card"
 msgstr "Karte"
 
-#: prefs.ui:372
+#: prefs.ui:428
 msgid "Profile"
 msgstr "Profil"
 
-#: prefs.ui:385
+#: prefs.ui:441
 msgid "Switch"
 msgstr "Umschalter"
 
-#: prefs.ui:398
+#: prefs.ui:454
 msgid "Display"
 msgstr "Anzeigen"
