@@ -15,6 +15,7 @@ const Lang = imports.lang;
 const PopupMenu = imports.ui.popupMenu;
 const Volume = imports.ui.status.volume;
 
+const Settings = Extension.imports.settings;
 const Widget = Extension.imports.widget;
 
 const Menu = new Lang.Class({
@@ -22,13 +23,21 @@ const Menu = new Lang.Class({
     Extends: Volume.VolumeMenu,
 
     _init: function(mixer, options) {
-
         // no this.parent(); shouldn't go through VolumeMenu's setup
         PopupMenu.PopupMenuSection.prototype._init.call(this);
 
-        this.options = options || {};
+        this._settings = new Settings.Settings();
+
+        this.options = {
+            detailed: this._settings.get_boolean('show-detailed-sliders'),
+            boostVolume: this._settings.get_boolean('use-volume-boost'),
+            systemSounds: this._settings.get_boolean('show-system-sounds')
+        };
+
+        // submenu items
         this._outputs = {};
-        this._inputs = {};
+        // menu items (except for first, MasterSlider)
+        this._items = {};
 
         this._mixer = mixer;
         this._control = mixer.control;
@@ -51,7 +60,7 @@ const Menu = new Lang.Class({
         this._input = new Volume.InputStreamSlider(this._control);
         this.addMenuItem(this._input.item);
 
-        if (this.options.separator) {
+        if (options.separator) {
             this._addSeparator();
         }
 
@@ -98,14 +107,28 @@ const Menu = new Lang.Class({
     },
 
     _addStream: function(control, stream) {
-        if (stream.id in this._inputs || stream.id in this._outputs
+        if (stream.id in this._items
+                || stream.id in this._outputs
                 || stream.is_event_stream
-                || stream instanceof Gvc.MixerEventRole) {
+                || (stream instanceof Gvc.MixerEventRole
+                        && !this.options.systemSounds)) {
             return;
         }
 
+        // system sounds
+        if (stream instanceof Gvc.MixerEventRole) {
+            let slider = new Widget.EventsSlider(control, {
+                mixer: this._mixer,
+                detailed: this.options.detailed,
+                boostVolume: this.options.boostVolume,
+                stream: stream
+            });
+
+            this._items[stream.id] = slider;
+            this.addMenuItem(slider.item, 1);
+
         // input stream
-        if (stream instanceof Gvc.MixerSinkInput) {
+        } else if (stream instanceof Gvc.MixerSinkInput) {
             let slider = new Widget.InputSlider(control, {
                 mixer: this._mixer,
                 detailed: this.options.detailed,
@@ -113,7 +136,7 @@ const Menu = new Lang.Class({
                 stream: stream
             });
 
-            this._inputs[stream.id] = slider;
+            this._items[stream.id] = slider;
             this.addMenuItem(slider.item);
 
         // output stream
@@ -140,9 +163,9 @@ const Menu = new Lang.Class({
     },
 
     _streamRemoved: function(control, id) {
-        if (id in this._inputs) {
-            this._inputs[id].item.destroy();
-            delete this._inputs[id];
+        if (id in this._items) {
+            this._items[id].item.destroy();
+            delete this._items[id];
         } else if (id in this._outputs) {
             this._outputs[id].item.destroy();
             delete this._outputs[id];

@@ -45,7 +45,6 @@ function enable() {
     });
 
     let pos = settings.get_enum('position');
-    let detailed = settings.get_boolean('show-detailed-sliders');
     let boostVolume = settings.get_boolean('use-volume-boost');
 
     mixer = new Mixer.Mixer();
@@ -57,9 +56,7 @@ function enable() {
     if (pos === Settings.POS_MENU) {
         separator = new PopupMenu.PopupSeparatorMenuItem();
         menuSection = new Menu.Menu(mixer, {
-            separator: false,
-            detailed: detailed,
-            boostVolume: boostVolume
+            separator: false
         });
         volumeActor.hide();
         volumeMenu.menu.addMenuItem(menuSection, 0);
@@ -72,9 +69,7 @@ function enable() {
             volumeIcon.hide();
         }
         menuSection = new Menu.Menu(mixer, {
-            separator: true,
-            detailed: detailed,
-            boostVolume: boostVolume
+            separator: true
         });
         menu = new Panel.Button(menuSection);
 

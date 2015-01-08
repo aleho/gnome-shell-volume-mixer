@@ -7,7 +7,7 @@
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported MasterSlider, InputSlider, OutputSlider */
+/* exported MasterSlider, OutputSlider, EventsSlider, InputSlider */
 
 const Clutter = imports.gi.Clutter;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
@@ -426,6 +426,19 @@ const OutputSlider = new Lang.Class({
 
     _setAsDefault: function() {
         this._control.set_default_sink(this._stream);
+    }
+});
+
+
+/**
+ * Slider for system sounds.
+ */
+const EventsSlider = new Lang.Class({
+    Name: 'EventsSlider',
+    Extends: StreamSlider,
+
+    _updateLabel: function() {
+        this._label.text = this._stream.name;
     }
 });
 
