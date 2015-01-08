@@ -2,6 +2,12 @@
 <!-- Generated with glade 3.18.3 -->
 <interface domain="gnome-shell-extensions-shell-volume-mixer">
   <requires lib="gtk+" version="3.12"/>
+  <object class="GtkAdjustment" id="adjustmentVolumeStep">
+    <property name="lower">1</property>
+    <property name="upper">20</property>
+    <property name="value">6</property>
+    <property name="step_increment">1</property>
+  </object>
   <object class="GtkTreeStore" id="storeDevices">
     <columns>
       <!-- column-name name -->
@@ -159,7 +165,7 @@
           </object>
           <packing>
             <property name="left_attach">0</property>
-            <property name="top_attach">5</property>
+            <property name="top_attach">6</property>
           </packing>
         </child>
         <child>
@@ -170,27 +176,7 @@
           </object>
           <packing>
             <property name="left_attach">1</property>
-            <property name="top_attach">5</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="placeholder1">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">4</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="placeholder2">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">4</property>
+            <property name="top_attach">6</property>
           </packing>
         </child>
         <child>
@@ -201,7 +187,63 @@
           </object>
           <packing>
             <property name="left_attach">2</property>
+            <property name="top_attach">6</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="placeholder1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
             <property name="top_attach">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="placeholder2">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="placeholder3">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="top_attach">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="lblVolumeStep">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="valign">baseline</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">Volume Steps (%)</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSpinButton" id="spnVolumeStep">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="adjustment">adjustmentVolumeStep</property>
+            <property name="numeric">True</property>
+            <property name="value">6</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">4</property>
           </packing>
         </child>
         <child>

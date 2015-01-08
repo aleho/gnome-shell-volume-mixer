@@ -8,89 +8,93 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNOME Shell Volume Mixer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-22 16:24+0100\n"
-"PO-Revision-Date: 2014-12-22 16:26+0100\n"
+"POT-Creation-Date: 2015-01-08 15:40+0100\n"
+"PO-Revision-Date: 2015-01-08 15:40+0100\n"
 "Last-Translator: Alexander Hofbauer <alex@derhofbauer.at>\n"
 "Language-Team: German\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 1.7.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Basepath: ../../../\n"
 "X-Poedit-KeywordsList: _;title;label\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: prefs.js:271
+#: prefs.js:274
 msgid "Error retrieving card details"
 msgstr "Fehler beim Abfragen der Karten"
 
-#: prefs.js:272
+#: prefs.js:275
 msgid "Helper script did not return valid card data."
 msgstr "Hilfsprogramm gab keine gültigen Daten zurück."
 
-#: prefs.ui:49
+#: prefs.ui:55
 msgid "Position of volume mixer"
 msgstr "Position des Lautstärkereglers"
 
-#: prefs.ui:62
+#: prefs.ui:68
 msgid "Status Menu"
 msgstr "Statusmenü"
 
-#: prefs.ui:63
+#: prefs.ui:69
 msgid "Left"
 msgstr "Links"
 
-#: prefs.ui:64
+#: prefs.ui:70
 msgid "Center"
 msgstr "Zentriert"
 
-#: prefs.ui:65
+#: prefs.ui:71
 msgid "Right"
 msgstr "Rechts"
 
-#: prefs.ui:79
+#: prefs.ui:85
 msgid "Remove original slider"
 msgstr "Originalen Lautstärkeregler entfernen"
 
-#: prefs.ui:92
+#: prefs.ui:98
 msgid "Show detailed sliders"
 msgstr "Details an den Schiebereglern anzeigen"
 
-#: prefs.ui:105
+#: prefs.ui:111
 msgid "Use volume boost"
 msgstr "Verstärkung nutzen"
 
-#: prefs.ui:158
+#: prefs.ui:164
 msgid "Hotkey for profile switcher"
 msgstr "Hotkey für Profilumschalter"
 
-#: prefs.ui:200
+#: prefs.ui:186
 msgid "(e.g. \"<Super>p\")"
 msgstr "(z.B. \"<Super>p\")"
 
-#: prefs.ui:228
+#: prefs.ui:229
+msgid "Volume Steps (%)"
+msgstr "Lautstärke-Schritte (%)"
+
+#: prefs.ui:270
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: prefs.ui:265 prefs.ui:432
+#: prefs.ui:307 prefs.ui:474
 msgid "Devices"
 msgstr "Geräte"
 
-#: prefs.ui:316
+#: prefs.ui:358
 msgid "Card"
 msgstr "Karte"
 
-#: prefs.ui:330
+#: prefs.ui:372
 msgid "Profile"
 msgstr "Profil"
 
-#: prefs.ui:343
+#: prefs.ui:385
 msgid "Switch"
 msgstr "Umschalter"
 
-#: prefs.ui:356
+#: prefs.ui:398
 msgid "Display"
 msgstr "Anzeigen"

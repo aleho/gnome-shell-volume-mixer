@@ -27,6 +27,7 @@ const Preferences = new Lang.Class({
         swRemoveOriginal: null,
         swShowDetailedSliders: null,
         swUseVolumeBoost: null,
+        spnVolumeStep: null,
         txtProfileSwitch: null,
         treeDevices: null,
         treePinned: null,
@@ -75,6 +76,7 @@ const Preferences = new Lang.Class({
         this._objects.swRemoveOriginal.set_active(this._settings.get_boolean('remove-original'));
         this._objects.swShowDetailedSliders.set_active(this._settings.get_boolean('show-detailed-sliders'));
         this._objects.swUseVolumeBoost.set_active(this._settings.get_boolean('use-volume-boost'));
+        this._objects.spnVolumeStep.set_value(this._settings.getVolumeStep());
         this._objects.txtProfileSwitch.set_text(this._settings.get_array('profile-switcher-hotkey')[0] || '');
 
         this._bindSignal('tabs', 'switch-page', this.onSwitchPage);
@@ -82,6 +84,7 @@ const Preferences = new Lang.Class({
         this._bindSignal('swRemoveOriginal', 'notify::active', this.onSwitchActivate, 'remove-original');
         this._bindSignal('swShowDetailedSliders', 'notify::active', this.onSwitchActivate, 'show-detailed-sliders');
         this._bindSignal('swUseVolumeBoost', 'notify::active', this.onSwitchActivate, 'use-volume-boost');
+        this._bindSignal('spnVolumeStep', 'changed', this.onVolumeStepChanged);
         this._bindSignal('txtProfileSwitch', 'changed', this.onProfileSwitchChanged, 'profile-switcher-hotkey');
         this._bindSignal('btnAddDevice', 'clicked', this.onAddDevice);
         this._bindSignal('btnRemoveDevice', 'clicked', this.onRemoveDevice);
@@ -269,7 +272,7 @@ const Preferences = new Lang.Class({
         }
 
         this._showMessage(_('Error retrieving card details'),
-                _('Helper script did not return valid card data.'))
+                _('Helper script did not return valid card data.'));
         this._cardsWarningShown = true;
     },
 
@@ -303,7 +306,14 @@ const Preferences = new Lang.Class({
     },
 
     /**
-     * Callback for change event of profile switcher.
+     * Callback for change event of volume step spinner.
+     */
+    onVolumeStepChanged: function(widget) {
+        this._settings.setVolumeStep(parseInt(widget.get_text()));
+    },
+
+    /**
+     * Callback for change event of profile switcher hotkey.
      */
     onProfileSwitchChanged: function(widget, setting) {
         let entry = widget.get_text().trim();
