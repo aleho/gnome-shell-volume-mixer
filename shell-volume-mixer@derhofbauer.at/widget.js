@@ -270,7 +270,7 @@ const StreamSlider = new Lang.Class({
     },
 
     _updateSliderIcon: function() {
-        if (this._stream && this.options.detailed) {
+        if (this._stream && !this.options.symbolicIcons) {
             this._icon.gicon = this._stream.get_gicon();
         } else {
             this.parent();

@@ -31,7 +31,8 @@ const Menu = new Lang.Class({
         this.options = {
             detailed: this._settings.get_boolean('show-detailed-sliders'),
             boostVolume: this._settings.get_boolean('use-volume-boost'),
-            systemSounds: this._settings.get_boolean('show-system-sounds')
+            systemSounds: this._settings.get_boolean('show-system-sounds'),
+            symbolicIcons: this._settings.get_boolean('use-symbolic-icons')
         };
 
         // submenu items
@@ -50,6 +51,7 @@ const Menu = new Lang.Class({
         this._output = new Widget.MasterSlider(this._control, {
             mixer: mixer,
             detailed: this.options.detailed,
+            symbolicIcons: this.options.symbolicIcons,
             boostVolume: this.options.boostVolume
         });
         this._output.connect('stream-updated', Lang.bind(this, function() {
@@ -115,38 +117,31 @@ const Menu = new Lang.Class({
             return;
         }
 
+        let options = {
+            mixer: this._mixer,
+            detailed: this.options.detailed,
+            symbolicIcons: this.options.symbolicIcons,
+            boostVolume: this.options.boostVolume,
+            stream: stream
+        };
+
         // system sounds
         if (stream instanceof Gvc.MixerEventRole) {
-            let slider = new Widget.EventsSlider(control, {
-                mixer: this._mixer,
-                detailed: this.options.detailed,
-                boostVolume: this.options.boostVolume,
-                stream: stream
-            });
+            let slider = new Widget.EventsSlider(control, options);
 
             this._items[stream.id] = slider;
             this.addMenuItem(slider.item, 1);
 
         // input stream
         } else if (stream instanceof Gvc.MixerSinkInput) {
-            let slider = new Widget.InputSlider(control, {
-                mixer: this._mixer,
-                detailed: this.options.detailed,
-                boostVolume: this.options.boostVolume,
-                stream: stream
-            });
+            let slider = new Widget.InputSlider(control, options);
 
             this._items[stream.id] = slider;
             this.addMenuItem(slider.item);
 
         // output stream
         } else if (stream instanceof Gvc.MixerSink) {
-            let slider = new Widget.OutputSlider(control, {
-                mixer: this._mixer,
-                detailed: this.options.detailed,
-                boostVolume: this.options.boostVolume,
-                stream: stream
-            });
+            let slider = new Widget.OutputSlider(control, options);
 
             let isSelected = this._output.stream
                     && this._output.stream.id == stream.id;

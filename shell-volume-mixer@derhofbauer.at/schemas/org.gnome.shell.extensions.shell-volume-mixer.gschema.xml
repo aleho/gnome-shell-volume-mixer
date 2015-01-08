@@ -29,6 +29,11 @@
             <summary>Show system sounds</summary>
             <description>Whether to show a sliders for system sounds</description>
         </key>
+        <key name="use-symbolic-icons" type="b">
+            <default>true</default>
+            <summary>Use symbolic icons</summary>
+            <description>Whether to use the default symbolic icons or those provided by PulseAudio</description>
+        </key>
         <key name="use-volume-boost" type="b">
             <default>false</default>
             <summary>Use volume boost</summary>
