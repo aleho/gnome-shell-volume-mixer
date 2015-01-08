@@ -354,7 +354,7 @@ const MasterSlider = new Lang.Class({
     },
 
     _updateLabel: function() {
-        this._label.text = this._stream.description || '';
+        this._label.text = this._stream.description;
     }
 });
 
@@ -454,10 +454,10 @@ const InputSlider = new Lang.Class({
         let text = this._stream.name;
         let description = this._stream.description;
 
-        if (this.options.detailed && text != description) {
+        if (description && text != description) {
             text += ' | ' + description;
         }
 
-        this._label.text = text || '';
+        this._label.text = text || '[unknown]';
     }
 });
