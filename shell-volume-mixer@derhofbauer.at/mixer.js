@@ -72,7 +72,7 @@ const Mixer = new Lang.Class({
             return;
         }
         Main.wm.addKeybinding('profile-switcher-hotkey',
-                this._settings._settings,
+                this._settings.settings,
                 Meta.KeyBindingFlags.NONE,
                 Shell.KeyBindingMode.ALL,
                 Lang.bind(this, this._switchProfile));
