@@ -8,6 +8,7 @@
 
 /* exported Settings */
 /* exported POS_MENU, POS_LEFT, POS_CENTER, POS_RIGHT */
+/* exported MEDIAKEYS_SCHEMA, VOLUME_STEP_DEFAULT */
 
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Gio = imports.gi.Gio;
@@ -22,13 +23,11 @@ const POS_CENTER = 2;
 const POS_RIGHT = 3;
 
 const SETTINGS_SCHEMA = 'org.gnome.shell.extensions.shell-volume-mixer';
-const GSD_SCHEMA = 'org.gnome.settings-daemon.plugins.sound';
-const VOLUME_STEP_KEY = 'volume-step';
+const MEDIAKEYS_SCHEMA = 'org.gnome.settings-daemon.plugins.media-keys';
 const VOLUME_STEP_DEFAULT = 6;
 
-let gsettings;
-let gsdsettings;
-let signals = [];
+const SIGNALS = {};
+const GSETTINGS = {};
 
 
 const Settings = new Lang.Class({
@@ -38,50 +37,53 @@ const Settings = new Lang.Class({
         // nothing to do here
     },
 
-    set gsdSettings(value) {
-        // nothing to do here
-    },
-
     get settings() {
-        if (!gsettings) {
+        if (!GSETTINGS[this._schema]) {
             this._initSettings();
         }
-        return gsettings;
+        return GSETTINGS[this._schema];
     },
 
-    get gsdSettings() {
-        if (!gsdsettings) {
-            gsdsettings = this._getSettings(GSD_SCHEMA);
-        }
-        return gsdsettings;
+    _init: function(schema) {
+        this._schema = schema || SETTINGS_SCHEMA;
     },
-
 
     /**
      * Initializes a single instance of Gio.Settings for this extension.
      */
     _initSettings: function() {
-        let schemaDir = Utils.getExtensionPath('schemas');
+        let instance;
 
-        // first try to find the schema locally
-        if (GLib.file_test(schemaDir + '/gschemas.compiled', GLib.FileTest.EXISTS)) {
-            let schemaSource = Gio.SettingsSchemaSource.new_from_directory(
-                    schemaDir,
-                    Gio.SettingsSchemaSource.get_default(),
-                    false);
+        // for all schemas != app schema
+        if (this._schema != SETTINGS_SCHEMA) {
+            instance = this._getSettings(this._schema);
 
-            gsettings = new Gio.Settings({
-                settings_schema: schemaSource.lookup(SETTINGS_SCHEMA, false)
-            });
-
-        // schema might be installed system-wide
+        // app-schema
         } else {
-            gsettings = this._getSettings(SETTINGS_SCHEMA);
+            let schemaDir = Utils.getExtensionPath('schemas');
+
+            // try to find the app-schema locally
+            if (GLib.file_test(schemaDir + '/gschemas.compiled', GLib.FileTest.EXISTS)) {
+                let schemaSource = Gio.SettingsSchemaSource.new_from_directory(
+                        schemaDir,
+                        Gio.SettingsSchemaSource.get_default(),
+                        false);
+
+                instance = new Gio.Settings({
+                    settings_schema: schemaSource.lookup(this._schema, false)
+                });
+
+            // app-schema might be installed system-wide
+            } else {
+                instance = this._getSettings(this._schema);
+            }
         }
 
-        if (!gsettings) {
-            throw 'Schema "%s" not found'.format(SETTINGS_SCHEMA);
+        if (!instance) {
+            throw 'Schema "%s" not found'.format(this._schema);
         }
+
+        GSETTINGS[this._schema] = instance;
     },
 
     /**
@@ -109,7 +111,10 @@ const Settings = new Lang.Class({
      */
     connect: function(signal, callback) {
         let id = this.settings.connect(signal, callback);
-        signals.push(id);
+        if (!SIGNALS[this._schema]) {
+            SIGNALS[this._schema] = [];
+        }
+        SIGNALS[this._schema].push(id);
     },
 
     /**
@@ -125,8 +130,8 @@ const Settings = new Lang.Class({
      * Disconnects all connected signals.
      */
     disconnectAll: function() {
-        while (signals.length > 0) {
-            this.settings.disconnect(signals.pop());
+        while (SIGNALS[this._schema] && SIGNALS[this._schema].length > 0) {
+            this.settings.disconnect(SIGNALS[this._schema].pop());
         }
     },
 
@@ -181,7 +186,7 @@ const Settings = new Lang.Class({
     },
 
     /**
-     * Set the value of an enum key.
+     * Sets the value of an enum key.
      */
     set_enum: function(key, value) {
         return this.settings.set_enum(key, value);
@@ -195,48 +200,9 @@ const Settings = new Lang.Class({
     },
 
     /**
-     * Set the value of an array key.
+     * Sets the value of an array key.
      */
     set_array: function(key, value) {
         return this.settings.set_strv(key, value);
-    },
-
-
-    /**
-     * Determines whether GNOME Settings Daemon has been patched for
-     * configurable volume steps.
-     */
-    isGsdPatched: function() {
-        let settings = this.gsdSettings;
-        if (!settings) {
-            return false;
-        }
-
-        return settings.list_keys().indexOf(VOLUME_STEP_KEY) != -1;
-    },
-
-    /**
-     * Gets the system or application wide configuration value for GSD's volume
-     * step, depending on availability of the corresponding patch to GSD.
-     */
-    getVolumeStep: function() {
-        let volumeStep;
-
-        if (this.isGsdPatched()) {
-            volumeStep = this.gsdSettings.get_int(VOLUME_STEP_KEY);
-        } else {
-            volumeStep = this.settings.get_int(VOLUME_STEP_KEY);
-        }
-
-        return volumeStep || VOLUME_STEP_DEFAULT;
-    },
-
-    /**
-     * Sets the system and application wide configuration value for GSD's volume
-     * step, depending on availability of the corresponding patch to GSD.
-     */
-    setVolumeStep: function(value) {
-        this.gsdSettings.set_int(VOLUME_STEP_KEY, value);
-        return this.settings.set_int(VOLUME_STEP_KEY, value);
     }
 });
