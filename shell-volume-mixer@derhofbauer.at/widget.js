@@ -84,9 +84,8 @@ const VolumeSlider = new Lang.Class({
     Name: 'VolumeSlider',
     Extends: Slider.Slider,
 
-    _init: function(value) {
-        this._settings = new Settings.Settings();
-        this._volumeStep = this._settings.getVolumeStep();
+    _init: function(value, step) {
+        this._step = step || Settings.VOLUME_STEP_DEFAULT;
         this.parent(value);
     },
 
@@ -98,15 +97,15 @@ const VolumeSlider = new Lang.Class({
             return Clutter.EVENT_PROPAGATE;
 
         if (direction == Clutter.ScrollDirection.DOWN) {
-            delta = -this._volumeStep;
+            delta = -this._step;
         } else if (direction == Clutter.ScrollDirection.UP) {
-            delta = +this._volumeStep;
+            delta = +this._step;
         } else if (direction == Clutter.ScrollDirection.SMOOTH) {
             let [dx, dy] = event.get_scroll_delta();
             if (dy > 0) {
-                delta = +this._volumeStep;
+                delta = +this._step;
             } else {
-                delta = -this._volumeStep;
+                delta = -this._step;
             }
         }
 
@@ -121,7 +120,7 @@ const VolumeSlider = new Lang.Class({
     onKeyPressEvent: function(actor, event) {
         let key = event.get_key_symbol();
         if (key == Clutter.KEY_Right || key == Clutter.KEY_Left) {
-            let delta = key == Clutter.KEY_Right ? +this._volumeStep : -this._volumeStep;
+            let delta = key == Clutter.KEY_Right ? +this._step : -this._step;
             delta /= 100;
             this._value = Math.max(0, Math.min(this._value + delta, 1));
             this.actor.queue_repaint();
@@ -141,10 +140,10 @@ const MasterMenuItem = new Lang.Class({
     Name: 'MasterMenuItem',
     Extends: PopupMenu.PopupSubMenuMenuItem,
 
-    _init: function() {
+    _init: function(sliderVolumeStep) {
         this.parent('', true);
 
-        this.slider = new VolumeSlider(0);
+        this.slider = new VolumeSlider(0, sliderVolumeStep);
 
         // remove actors except ornament (indentation of menu)
         this.actor.get_children().map(Lang.bind(this, function(child) {
@@ -225,7 +224,7 @@ const StreamSlider = new Lang.Class({
         }
 
         if (!this._slider) {
-            this._slider = new VolumeSlider(0);
+            this._slider = new VolumeSlider(0, this._mixer.getNormalizedStep());
             this._vbox.add(this._slider.actor);
         }
 
@@ -290,18 +289,29 @@ const StreamSlider = new Lang.Class({
         this.label.text = this._stream.name || this._stream.description || '';
     },
 
-    _sliderChanged: function(slider, value, property) {
-        this.parent(slider, value, property);
-
-        if (!this._stream || !this._volumeInfo) {
+    _sliderChanged: function(slider, value) {
+        if (!this._stream) {
             return;
         }
 
-        if (this.options.boostVolume) {
-            value = this._stream.get_volume() / this._mixer.getVolMaxNorm();
+        let max = this._mixer.getVolMax();
+        let newVol = max * value;
+        this._mixer.setStreamVolume(this._stream, newVol);
+
+        if (!this._volumeInfo) {
+            return;
         }
 
-        this._showVolumeInfo(Math.round(value * 100));
+        let percent = Math.round(newVol / this._control.get_vol_max_norm() * 100);
+        this._showVolumeInfo(percent);
+    },
+
+    _updateVolume: function() {
+        let muted = this._stream.is_muted;
+        let max = this._mixer.getVolMax();
+
+        this._slider.setValue(muted ? 0 : (this._stream.volume / max));
+        this.emit('stream-updated');
     },
 
     _showVolumeInfo: function(value) {
@@ -337,7 +347,7 @@ const MasterSlider = new Lang.Class({
     Extends: StreamSlider,
 
     _init: function(control, options) {
-        this.item = new MasterMenuItem();
+        this.item = new MasterMenuItem(options.mixer.getNormalizedStep());
         this._slider = this.item.slider;
         this._icon = this.item.icon;
         this._label = this.item.label;

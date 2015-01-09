@@ -24,7 +24,13 @@ const signals = [];
 const STREAM_NO_MATCH = 0;
 const STREAM_MATCHES = 1;
 const STREAM_CARD_MATCHES = 2;
-var get_vol_max_norm;
+
+const VOL_ICONS = [
+    'audio-volume-muted-symbolic',
+    'audio-volume-low-symbolic',
+    'audio-volume-medium-symbolic',
+    'audio-volume-high-symbolic'
+];
 
 
 const Mixer = new Lang.Class({
@@ -32,6 +38,10 @@ const Mixer = new Lang.Class({
 
     _init: function() {
         this._settings = new Settings.Settings();
+        this._mkSettings = new Settings.Settings(Settings.MEDIAKEYS_SCHEMA);
+
+        this.volumeStep = this._settings.get_int('volume-step');
+        this.boostVolume = this._settings.get_boolean('use-volume-boost');
 
         this._control = Volume.getMixerControl();
         this._state = this._control.get_state();
@@ -46,6 +56,11 @@ const Mixer = new Lang.Class({
         this.connect('default-sink-changed', Lang.bind(this, this._onDefaultSinkChanged));
 
         this._bindHotkey();
+
+        if (this.boostVolume
+                || this.volumeStep != Settings.VOLUME_STEP_DEFAULT) {
+            this._bindMediaKeys();
+        }
 
         this._onStateChanged(this._control, this._state);
     },
@@ -65,8 +80,12 @@ const Mixer = new Lang.Class({
         }
 
         this._unbindHotkey();
+        this._unbindMediaKeys();
     },
 
+    /**
+     * Binds the hotkey for profile rotation.
+     */
     _bindHotkey: function() {
         if (!this._pinned.length) {
             return;
@@ -78,6 +97,9 @@ const Mixer = new Lang.Class({
                 Lang.bind(this, this._switchProfile));
     },
 
+    /**
+     * Unbinds the hotkey for profile rotation.
+     */
     _unbindHotkey: function() {
         if (!this._pinned.length) {
             return;
@@ -86,41 +108,170 @@ const Mixer = new Lang.Class({
     },
 
     /**
-     * Monkey patch for maximum volume calculations (needed for other parts
-     * of the UI, like volume overlay).
+     * Binds volume down / up media keys to our own handlers.
      */
-    enableVolumeBoost: function() {
-        if (get_vol_max_norm) {
-            // we've already patched the control
-            return;
-        }
+    _bindMediaKeys: function() {
+        this._proxyMediaKeysChange(this._mkSettings, 'volume-down');
+        this._proxyMediaKeysChange(this._mkSettings, 'volume-up');
+        this._proxyMediaKeysChange(this._mkSettings, 'volume-mute');
 
-        get_vol_max_norm = this._control.get_vol_max_norm;
-        this._control.get_vol_max_norm = this._control.get_vol_max_amplified;
+        this._mkSettings.connect('changed::volume-down', Lang.bind(this, this._proxyMediaKeysChange));
+        this._mkSettings.connect('changed::volume-up', Lang.bind(this, this._proxyMediaKeysChange));
+        this._mkSettings.connect('changed::volume-mute', Lang.bind(this, this._proxyMediaKeysChange));
+
+        Main.wm.addKeybinding('volume-down',
+                this._settings.settings,
+                Meta.KeyBindingFlags.NONE,
+                Shell.KeyBindingMode.ALL,
+                Lang.bind(this, this.decreaseMasterVolume));
+
+        Main.wm.addKeybinding('volume-up',
+                this._settings.settings,
+                Meta.KeyBindingFlags.NONE,
+                Shell.KeyBindingMode.ALL,
+                Lang.bind(this, this.increaseMasterVolume));
+
+        Main.wm.addKeybinding('volume-mute',
+                this._settings.settings,
+                Meta.KeyBindingFlags.NONE,
+                Shell.KeyBindingMode.ALL,
+                Lang.bind(this, this.muteMasterVolume));
+
+        this._hasMediaKeys = true;
     },
 
     /**
-     * Undoes the monkey patching of get vol max norm.
+     * Helper to use Main.wm.addKeybinding with strings from GSD.
      */
-    disableVolumeBoost: function() {
-        if (!get_vol_max_norm) {
-            // apparently we never patched get_vol_max_norm
+    _proxyMediaKeysChange: function(gsettings, key) {
+        let value = gsettings.get_string(key) || undefined;
+        let proxy = this._settings.get_array(key);
+
+        // don't trigger a change event
+        if (proxy.length == 1 && proxy[0] == value) {
             return;
         }
 
-        this._control.get_vol_max_norm = get_vol_max_norm;
-        get_vol_max_norm = undefined;
+        this._settings.set_array(key, [value]);
     },
 
     /**
-     * Returns the "real" normalized max volume.
+     * Unbinds media keys which have been taken over from GSD.
      */
-    getVolMaxNorm: function() {
-        if (get_vol_max_norm) {
-            return get_vol_max_norm.call(this._control);
+    _unbindMediaKeys: function() {
+        this._mkSettings.disconnectAll();
+
+        if (!this._hasMediaKeys) {
+            return;
         }
-        return this._control.get_vol_max_norm();
+
+        Main.wm.removeKeybinding('volume-down');
+        Main.wm.removeKeybinding('volume-up');
+        Main.wm.removeKeybinding('volume-mute');
     },
+
+    decreaseMasterVolume: function() {
+        this.changeStreamVolume(this._defaultSink, 'down');
+    },
+
+    increaseMasterVolume: function() {
+        this.changeStreamVolume(this._defaultSink, 'up');
+    },
+
+    muteMasterVolume: function() {
+        let muted = !this._defaultSink.is_muted;
+        let level = 0;
+        let percent = 0;
+
+        this._defaultSink.change_is_muted(muted);
+
+        if (!muted) {
+            let volume = this._defaultSink.volume;
+            let max = this.getVolMax();
+            let virtMax = this._control.get_vol_max_norm();
+            level = Math.round(volume / max * 100);
+            percent = Math.round(volume / virtMax * 100);
+        }
+
+        this._showVolumeOsd(level, percent);
+    },
+
+    /**
+     * Changes a stream's volume by a step down / up.
+     */
+    changeStreamVolume: function(stream, dir) {
+        let volume = stream.volume;
+        let max = this.getVolMax();
+        let virtMax = this._control.get_vol_max_norm();
+        let step = Math.round(virtMax * (this.volumeStep / 100));
+
+        if (dir == 'down') {
+            volume -= step;
+        } else {
+            volume += step;
+        }
+
+        volume = this.setStreamVolume(stream, volume);
+
+        let level = Math.round(volume / max * 100);
+        let percent = Math.round(volume / virtMax * 100);
+
+        this._showVolumeOsd(level, percent);
+    },
+
+    /**
+     * Updates the volume of a stream to a certain value.
+     *
+     * @returns The volume level set.
+     */
+    setStreamVolume: function(stream, volume) {
+        let max = this.getVolMax();
+        volume = Math.max(0, volume);
+        volume = Math.min(max, volume);
+
+        let prevMuted = stream.is_muted;
+
+        if (volume < 1) {
+            stream.volume = 0;
+            if (!prevMuted) {
+                stream.change_is_muted(true);
+            }
+        } else {
+            stream.volume = volume;
+            if (prevMuted) {
+                stream.change_is_muted(false);
+            }
+        }
+
+        stream.push_volume();
+        return volume;
+    },
+
+    /**
+     * Returns the max volume, depending on boost being enabled.
+     */
+    getVolMax: function() {
+        return this.boostVolume
+                ? this._control.get_vol_max_amplified()
+                : this._control.get_vol_max_norm();
+    },
+
+    /**
+     * Returns the amount of a step on a (slider) scale from 0 to 1.
+     */
+    getNormalizedStep: function() {
+        if (!this.boostVolume) {
+            return this.volumeStep;
+        }
+
+        let norm = this._control.get_vol_max_norm();
+        let ampl = this._control.get_vol_max_amplified();
+
+        let step = this._step = norm / ampl * this.volumeStep;
+        step = Math.round(step * 100) / 100;
+        return step;
+    },
+
 
     /**
      * Adds a card to our array of cards.
@@ -158,6 +309,34 @@ const Mixer = new Lang.Class({
     },
 
     /**
+     * Updates the default sink, trying to mark the currently active card.
+     */
+    _updateDefaultSink: function(stream) {
+        this._defaultSink = stream;
+
+        if (!stream) {
+            // we might get a sink id without being able to lookup
+            return;
+        }
+
+        let card = this._cards[stream.card_index];
+
+        if (!card || !card.card) {
+            return;
+        }
+
+        let profile = card.card.profile;
+        this._currentCycle = null;
+
+        for (let entry of this._cycled) {
+            if (entry.card == card.name && entry.profile == profile) {
+                this._currentCycle = entry;
+                break;
+            }
+        }
+    },
+
+    /**
      * Callback for state changes.
      */
     _onStateChanged: function(control, state) {
@@ -171,28 +350,15 @@ const Mixer = new Lang.Class({
         for (let card of cards) {
             this._addCard(card);
         }
+
+        this._updateDefaultSink(this._control.get_default_sink());
     },
 
     /**
-     * Callback for default source changes.
+     * Callback for default sink changes.
      */
     _onDefaultSinkChanged: function(control, id) {
-        let stream = control.lookup_stream_id(id);
-        if (!stream) {
-            // we might get a sink id without being able to lookup
-            return;
-        }
-
-        let card = this._cards[stream.card_index];
-        let profile = card.card.profile;
-        this._currentCycle = null;
-
-        for (let entry of this._cycled) {
-            if (entry.card == card.name && entry.profile == profile) {
-                this._currentCycle = entry;
-                break;
-            }
-        }
+        this._updateDefaultSink(control.lookup_stream_id(id));
     },
 
     /**
@@ -383,5 +549,43 @@ const Mixer = new Lang.Class({
         let monitor = -1;
         let icon = Gio.Icon.new_for_string('audio-speakers-symbolic');
         Main.osdWindowManager.show(monitor, icon, text);
+    },
+
+    /**
+     * Shows the current volume on OSD.
+     *
+     * @see gsd-media-keys-manager.c
+     */
+    _showVolumeOsd: function(level, percent) {
+        let monitor = -1;
+        let label = [];
+        let n;
+
+        if (level === 0) {
+            n = 0;
+        } else {
+            n = parseInt(3 * percent / 100 + 1);
+            n = Math.max(1, n);
+            n = Math.min(3, n);
+        }
+
+        if (this._defaultSink) {
+            let port = this._defaultSink.get_port();
+            if (port.port != 'analog-output-speaker'
+                    && port.port != 'analog-output') {
+                label.push(port.human_port);
+            }
+        }
+
+        if (this.boostVolume) {
+            if (percent > 0) {
+                label.push(percent + '%');
+            } else {
+                label.push(' ');
+            }
+        }
+
+        let icon = Gio.Icon.new_for_string(VOL_ICONS[n]);
+        Main.osdWindowManager.show(monitor, icon, label.join('\n'), level);
     }
 });

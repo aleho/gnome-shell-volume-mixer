@@ -44,14 +44,9 @@ function enable() {
         enable();
     });
 
-    let pos = settings.get_enum('position');
-    let boostVolume = settings.get_boolean('use-volume-boost');
-
     mixer = new Mixer.Mixer();
 
-    if (boostVolume) {
-        mixer.enableVolumeBoost();
-    }
+    let pos = settings.get_enum('position');
 
     if (pos === Settings.POS_MENU) {
         separator = new PopupMenu.PopupSeparatorMenuItem();
@@ -105,7 +100,6 @@ function disable() {
     }
 
     if (mixer) {
-        mixer.disableVolumeBoost();
         mixer.disconnectAll();
         mixer = null;
     }

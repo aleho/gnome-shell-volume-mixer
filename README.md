@@ -14,20 +14,17 @@ Middle mouse click on a slider mutes the selected stream.
 GNOME Settings Daemon (GSD)
 ---------------------------
 
-GSD hardcodes the step for each key press of volume keys to 6. While this
-might be OK for most people, some would prefer a configurable setting. There's
-a bug in GNOME's tracker which, according to the comments by developers, won't
-ever get fixed in a way that could allow configurable volume steps [1].
+GSD hardcodes the step for each key press of volume keys to 6% of maximum
+volume. While this might be OK for most people, some would prefer a
+configurable setting. There's a bug in GNOME's tracker which, according to the
+comments by developers, won't ever get fixed in a way that could allow
+configurable volume steps [1].
 
-If you prefer such a solution you could patch GSD yourself using the
-[patch](files/gsd-volume-steps.diff) provided in this repository. It applies
-to and was tested with versions 3.12 and 3.14.
+Shell Volume Mixer tries to grab GSD's hotkeys to provide configurable steps
+for sliders and media keys.
 
-Shell Volume Mixer is able to integrate with this patch or use it's own
-setting, though using the latter solution volume steps of media keys won't be
-affected.
 
-[1] https://bugzilla.gnome.org/show_bug.cgi?id=650371#c42
+[1] https://bugzilla.gnome.org/show_bug.cgi?id=650371
 
 
 Acknowledgments

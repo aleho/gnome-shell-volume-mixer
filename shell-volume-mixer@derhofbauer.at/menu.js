@@ -30,7 +30,6 @@ const Menu = new Lang.Class({
 
         this.options = {
             detailed: this._settings.get_boolean('show-detailed-sliders'),
-            boostVolume: this._settings.get_boolean('use-volume-boost'),
             systemSounds: this._settings.get_boolean('show-system-sounds'),
             symbolicIcons: this._settings.get_boolean('use-symbolic-icons')
         };
@@ -51,8 +50,7 @@ const Menu = new Lang.Class({
         this._output = new Widget.MasterSlider(this._control, {
             mixer: mixer,
             detailed: this.options.detailed,
-            symbolicIcons: this.options.symbolicIcons,
-            boostVolume: this.options.boostVolume
+            symbolicIcons: this.options.symbolicIcons
         });
         this._output.connect('stream-updated', Lang.bind(this, function() {
             this.emit('icon-changed');
@@ -121,7 +119,6 @@ const Menu = new Lang.Class({
             mixer: this._mixer,
             detailed: this.options.detailed,
             symbolicIcons: this.options.symbolicIcons,
-            boostVolume: this.options.boostVolume,
             stream: stream
         };
 
