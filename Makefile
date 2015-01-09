@@ -1,4 +1,4 @@
-VERSION = 0.6
+VERSION = 0.7
 EXTENSION = shell-volume-mixer@derhofbauer.at
 
 SRCDIR = $(EXTENSION)
