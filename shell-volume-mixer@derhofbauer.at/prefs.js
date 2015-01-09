@@ -80,7 +80,7 @@ const Preferences = new Lang.Class({
         this._objects.swShowSystemSounds.set_active(this._settings.get_boolean('show-system-sounds'));
         this._objects.swUseSymbolicIcons.set_active(this._settings.get_boolean('use-symbolic-icons'));
         this._objects.swUseVolumeBoost.set_active(this._settings.get_boolean('use-volume-boost'));
-        this._objects.spnVolumeStep.set_value(this._settings.getVolumeStep());
+        this._objects.spnVolumeStep.set_value(this._settings.get_int('volume-step'));
         this._objects.txtProfileSwitch.set_text(this._settings.get_array('profile-switcher-hotkey')[0] || '');
 
         this._bindSignal('tabs', 'switch-page', this.onSwitchPage);
@@ -315,7 +315,7 @@ const Preferences = new Lang.Class({
      * Callback for change event of volume step spinner.
      */
     onVolumeStepChanged: function(widget) {
-        this._settings.setVolumeStep(parseInt(widget.get_text()));
+        this._settings.set_int('volume-step', parseInt(widget.get_text()));
     },
 
     /**
