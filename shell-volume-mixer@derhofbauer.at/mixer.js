@@ -586,6 +586,12 @@ const Mixer = new Lang.Class({
         }
 
         let icon = Gio.Icon.new_for_string(VOL_ICONS[n]);
-        Main.osdWindowManager.show(monitor, icon, label.join('\n'), level);
+
+        label = label.join('\n');
+        if (!label) {
+            label = null;
+        }
+
+        Main.osdWindowManager.show(monitor, icon, label, level);
     }
 });
