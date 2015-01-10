@@ -11,6 +11,18 @@ switcher to quickly switch between pinned profiles and devices.
 Middle mouse click on a slider mutes the selected stream.
 
 
+Installation
+------------
+
+```
+$ make
+```
+
+That's it. Add the resulting archive via GNOME Tweak Tool (extensions tab) or
+copy it's content manually to
+".~/.local/share/gnome-shell/extensions/shell-volume-mixer@derhofbauer.at".
+
+
 GNOME Settings Daemon (GSD)
 ---------------------------
 
