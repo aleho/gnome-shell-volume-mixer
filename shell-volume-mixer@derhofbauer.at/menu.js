@@ -67,6 +67,23 @@ const Menu = new Lang.Class({
         this._onControlStateChanged();
     },
 
+    open: function(animate) {
+        this._output.hideVolumeInfo();
+        this.parent(animate);
+    },
+
+    close: function(animate) {
+        for (let id in this._outputs) {
+            this._outputs[id].hideVolumeInfo();
+        }
+        for (let id in this._items) {
+            this._items[id].hideVolumeInfo();
+        }
+        this._output.hideVolumeInfo();
+
+        this.parent(animate);
+    },
+
     outputHasHeadphones: function() {
         return this._output._hasHeadphones;
     },

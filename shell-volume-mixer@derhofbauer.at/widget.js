@@ -50,7 +50,7 @@ const FloatingLabel = new Lang.Class({
         return this._label.get_size();
     },
 
-    show: function(x, y) {
+    show: function(x, y, animate) {
         this._label.opacity = 0;
         this._label.show();
         this._label.raise_top();
@@ -62,17 +62,21 @@ const FloatingLabel = new Lang.Class({
         y = y - labelHeight;
         this._label.set_position(x, y);
 
+        let duration = animate !== false ? 0.15 : 0;
+
         Tweener.addTween(this._label, {
             opacity: 255,
-            time: 0.15,
+            time: duration,
             transition: 'easeOutQuad'
         });
     },
 
-    hide: function() {
+    hide: function(animate) {
+        let duration = animate !== false ? 0.1 : 0;
+
         Tweener.addTween(this._label, {
             opacity: 0,
-            time: 0.1,
+            time: duration,
             transition: 'easeOutQuad',
             onComplete: Lang.bind(this, function() {
                 this._label.hide();
@@ -351,6 +355,16 @@ const StreamSlider = new Lang.Class({
             this._volumeInfo.hide();
             return GLib.SOURCE_REMOVE;
         }));
+    },
+
+    hideVolumeInfo: function() {
+        if (this._labelTimeoutId) {
+            Mainloop.source_remove(this._labelTimeoutId);
+            this._labelTimeoutId = undefined;
+        }
+
+        this._infoShowing = false;
+        this._volumeInfo.hide(false);
     }
 });
 
