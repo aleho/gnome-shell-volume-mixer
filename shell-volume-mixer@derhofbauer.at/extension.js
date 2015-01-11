@@ -20,10 +20,11 @@ const Settings = Extension.imports.settings;
 
 let settings;
 
-let statusMenu;
+let aggregateMenu;
+let volumeIndicator;
+let volumeIcon;
 let volumeMenu;
 let volumeActor;
-let volumeIcon;
 let mixer;
 
 let menu;
@@ -32,10 +33,11 @@ let separator;
 
 function init() {
     settings = new Settings.Settings();
-    statusMenu = Main.panel.statusArea.aggregateMenu;
-    volumeMenu = Main.panel.statusArea.aggregateMenu._volume;
-    volumeActor = volumeMenu._volumeMenu.actor;
-    volumeIcon = volumeMenu._primaryIndicator;
+    aggregateMenu = Main.panel.statusArea.aggregateMenu;
+    volumeIndicator = aggregateMenu._volume;
+    volumeIcon = volumeIndicator._primaryIndicator;
+    volumeMenu = volumeIndicator._volumeMenu;
+    volumeActor = volumeMenu.actor;
 }
 
 function enable() {
@@ -54,8 +56,9 @@ function enable() {
             separator: false
         });
         volumeActor.hide();
-        volumeMenu.menu.addMenuItem(menuSection, 0);
-        statusMenu.menu.addMenuItem(separator, 1);
+        volumeIndicator.menu.addMenuItem(menuSection, 0);
+        aggregateMenu.menu.addMenuItem(separator, 1);
+        volumeIndicator._volumeMenu = menuSection;
 
     } else {
         let removeOriginal = settings.get_boolean('remove-original');
@@ -79,9 +82,10 @@ function enable() {
 }
 
 function disable() {
-    if (volumeMenu) {
+    if (volumeIndicator) {
         volumeActor.show();
         volumeIcon.show();
+        volumeIndicator._volumeMenu = volumeMenu;
     }
 
     if (menuSection) {

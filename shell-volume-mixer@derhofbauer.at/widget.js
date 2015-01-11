@@ -33,6 +33,7 @@ const FloatingLabel = new Lang.Class({
 
     _init: function() {
         this._label = new St.Label({ style_class: 'dash-label floating-label' });
+        this.text = '100%';
         this._label.hide();
         Main.layoutManager.addChrome(this._label);
     },
@@ -43,6 +44,10 @@ const FloatingLabel = new Lang.Class({
 
     set text(text) {
         this._label.set_text(text);
+    },
+
+    get size() {
+        return this._label.get_size();
     },
 
     show: function(x, y) {
@@ -108,16 +113,18 @@ const VolumeSlider = new Lang.Class({
             } else if (dy > 0) {
                 delta = -this._step;
             } else {
-                // bugfix first dy event being zero
-                return Clutter.EVENT_STOP;
+                delta = null;
             }
         }
 
-        delta /= 100;
-        this._value = Math.min(Math.max(0, this._value + delta), 1);
+        // bugfix first dy event being zero
+        if (delta) {
+            delta /= 100;
+            this._value = Math.min(Math.max(0, this._value + delta), 1);
+        }
 
         this.actor.queue_repaint();
-        this.emit('value-changed', this._value);
+        this.emit('value-changed', this._value, event);
         return Clutter.EVENT_STOP;
     },
 
@@ -287,7 +294,7 @@ const StreamSlider = new Lang.Class({
         this.label.text = this._stream.name || this._stream.description || '';
     },
 
-    _sliderChanged: function(slider, value) {
+    _sliderChanged: function(slider, value, event) {
         if (!this._stream) {
             return;
         }
@@ -301,7 +308,7 @@ const StreamSlider = new Lang.Class({
         }
 
         let percent = Math.round(newVol / this._control.get_vol_max_norm() * 100);
-        this._showVolumeInfo(percent);
+        this._showVolumeInfo(percent, event);
     },
 
     _updateVolume: function() {
@@ -312,7 +319,7 @@ const StreamSlider = new Lang.Class({
         this.emit('stream-updated');
     },
 
-    _showVolumeInfo: function(value) {
+    _showVolumeInfo: function(value, event) {
         this._volumeInfo.text = value + '%';
 
         if (this._labelTimeoutId) {
@@ -322,8 +329,19 @@ const StreamSlider = new Lang.Class({
 
         if (!this._infoShowing) {
             this._infoShowing = true;
-            let [x, y] = this._slider.actor.get_transformed_position();
-            x = x + Math.floor(this._slider.actor.get_width() / 2);
+
+            let x, y;
+
+            if (event && event.showInfoAtMouseCursor === true) {
+                [x, y] = event.get_coords();
+                let [w, h] = this._volumeInfo.size;
+                x += 15;
+                y += h + 10;
+            } else {
+                [x, y] = this._slider.actor.get_transformed_position();
+                x = x + Math.floor(this._slider.actor.get_width() / 2);
+            }
+
             this._volumeInfo.show(x, y);
         }
 
@@ -365,6 +383,14 @@ const MasterSlider = new Lang.Class({
 
     _updateLabel: function() {
         this._label.text = this._stream.description;
+    },
+
+    /**
+     * Mouse scroll event triggered by scrolling over panel icon.
+     */
+    scroll: function(event) {
+        event.showInfoAtMouseCursor = !Main.panel.statusArea.aggregateMenu.menu.isOpen;
+        return this._slider.scroll(event);
     }
 });
 
