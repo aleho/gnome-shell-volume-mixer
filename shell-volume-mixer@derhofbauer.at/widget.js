@@ -90,11 +90,12 @@ const VolumeSlider = new Lang.Class({
     },
 
     scroll: function(event) {
+        if (event.is_pointer_emulated()) {
+            return Clutter.EVENT_PROPAGATE;
+        }
+
         let direction = event.get_scroll_direction();
         let delta;
-
-        if (event.is_pointer_emulated())
-            return Clutter.EVENT_PROPAGATE;
 
         if (direction == Clutter.ScrollDirection.DOWN) {
             delta = -this._step;
@@ -102,10 +103,13 @@ const VolumeSlider = new Lang.Class({
             delta = +this._step;
         } else if (direction == Clutter.ScrollDirection.SMOOTH) {
             let [dx, dy] = event.get_scroll_delta();
-            if (dy > 0) {
+            if (dy < 0) {
                 delta = +this._step;
-            } else {
+            } else if (dy > 0) {
                 delta = -this._step;
+            } else {
+                // bugfix first dy event being zero
+                return Clutter.EVENT_STOP;
             }
         }
 
@@ -129,6 +133,16 @@ const VolumeSlider = new Lang.Class({
             return Clutter.EVENT_STOP;
         }
         return Clutter.EVENT_PROPAGATE;
+    },
+
+    /**
+     * Allow middle button event to bubble up for mute / unmute.
+     */
+    startDragging: function(event) {
+        if (event.get_button() == 2) {
+            return Clutter.EVENT_PROPAGATE;
+        }
+        return this.parent(event);
     }
 });
 
@@ -169,7 +183,7 @@ const MasterMenuItem = new Lang.Class({
 
     _onButtonReleaseEvent: function(actor, event) {
         if (event.get_button() == 2) {
-            return false;
+            return Clutter.EVENT_STOP;
         }
         return this.parent(actor, event);
     },
@@ -237,23 +251,7 @@ const StreamSlider = new Lang.Class({
         this.item.actor.connect('key-press-event', Lang.bind(this, this._onKeyPress));
         this.item.actor.connect('scroll-event', Lang.bind(this._slider, this._slider._onScrollEvent));
 
-        this._bubbleMiddleButton();
-
         this.stream = options.stream || null;
-    },
-
-    /**
-     * Evil monkey patching to allow middle click events to bubble up.
-     */
-    _bubbleMiddleButton: function() {
-        this._slider._orgStartDragging = this._slider.startDragging;
-
-        this._slider.startDragging = Lang.bind(this._slider, function(event) {
-            if (event.get_button() == 2) {
-                return false;
-            }
-            return this._orgStartDragging(event);
-        });
     },
 
     _onKeyPress: function(actor, event) {
@@ -263,7 +261,7 @@ const StreamSlider = new Lang.Class({
     _onButtonPress: function(actor, event) {
         if (event.get_button() == 2) {
             this._stream.change_is_muted(!this._stream.is_muted);
-            return false;
+            return Clutter.EVENT_STOP;
         }
         return this._slider.startDragging(event);
     },
@@ -355,12 +353,14 @@ const MasterSlider = new Lang.Class({
         this.parent(control, options);
     },
 
+    /**
+     * Override button click to allow for mute / unmute and menu to be opened.
+     */
     _onButtonPress: function(actor, event) {
-        // override default behavior to make sure the menu can be opened
         if (event.get_button() == 2) {
             this._stream.change_is_muted(!this._stream.is_muted);
         }
-        return false;
+        return Clutter.EVENT_STOP;
     },
 
     _updateLabel: function() {
@@ -387,7 +387,7 @@ const OutputSlider = new Lang.Class({
     _onButtonPress: function(actor, event) {
         if (event.get_button() == 1) {
             this._setAsDefault();
-            return true;
+            return Clutter.EVENT_PROPAGATE;
         }
         return this.parent(actor, event);
     },
@@ -396,7 +396,7 @@ const OutputSlider = new Lang.Class({
         let symbol = event.get_key_symbol();
         if (symbol == Clutter.KEY_space || symbol == Clutter.KEY_Return) {
             this._setAsDefault();
-            return false;
+            return Clutter.EVENT_STOP;
         }
 
         return this.parent(actor, event);
