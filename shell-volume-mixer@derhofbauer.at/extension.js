@@ -108,5 +108,5 @@ function disable() {
         mixer = null;
     }
 
-    settings.disconnectAll();
+    Settings.cleanup();
 }

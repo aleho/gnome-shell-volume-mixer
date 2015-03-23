@@ -13,10 +13,9 @@ const Gio = imports.gi.Gio;
 const Gvc = imports.gi.Gvc;
 const Lang = imports.lang;
 const Main = imports.ui.main;
-const Meta = imports.gi.Meta;
-const Shell = imports.gi.Shell;
 const Volume = imports.ui.status.volume;
 
+const Hotkeys = Extension.imports.hotkeys;
 const Settings = Extension.imports.settings;
 const Utils = Extension.imports.utils;
 
@@ -38,7 +37,7 @@ const Mixer = new Lang.Class({
 
     _init: function() {
         this._settings = new Settings.Settings();
-        this._mkSettings = new Settings.Settings(Settings.MEDIAKEYS_SCHEMA);
+        this._hotkeys = new Hotkeys.Hotkeys(this._settings);
 
         this.volumeStep = this._settings.get_int('volume-step');
         this.boostVolume = this._settings.get_boolean('use-volume-boost');
@@ -55,7 +54,7 @@ const Mixer = new Lang.Class({
         this.connect('card-removed', Lang.bind(this, this._onCardRemoved));
         this.connect('default-sink-changed', Lang.bind(this, this._onDefaultSinkChanged));
 
-        this._bindHotkey();
+        this._bindProfileHotkey();
 
         if (this.boostVolume
                 || this.volumeStep != Settings.VOLUME_STEP_DEFAULT) {
@@ -74,101 +73,40 @@ const Mixer = new Lang.Class({
         signals.push(id);
     },
 
+
+    /**
+     * Disconnects all locally used signals.
+     */
     disconnectAll: function() {
         while (signals.length > 0) {
             this._control.disconnect(signals.pop());
         }
 
-        this._unbindHotkey();
-        this._unbindMediaKeys();
+        this._hotkeys.unbindAll();
     },
+
 
     /**
      * Binds the hotkey for profile rotation.
      */
-    _bindHotkey: function() {
+    _bindProfileHotkey: function() {
         if (!this._pinned.length) {
             return;
         }
-        Main.wm.addKeybinding('profile-switcher-hotkey',
-                this._settings.settings,
-                Meta.KeyBindingFlags.NONE,
-                Shell.KeyBindingMode.ALL,
-                Lang.bind(this, this._switchProfile));
-    },
 
-    /**
-     * Unbinds the hotkey for profile rotation.
-     */
-    _unbindHotkey: function() {
-        if (!this._pinned.length) {
-            return;
-        }
-        Main.wm.removeKeybinding('profile-switcher-hotkey');
+        this._hotkeys.bind('profile-switcher-hotkey', Lang.bind(this, this._switchProfile));
     },
 
     /**
      * Binds volume down / up media keys to our own handlers.
      */
     _bindMediaKeys: function() {
-        this._proxyMediaKeysChange(this._mkSettings, 'volume-down');
-        this._proxyMediaKeysChange(this._mkSettings, 'volume-up');
-        this._proxyMediaKeysChange(this._mkSettings, 'volume-mute');
-
-        this._mkSettings.connect('changed::volume-down', Lang.bind(this, this._proxyMediaKeysChange));
-        this._mkSettings.connect('changed::volume-up', Lang.bind(this, this._proxyMediaKeysChange));
-        this._mkSettings.connect('changed::volume-mute', Lang.bind(this, this._proxyMediaKeysChange));
-
-        Main.wm.addKeybinding('volume-down',
-                this._settings.settings,
-                Meta.KeyBindingFlags.NONE,
-                Shell.KeyBindingMode.ALL,
-                Lang.bind(this, this.decreaseMasterVolume));
-
-        Main.wm.addKeybinding('volume-up',
-                this._settings.settings,
-                Meta.KeyBindingFlags.NONE,
-                Shell.KeyBindingMode.ALL,
-                Lang.bind(this, this.increaseMasterVolume));
-
-        Main.wm.addKeybinding('volume-mute',
-                this._settings.settings,
-                Meta.KeyBindingFlags.NONE,
-                Shell.KeyBindingMode.ALL,
-                Lang.bind(this, this.muteMasterVolume));
-
-        this._hasMediaKeys = true;
+        let mkSettings = new Settings.Settings(Settings.MEDIAKEYS_SCHEMA);
+        this._hotkeys.bindProxy(mkSettings, 'volume-down', Lang.bind(this, this.decreaseMasterVolume));
+        this._hotkeys.bindProxy(mkSettings, 'volume-up', Lang.bind(this, this.increaseMasterVolume));
+        this._hotkeys.bindProxy(mkSettings, 'volume-mute', Lang.bind(this, this.muteMasterVolume));
     },
 
-    /**
-     * Helper to use Main.wm.addKeybinding with strings from GSD.
-     */
-    _proxyMediaKeysChange: function(gsettings, key) {
-        let value = gsettings.get_string(key) || undefined;
-        let proxy = this._settings.get_array(key);
-
-        // don't trigger a change event
-        if (proxy.length == 1 && proxy[0] == value) {
-            return;
-        }
-
-        this._settings.set_array(key, [value]);
-    },
-
-    /**
-     * Unbinds media keys which have been taken over from GSD.
-     */
-    _unbindMediaKeys: function() {
-        this._mkSettings.disconnectAll();
-
-        if (!this._hasMediaKeys) {
-            return;
-        }
-
-        Main.wm.removeKeybinding('volume-down');
-        Main.wm.removeKeybinding('volume-up');
-        Main.wm.removeKeybinding('volume-mute');
-    },
 
     decreaseMasterVolume: function() {
         this.changeStreamVolume(this._defaultSink, 'down');
@@ -195,6 +133,7 @@ const Mixer = new Lang.Class({
 
         this._showVolumeOsd(level, percent);
     },
+
 
     /**
      * Changes a stream's volume by a step down / up.

@@ -6,7 +6,7 @@
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported Settings */
+/* exported Settings, cleanup */
 /* exported POS_MENU, POS_LEFT, POS_CENTER, POS_RIGHT */
 /* exported MEDIAKEYS_SCHEMA, VOLUME_STEP_DEFAULT */
 
@@ -38,14 +38,20 @@ const Settings = new Lang.Class({
     },
 
     get settings() {
-        if (!GSETTINGS[this._schema]) {
+        if (!GSETTINGS[this.schema]) {
             this._initSettings();
         }
-        return GSETTINGS[this._schema];
+        return GSETTINGS[this.schema];
     },
 
     _init: function(schema) {
-        this._schema = schema || SETTINGS_SCHEMA;
+        this.schema = schema || SETTINGS_SCHEMA;
+
+        if (!SIGNALS[this.schema]) {
+            SIGNALS[this.schema] = {};
+        }
+
+        this._signals = SIGNALS[this.schema];
     },
 
     /**
@@ -55,8 +61,8 @@ const Settings = new Lang.Class({
         let instance;
 
         // for all schemas != app schema
-        if (this._schema != SETTINGS_SCHEMA) {
-            instance = this._getSettings(this._schema);
+        if (this.schema != SETTINGS_SCHEMA) {
+            instance = this._getSettings(this.schema);
 
         // app-schema
         } else {
@@ -70,20 +76,20 @@ const Settings = new Lang.Class({
                         false);
 
                 instance = new Gio.Settings({
-                    settings_schema: schemaSource.lookup(this._schema, false)
+                    settings_schema: schemaSource.lookup(this.schema, false)
                 });
 
             // app-schema might be installed system-wide
             } else {
-                instance = this._getSettings(this._schema);
+                instance = this._getSettings(this.schema);
             }
         }
 
         if (!instance) {
-            throw 'Schema "%s" not found'.format(this._schema);
+            throw 'Schema "%s" not found'.format(this.schema);
         }
 
-        GSETTINGS[this._schema] = instance;
+        GSETTINGS[this.schema] = instance;
     },
 
     /**
@@ -110,11 +116,18 @@ const Settings = new Lang.Class({
      * @param callback
      */
     connect: function(signal, callback) {
-        let id = this.settings.connect(signal, callback);
-        if (!SIGNALS[this._schema]) {
-            SIGNALS[this._schema] = [];
+        // already connected
+        if (this._signals && this._signals[signal]) {
+            Utils.error(
+                    'settings',
+                    'connect',
+                    'Signal "' + signal + '" already bound for "' + this.schema + '"');
+            return false;
         }
-        SIGNALS[this._schema].push(id);
+
+        let id = this.settings.connect(signal, callback);
+        this._signals[signal] = id;
+        return id;
     },
 
     /**
@@ -130,9 +143,38 @@ const Settings = new Lang.Class({
      * Disconnects all connected signals.
      */
     disconnectAll: function() {
-        while (SIGNALS[this._schema] && SIGNALS[this._schema].length > 0) {
-            this.settings.disconnect(SIGNALS[this._schema].pop());
+        for (let signal in this._signals) {
+            this.disconnect(this._signals[signal]);
         }
+    },
+
+    /**
+     * Disconnects a signal by name.
+     */
+    disconnect: function(signal) {
+        if (this._signals[signal]) {
+            this.settings.disconnect(this._signals[signal]);
+            delete this._signals[signal];
+            return true;
+        }
+
+        return false;
+    },
+
+    /**
+     * Disconnects a signal by id.
+     */
+    disconnectById: function(signalId) {
+        for (let name in this._signals) {
+            let id = this._signals[name];
+            if (signalId == id) {
+                this.settings.disconnect(id);
+                delete this._signals[name];
+                return true;
+            }
+        }
+
+        return false;
     },
 
 
@@ -206,3 +248,20 @@ const Settings = new Lang.Class({
         return this.settings.set_strv(key, value);
     }
 });
+
+/**
+ * Disconnects all signals of all schemas.
+ * Used to make sure all there are no connected signals left.
+ */
+function cleanup() {
+    for (let schema in SIGNALS) {
+        if (!GSETTINGS[schema]) {
+            continue;
+        }
+
+        for (let signal in SIGNALS[schema]) {
+            GSETTINGS[schema].disconnect(SIGNALS[schema][signal]);
+            delete SIGNALS[schema][signal];
+        }
+    }
+}

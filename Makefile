@@ -11,6 +11,7 @@ SOURCES =  \
 	pautils/cardinfo.py \
 	pautils/pa.py \
 	extension.js \
+	hotkeys.js \
 	menu.js \
 	metadata.json \
 	mixer.js \
