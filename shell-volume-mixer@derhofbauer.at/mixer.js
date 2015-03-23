@@ -57,6 +57,13 @@ const Mixer = new Lang.Class({
 
         this._bindHotkey();
 
+        // Shell.KeyBindingMode was renamed to Shell.ActionMode in gnome-shell 3.15.3
+        if (Shell.ActionMode) {
+            this._keyBindingMode = Shell.ActionMode.ALL;
+        } else {
+            this._keyBindingMode = Shell.KeyBindingMode.ALL;
+        }
+
         if (this.boostVolume
                 || this.volumeStep != Settings.VOLUME_STEP_DEFAULT) {
             this._bindMediaKeys();
@@ -93,7 +100,7 @@ const Mixer = new Lang.Class({
         Main.wm.addKeybinding('profile-switcher-hotkey',
                 this._settings.settings,
                 Meta.KeyBindingFlags.NONE,
-                Shell.KeyBindingMode.ALL,
+                this._keyBindingMode,
                 Lang.bind(this, this._switchProfile));
     },
 
@@ -122,19 +129,19 @@ const Mixer = new Lang.Class({
         Main.wm.addKeybinding('volume-down',
                 this._settings.settings,
                 Meta.KeyBindingFlags.NONE,
-                Shell.KeyBindingMode.ALL,
+                this._keyBindingMode,
                 Lang.bind(this, this.decreaseMasterVolume));
 
         Main.wm.addKeybinding('volume-up',
                 this._settings.settings,
                 Meta.KeyBindingFlags.NONE,
-                Shell.KeyBindingMode.ALL,
+                this._keyBindingMode,
                 Lang.bind(this, this.increaseMasterVolume));
 
         Main.wm.addKeybinding('volume-mute',
                 this._settings.settings,
                 Meta.KeyBindingFlags.NONE,
-                Shell.KeyBindingMode.ALL,
+                this._keyBindingMode,
                 Lang.bind(this, this.muteMasterVolume));
 
         this._hasMediaKeys = true;
