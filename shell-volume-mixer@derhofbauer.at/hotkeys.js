@@ -105,7 +105,7 @@ const Hotkeys = new Lang.Class({
         let proxy = this._settings.get_array(key);
 
         // don't trigger a change event
-        if (proxy.length == 1 && proxy[0] == value) {
+        if (proxy.length == 1 && proxy[0] == value || value === undefined) {
             return;
         }
 
