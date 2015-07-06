@@ -101,7 +101,7 @@ const Hotkeys = new Lang.Class({
      * keybindings.
      */
     _proxyStringSettingChange: function(gsettings, key) {
-        let value = gsettings.get_string(key) || undefined;
+        let value = gsettings.get_string(key) || '';
         let proxy = this._settings.get_array(key);
 
         // don't trigger a change event
@@ -110,5 +110,5 @@ const Hotkeys = new Lang.Class({
         }
 
         this._settings.set_array(key, [value]);
-    },
+    }
 });
