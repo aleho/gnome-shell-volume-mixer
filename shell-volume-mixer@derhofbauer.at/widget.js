@@ -103,28 +103,23 @@ const VolumeSlider = new Lang.Class({
             return Clutter.EVENT_PROPAGATE;
         }
 
-        let direction = event.get_scroll_direction();
-        let delta;
+        let direction = 'up';
+        let scrollDir = event.get_scroll_direction();
 
-        if (direction == Clutter.ScrollDirection.DOWN) {
-            delta = -this._step;
-        } else if (direction == Clutter.ScrollDirection.UP) {
-            delta = +this._step;
-        } else if (direction == Clutter.ScrollDirection.SMOOTH) {
+        if (scrollDir == Clutter.ScrollDirection.SMOOTH) {
             let [dx, dy] = event.get_scroll_delta();
-            if (dy < 0) {
-                delta = +this._step;
-            } else if (dy > 0) {
-                delta = -this._step;
-            } else {
-                delta = null;
+            if (dy > 0) {
+                direction = 'down';
+            } else if (dy == 0) {
+                // bugfix first dy event being zero
+                direction = false;
             }
+        } else if (scrollDir == Clutter.ScrollDirection.DOWN) {
+            direction = 'down';
         }
 
-        // bugfix first dy event being zero
-        if (delta) {
-            delta /= 100;
-            this._value = Math.min(Math.max(0, this._value + delta), 1);
+        if (direction) {
+            this._value = this._calcNewValue(direction);
         }
 
         this.actor.queue_repaint();
@@ -134,16 +129,32 @@ const VolumeSlider = new Lang.Class({
 
     onKeyPressEvent: function(actor, event) {
         let key = event.get_key_symbol();
+
         if (key == Clutter.KEY_Right || key == Clutter.KEY_Left) {
-            let delta = key == Clutter.KEY_Right ? +this._step : -this._step;
-            delta /= 100;
-            this._value = Math.max(0, Math.min(this._value + delta, 1));
+            let dir = (key == Clutter.KEY_Right) ? 'up' : 'down';
+            this._value = this._calcNewValue(dir);
+
             this.actor.queue_repaint();
             this.emit('value-changed', this._value);
             this.emit('drag-end');
+
             return Clutter.EVENT_STOP;
         }
+
         return Clutter.EVENT_PROPAGATE;
+    },
+
+    _calcNewValue: function(direction) {
+        let value = this._value;
+        let step = this._step / 100;
+
+        if (direction == 'down') {
+            value -= step;
+        } else {
+            value += step;
+        }
+
+        return Math.min(Math.max(0, value), 1);
     },
 
     /**

@@ -144,10 +144,16 @@ const Mixer = new Lang.Class({
         let virtMax = this._control.get_vol_max_norm();
         let step = Math.round(virtMax * (this.volumeStep / 100));
 
+        let rem = this.volumeStep > 1 ? volume % step : 0;
+
         if (dir == 'down') {
             volume -= step;
+            if (rem > 0) {
+                volume += step - rem;
+            }
+
         } else {
-            volume += step;
+            volume += step - rem;
         }
 
         volume = this.setStreamVolume(stream, volume);
@@ -206,7 +212,7 @@ const Mixer = new Lang.Class({
         let norm = this._control.get_vol_max_norm();
         let ampl = this._control.get_vol_max_amplified();
 
-        let step = this._step = norm / ampl * this.volumeStep;
+        let step = norm / ampl * this.volumeStep;
         step = Math.round(step * 100) / 100;
         return step;
     },
