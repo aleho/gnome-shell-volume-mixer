@@ -22,6 +22,7 @@ const Tweener = imports.ui.tweener;
 const Volume = imports.ui.status.volume;
 
 const Settings = Extension.imports.settings;
+const Utils = Extension.imports.utils;
 
 /**
  * A tooltip-like label to display the current value of a slider.
@@ -200,7 +201,11 @@ const MasterMenuItem = new Lang.Class({
         this.actor.add_child(this._vbox);
 
         this.label.add_style_class_name('masterlabel');
+
         this.actor.add_style_class_name('masterslider');
+        if (Utils.versionGreaterOrEqual('3.18')) {
+            this.actor.add_style_class_name('smaller');
+        }
     },
 
     _onButtonReleaseEvent: function(actor, event) {

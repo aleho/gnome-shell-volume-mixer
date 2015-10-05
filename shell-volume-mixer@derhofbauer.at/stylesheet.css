@@ -1,18 +1,28 @@
+/* older versions */
+.masterslider .masterlabel,
+.masterslider .slider {
+    width: 253px;
+}
+
+/* since 3.18 */
+.masterslider.smaller .masterlabel,
+.masterslider.smaller .slider {
+    width: 170px;
+}
+
+/* stand-alone menu */
+
 .shellvolumemixer {
     width: 360px;
 }
 
-.masterslider .slider {
-    width: 267px;
+.shellvolumemixer .masterslider .masterlabel,
+.shellvolumemixer .masterslider .slider {
+    width: 258px;
 }
 
-.masterslider .masterlabel {
-    width: 251px;
-}
 
-.masterlabel {
-    width: 251px;
-}
+/* common */
 
 .selected-stream {
     font-weight: bold;

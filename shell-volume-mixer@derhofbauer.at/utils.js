@@ -6,7 +6,7 @@
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported getCards, l, d, error, repeatString, getExtensionPath, initGettext */
+/* exported getCards, l, d, error, repeatString, getExtensionPath, initGettext, versionGreaterOrEqual */
 
 const Config = imports.misc.config;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
@@ -36,6 +36,44 @@ function getExtensionPath(subpath) {
     }
 
     return dir.get_path();
+}
+
+/**
+ * Parses a version string and returns an array.
+ *
+ * @param string
+ * @returns array
+ */
+function parseVersionString(string) {
+    let version = string.split('.', 3);
+
+    for (let i = 0; i < 3; i++) {
+        if (version[i]) {
+            version[i] = parseInt(version[i]);
+        } else {
+            version[i] = 0;
+        }
+    }
+
+    return version;
+}
+
+/**
+ * Returns true if the current shell version is greater than the version string passed.
+ *
+ * @param version
+ */
+function versionGreaterOrEqual(string) {
+    let current = parseVersionString(Config.PACKAGE_VERSION);
+    let version = parseVersionString(string);
+
+    for (let i = 0; i < 3; i++) {
+        if (current[i] < version[i]) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 /**
