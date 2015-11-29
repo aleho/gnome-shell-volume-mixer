@@ -28,8 +28,7 @@ let volumeActor;
 let mixer;
 
 let menu;
-let menuSection;
-let separator;
+let gvmIndicator;
 
 function init() {
     settings = new Settings.Settings();
@@ -48,54 +47,63 @@ function enable() {
 
     mixer = new Mixer.Mixer();
 
-    let pos = settings.get_enum('position');
+    let position = settings.get_enum('position');
 
-    if (pos === Settings.POS_MENU) {
-        separator = new PopupMenu.PopupSeparatorMenuItem();
-        menuSection = new Menu.Menu(mixer, {
-            separator: false
-        });
-        volumeActor.hide();
-        volumeIndicator.menu.addMenuItem(menuSection, 0);
-        aggregateMenu.menu.addMenuItem(separator, 1);
-        volumeIndicator._volumeMenu = menuSection;
-
+    if (position === Settings.POS_MENU) {
+        replaceOriginal();
     } else {
-        let removeOriginal = settings.get_boolean('remove-original');
-        if (removeOriginal) {
-            volumeActor.hide();
-            volumeIcon.hide();
-        }
-        menuSection = new Menu.Menu(mixer, {
-            separator: true
-        });
-        menu = new Panel.Button(menuSection);
+        addPanelButton(position);
+    }
+}
 
-        if (pos === Settings.POS_LEFT) {
-            Main.panel.addToStatusArea('ShellvolumeActor', menu, 999, 'left');
-        } else if (pos === Settings.POS_CENTER) {
-            Main.panel.addToStatusArea('ShellvolumeActor', menu, 999, 'center');
-        } else {
-            Main.panel.addToStatusArea('ShellvolumeActor', menu);
-        }
+function replaceOriginal() {
+    gvmIndicator = new Menu.Indicator(mixer, {
+        separator: false
+    });
+
+    volumeActor.hide();
+    volumeIcon.hide();
+
+    // add our own indicator and menu
+    aggregateMenu._volume = gvmIndicator;
+    aggregateMenu._indicators.insert_child_at_index(gvmIndicator.indicators, 3);
+    aggregateMenu.menu.addMenuItem(gvmIndicator.menu, 0);
+
+    aggregateMenu.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem(), 1);
+
+    // on disable/enable we won't get a stream-changed event, so trigger it here to be safe
+    gvmIndicator.updateIcon();
+}
+
+function addPanelButton(position) {
+    let removeOriginal = settings.get_boolean('remove-original');
+    if (removeOriginal) {
+        volumeActor.hide();
+        volumeIcon.hide();
+    }
+
+    menu = new Panel.Button(mixer, {
+        separator: false
+    });
+
+    if (position === Settings.POS_LEFT) {
+        Main.panel.addToStatusArea('ShellvolumeActor', menu, 999, 'left');
+    } else if (position === Settings.POS_CENTER) {
+        Main.panel.addToStatusArea('ShellvolumeActor', menu, 999, 'center');
+    } else {
+        Main.panel.addToStatusArea('ShellvolumeActor', menu);
     }
 }
 
 function disable() {
-    if (volumeIndicator) {
-        volumeActor.show();
-        volumeIcon.show();
-        volumeIndicator._volumeMenu = volumeMenu;
-    }
+    volumeActor.show();
+    volumeIcon.show();
+    aggregateMenu._volume = volumeIndicator;
 
-    if (menuSection) {
-        menuSection.destroy();
-        menuSection = null;
-    }
-
-    if (separator) {
-        separator.destroy();
-        separator = null;
+    if (gvmIndicator) {
+        aggregateMenu._indicators.remove_actor(gvmIndicator.indicators);
+        gvmIndicator.destroy();
+        gvmIndicator = null;
     }
 
     if (menu) {

@@ -14,6 +14,7 @@ const Gvc = imports.gi.Gvc;
 const Lang = imports.lang;
 const PopupMenu = imports.ui.popupMenu;
 const Volume = imports.ui.status.volume;
+const PanelMenu = imports.ui.panelMenu;
 
 const Settings = Extension.imports.settings;
 const Widget = Extension.imports.widget;
@@ -178,6 +179,53 @@ const Menu = new Lang.Class({
         } else if (id in this._outputs) {
             this._outputs[id].item.destroy();
             delete this._outputs[id];
+        }
+    }
+});
+
+/**
+ * Customized indicator using our Menu.
+ */
+const Indicator = new Lang.Class({
+    Name: 'GvmIndicator',
+    Extends: PanelMenu.SystemIndicator,
+
+    _init: function(mixer, options) {
+        options = options || {};
+
+        this.parent();
+
+        this._primaryIndicator = this._addIndicator();
+
+        this._control = mixer.control;
+
+        this._volumeMenu = new Menu(mixer, options);
+        this._volumeMenu.connect('icon-changed', Lang.bind(this, this.updateIcon));
+
+        this.menu.addMenuItem(this._volumeMenu);
+
+        this.indicators.connect('scroll-event', Lang.bind(this, this._onScrollEvent));
+    },
+
+    updateIcon: function() {
+        let icon = this._volumeMenu.getIcon();
+
+        if (icon != null) {
+            this.indicators.show();
+            this._primaryIndicator.icon_name = icon;
+        } else {
+            this.indicators.hide();
+        }
+    },
+
+    _onScrollEvent: function(actor, event) {
+        return this._volumeMenu.scroll(event);
+    },
+
+    destroy: function() {
+        if (this.menu) {
+            this.menu.destroy();
+            this.menu = null;
         }
     }
 });

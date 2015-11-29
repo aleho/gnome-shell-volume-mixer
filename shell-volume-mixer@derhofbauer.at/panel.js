@@ -9,19 +9,26 @@
 
 /* exported Button */
 
+const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Lang = imports.lang;
 const PanelMenu = imports.ui.panelMenu;
 const St = imports.gi.St;
 
+const Menu = Extension.imports.menu;
 
+/**
+ * Stand-alone panel menu
+ */
 const Button = new Lang.Class({
     Name: 'ShellVolumeMixerButton',
     Extends: PanelMenu.Button,
 
-    _init: function(mixer) {
+    _init: function(mixer, options) {
         this.parent(0.0, 'ShellVolumeMixer');
 
-        this.mixer = mixer;
+        this._mixerMenu = new Menu.Menu(mixer, {
+            separator: true
+        });
 
         this._box = new St.BoxLayout();
 
@@ -38,23 +45,23 @@ const Button = new Lang.Class({
         this.actor.add_actor(this._box);
         this.actor.connect('scroll-event', Lang.bind(this, this._onScrollEvent));
 
-        this.mixer.connect('icon-changed', Lang.bind(this, this._onIconChanged));
+        this._mixerMenu.connect('icon-changed', Lang.bind(this, this._onIconChanged));
 
         this.menu.actor.add_style_class_name('shellvolumemixer');
-        this.menu.addMenuItem(this.mixer);
+        this.menu.addMenuItem(this._mixerMenu);
 
         this._onIconChanged();
     },
 
     _onScrollEvent: function(actor, event) {
-        this.mixer.scroll(event);
+        this._mixerMenu.scroll(event);
     },
 
     _onIconChanged: function() {
-        if (this.mixer.outputHasHeadphones()) {
+        if (this._mixerMenu.outputHasHeadphones()) {
             this.setIcon('audio-headphones-symbolic');
         } else {
-            this.setIcon(this.mixer.getIcon());
+            this.setIcon(this._mixerMenu.getIcon());
         }
     },
 
