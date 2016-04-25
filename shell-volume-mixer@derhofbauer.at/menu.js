@@ -47,6 +47,7 @@ const Menu = new Lang.Class({
         mixer.connect('default-source-changed', Lang.bind(this, this._readInput));
         mixer.connect('stream-added', Lang.bind(this, this._streamAdded));
         mixer.connect('stream-removed', Lang.bind(this, this._streamRemoved));
+        mixer.connect('stream-changed', Lang.bind(this, this._streamChanged));
 
         this._output = new Widget.MasterSlider(this._control, {
             mixer: mixer,
@@ -179,6 +180,14 @@ const Menu = new Lang.Class({
         } else if (id in this._outputs) {
             this._outputs[id].item.destroy();
             delete this._outputs[id];
+        }
+    },
+
+    _streamChanged: function(control, id) {
+        if (this._items[id]) {
+            this._items[id].refresh();
+        } else if (this._outputs[id]) {
+            this._outputs[id].refresh();
         }
     }
 });

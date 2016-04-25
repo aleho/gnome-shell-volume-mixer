@@ -293,6 +293,11 @@ const StreamSlider = new Lang.Class({
         return this._slider.startDragging(event);
     },
 
+    refresh: function() {
+        this._updateLabel();
+        this._updateSliderIcon();
+    },
+
     _updateSliderIcon: function() {
         if (this._stream && !this.options.symbolicIcons) {
             this._icon.gicon = this._stream.get_gicon();
@@ -305,9 +310,7 @@ const StreamSlider = new Lang.Class({
 
     _connectStream: function(stream) {
         this.parent(stream);
-
-        this._updateLabel();
-        this._updateSliderIcon();
+        this.refresh();
     },
 
     _updateLabel: function() {
