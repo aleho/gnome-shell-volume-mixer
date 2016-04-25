@@ -1,14 +1,10 @@
-/* older versions */
-.masterslider .masterlabel,
-.masterslider .slider {
-    width: 253px;
-}
+/* combined menu */
 
-/* since 3.18 */
 .masterslider.smaller .masterlabel,
 .masterslider.smaller .slider {
     width: 198px;
 }
+
 
 /* stand-alone menu */
 
