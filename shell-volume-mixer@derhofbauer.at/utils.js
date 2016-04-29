@@ -118,6 +118,11 @@ function l() {
             + '\n\n' + SEP);
 }
 
+function info() {
+    log('Shell Volume Mixer | '
+        + Array.prototype.slice.call(arguments).join(' '));
+}
+
 /**
  * Helper to debug any variable with pretty output.
  *

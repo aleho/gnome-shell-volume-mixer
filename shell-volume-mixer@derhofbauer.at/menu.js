@@ -18,6 +18,7 @@ const PanelMenu = imports.ui.panelMenu;
 
 const Settings = Extension.imports.settings;
 const Widget = Extension.imports.widget;
+const Utils = Extension.imports.utils;
 
 const Menu = new Lang.Class({
     Name: 'ShellVolumeMixerMenu',
@@ -42,12 +43,23 @@ const Menu = new Lang.Class({
 
         this._mixer = mixer;
         this._control = mixer.control;
-        mixer.connect('state-changed', Lang.bind(this, this._onControlStateChanged));
-        mixer.connect('default-sink-changed', Lang.bind(this, this._readOutput));
-        mixer.connect('default-source-changed', Lang.bind(this, this._readInput));
-        mixer.connect('stream-added', Lang.bind(this, this._streamAdded));
-        mixer.connect('stream-removed', Lang.bind(this, this._streamRemoved));
-        mixer.connect('stream-changed', Lang.bind(this, this._streamChanged));
+
+        let signals = {
+            'state-changed': this._onControlStateChanged,
+            'default-sink-changed': this._readOutput,
+            'default-source-changed': this._readInput,
+            'stream-added': this._streamAdded,
+            'stream-removed': this._streamRemoved,
+            'stream-changed': this._streamChanged
+        };
+
+        for (let name in signals) {
+            try {
+                mixer.connect(name, Lang.bind(this, signals[name]));
+            } catch (exception) {
+                Utils.info('Could not connect to signal -', exception);
+            }
+        }
 
         this._output = new Widget.MasterSlider(this._control, {
             mixer: mixer,
