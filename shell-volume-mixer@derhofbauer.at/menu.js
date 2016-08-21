@@ -33,6 +33,7 @@ const Menu = new Lang.Class({
         this.options = {
             detailed: this._settings.get_boolean('show-detailed-sliders'),
             systemSounds: this._settings.get_boolean('show-system-sounds'),
+            virtualStreams: this._settings.get_boolean('show-virtual-streams'),
             symbolicIcons: this._settings.get_boolean('use-symbolic-icons')
         };
 
@@ -141,6 +142,7 @@ const Menu = new Lang.Class({
         if (stream.id in this._items
                 || stream.id in this._outputs
                 || stream.is_event_stream
+                || (stream.is_virtual && !this.options.virtualStreams)
                 || (stream instanceof Gvc.MixerEventRole
                         && !this.options.systemSounds)) {
             return;

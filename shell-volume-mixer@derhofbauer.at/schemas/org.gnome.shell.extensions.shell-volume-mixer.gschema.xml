@@ -29,6 +29,11 @@
             <summary>Show system sounds</summary>
             <description>Whether to show a sliders for system sounds</description>
         </key>
+        <key name="show-virtual-streams" type="b">
+            <default>false</default>
+            <summary>Show virtual streams</summary>
+            <description>Whether to show virtual streams in the applications menu</description>
+        </key>
         <key name="use-symbolic-icons" type="b">
             <default>true</default>
             <summary>Use symbolic icons</summary>

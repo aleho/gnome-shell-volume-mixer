@@ -27,6 +27,7 @@ const Preferences = new Lang.Class({
         swRemoveOriginal: null,
         swShowDetailedSliders: null,
         swShowSystemSounds: null,
+        swShowVirtualStreams: null,
         swUseSymbolicIcons: null,
         swUseVolumeBoost: null,
         spnVolumeStep: null,
@@ -78,6 +79,7 @@ const Preferences = new Lang.Class({
         this._objects.swRemoveOriginal.set_active(this._settings.get_boolean('remove-original'));
         this._objects.swShowDetailedSliders.set_active(this._settings.get_boolean('show-detailed-sliders'));
         this._objects.swShowSystemSounds.set_active(this._settings.get_boolean('show-system-sounds'));
+        this._objects.swShowVirtualStreams.set_active(this._settings.get_boolean('show-virtual-streams'));
         this._objects.swUseSymbolicIcons.set_active(this._settings.get_boolean('use-symbolic-icons'));
         this._objects.swUseVolumeBoost.set_active(this._settings.get_boolean('use-volume-boost'));
         this._objects.spnVolumeStep.set_value(this._settings.get_int('volume-step'));
@@ -88,6 +90,7 @@ const Preferences = new Lang.Class({
         this._bindSignal('swRemoveOriginal', 'notify::active', this.onSwitchActivate, 'remove-original');
         this._bindSignal('swShowDetailedSliders', 'notify::active', this.onSwitchActivate, 'show-detailed-sliders');
         this._bindSignal('swShowSystemSounds', 'notify::active', this.onSwitchActivate, 'show-system-sounds');
+        this._bindSignal('swShowVirtualStreams', 'notify::active', this.onSwitchActivate, 'show-virtual-streams');
         this._bindSignal('swUseSymbolicIcons', 'notify::active', this.onSwitchActivate, 'use-symbolic-icons');
         this._bindSignal('swUseVolumeBoost', 'notify::active', this.onSwitchActivate, 'use-volume-boost');
         this._bindSignal('spnVolumeStep', 'changed', this.onVolumeStepChanged);
