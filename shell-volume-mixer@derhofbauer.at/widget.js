@@ -520,7 +520,11 @@ const InputSlider = new Lang.Class({
         let description = this._stream.description;
 
         if (description && text != description) {
-            text += ' | ' + description;
+            if (text) {
+                text += ' | ' + description;
+            } else {
+                text = description;
+            }
         }
 
         this._label.text = text || '[unknown]';
