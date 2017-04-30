@@ -447,14 +447,14 @@ const Preferences = new Lang.Class({
         this._storePinned();
 
         // now check for the currently selected entry in devices list
-        let [isSelected, store, iter] = this._deviceSelection.get_selected();
+        [isSelected, store, iter] = this._deviceSelection.get_selected();
 
         if (!isSelected) {
             return;
         }
 
-        let cardidSel = store.get_value(iter, 1);
-        let profileidSel = store.get_value(iter, 2);
+        cardidSel = store.get_value(iter, 1);
+        profileidSel = store.get_value(iter, 2);
 
         if (cardid == cardidSel && profileid == profileidSel) {
             this._objects.btnAddDevice.set_sensitive(true);
