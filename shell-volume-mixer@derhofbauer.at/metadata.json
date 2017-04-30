@@ -3,7 +3,7 @@
     "name": "Volume Mixer",
     "description": "Applet allowing separate configuration of pulseaudio mixers.\n\nShell Volume Mixer is an extension for GNOME Shell allowing separate configuration of PulseAudio devices and output switches. It features a profile switcher to quickly switch between pinned profiles and devices.\n\nMiddle mouse click on a slider mutes the selected stream.\n\nPlease file bugs and feature requests on the GitHub page.",
     "shell-version": [
-        "3.20", "3.22"
+        "3.20", "3.22", "3.24"
     ],
     "url": "https://github.com/aleho/gnome-shell-volume-mixer"
 }
