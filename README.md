@@ -30,13 +30,11 @@ GSD hardcodes the step for each key press of volume keys to 6% of maximum
 volume. While this might be OK for most people, some would prefer a
 configurable setting. There's a bug in GNOME's tracker which, according to the
 comments by developers, won't ever get fixed in a way that could allow
-configurable volume steps [1].
+configurable volume
+steps<sup>[[1]](https://bugzilla.gnome.org/show_bug.cgi?id=650371)</sup>.
 
 Shell Volume Mixer tries to grab GSD's hotkeys to provide configurable steps
 for sliders and media keys.
-
-
-[1] https://bugzilla.gnome.org/show_bug.cgi?id=650371
 
 
 Acknowledgments
