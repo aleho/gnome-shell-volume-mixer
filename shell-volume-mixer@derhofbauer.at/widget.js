@@ -170,6 +170,40 @@ const VolumeSlider = new Lang.Class({
 });
 
 
+function makeItemLine(ornament) {
+    let line = new St.BoxLayout({ style_class: 'popup-menu-item svm-container-line' });
+
+    if (ornament === undefined) {
+        ornament = new St.Label({ style_class: 'popup-menu-ornament' });
+    }
+
+    if (ornament) {
+        line.add(ornament);
+    }
+
+    return line;
+}
+
+function prepareMenuItem(instance) {
+    instance.actor.get_children().map(Lang.bind(instance, function (child) {
+        instance.actor.remove_actor(child);
+    }));
+
+    instance.container = new St.BoxLayout({ vertical: true });
+    instance.actor.add(instance.container, { expand: true });
+
+    if (!instance.firstLine) {
+        instance.firstLine = makeItemLine(instance._ornamentLabel);
+    }
+
+    if (!instance.secondLine) {
+        instance.secondLine = makeItemLine();
+    }
+
+    instance.container.add(instance.firstLine, { expand: true });
+    instance.container.add(instance.secondLine, { expand: true });
+}
+
 /**
  * Submenu item for the sink selection menu.
  */
@@ -179,29 +213,18 @@ const MasterMenuItem = new Lang.Class({
 
     _init: function(sliderVolumeStep) {
         this.parent('', true);
+        prepareMenuItem(this);
 
-        this.slider = new VolumeSlider(0, sliderVolumeStep);
+        this._slider = new VolumeSlider(0, sliderVolumeStep);
 
-        // remove actors except ornament (indentation of menu)
-        this.actor.get_children().map(Lang.bind(this, function(child) {
-            if (!child.has_style_class_name('popup-menu-ornament')) {
-                this.actor.remove_actor(child);
-            }
-        }));
+        this.firstLine.add_child(this.icon);
+        this.firstLine.add(this.label, { expand: true });
+        this.firstLine.add_child(this._triangleBin);
 
-        this._vbox = new St.BoxLayout({ vertical: true });
-        this._hbox = new St.BoxLayout({ vertical: false });
+        this.secondLine.add(this._slider.actor, { expand: true });
 
-        this._hbox.add(this.label);
-        this._hbox.add(this._triangleBin);
-        this._vbox.add(this._hbox);
-        this._vbox.add(this.slider.actor);
-
-        this.actor.add_child(this.icon);
-        this.actor.add_child(this._vbox);
-
-        this.label.add_style_class_name('masterlabel');
-        this.actor.add_style_class_name('masterslider');
+        this.label.add_style_class_name('svm-master-label');
+        this.actor.add_style_class_name('svm-master-slider svm-menu-item');
     },
 
     _onButtonReleaseEvent: function(actor, event) {
@@ -218,10 +241,33 @@ const MasterMenuItem = new Lang.Class({
         let symbol = event.get_key_symbol();
 
         if (symbol == Clutter.KEY_Right || symbol == Clutter.KEY_Left) {
-            return this.slider.onKeyPressEvent(actor, event);
+            return this._slider.onKeyPressEvent(actor, event);
         }
 
         return this.parent(actor, event);
+    }
+});
+
+
+/**
+ * Sub menu item implementation for dropdown menus (via master slider).
+ */
+const SubMenuItem = new Lang.Class({
+    Name: 'OutputStreamSlider',
+    Extends: PopupMenu.PopupBaseMenuItem,
+
+    _init: function(params) {
+        this.parent(params);
+        prepareMenuItem(this);
+    },
+
+    addChildAt: function(child, pos) {
+        let line = makeItemLine();
+
+        line.add_child(child);
+        this.container.insert_child_at_index(line, pos);
+
+        return line;
     }
 });
 
@@ -242,27 +288,27 @@ const StreamSlider = new Lang.Class({
         this._mixer = options.mixer;
 
         if (!this.item) {
-            this.item = new PopupMenu.PopupBaseMenuItem({ activate: false });
+            this.item = new SubMenuItem({ activate: false });
+        }
+
+        if (this.icon) {
+            // different widgets seem to use different naming
+            this._icon = this.icon;
         }
 
         if (!this._icon) {
             this._icon = new St.Icon({ style_class: 'popup-menu-icon' });
-            this.item.actor.add(this._icon);
-        }
-
-        if (!this._vbox) {
-            this._vbox = new St.BoxLayout({ vertical: true });
-            this.item.actor.add(this._vbox, { expand: true });
+            this.item.firstLine.add(this._icon);
         }
 
         if (!this._label) {
             this._label = new St.Label({ text: '' });
-            this._vbox.add(this._label);
+            this.item.firstLine.add(this._label, { expand: true });
         }
 
         if (!this._slider) {
             this._slider = new VolumeSlider(0, this._mixer.getNormalizedStep());
-            this._vbox.add(this._slider.actor);
+            this.item.secondLine.add(this._slider.actor, { expand: true });
         }
 
         this._volumeInfo = new FloatingLabel();
@@ -393,11 +439,13 @@ const MasterSlider = new Lang.Class({
 
     _init: function(control, options) {
         this.item = new MasterMenuItem(options.mixer.getNormalizedStep());
-        this._slider = this.item.slider;
+
+        this._slider = this.item._slider;
         this._icon = this.item.icon;
         this._label = this.item.label;
 
         this.parent(control, options);
+        this._slider.actor.accessible_name = _('Volume');
     },
 
     /**
@@ -437,6 +485,10 @@ const OutputSlider = new Lang.Class({
         }
 
         this.parent(control, options);
+
+        if (options.detailed) {
+            this.item.addChildAt(this._details, 1);
+        }
     },
 
     _onButtonPress: function(actor, event) {
@@ -477,14 +529,15 @@ const OutputSlider = new Lang.Class({
             }
 
             this._details.text = description;
-            this._vbox.insert_child_at_index(this._details, 1);
         }
     },
 
     setSelected: function(selected) {
         if (selected !== false) {
+            this.item.setOrnament(PopupMenu.Ornament.DOT);
             this._label.add_style_class_name('selected-stream');
         } else {
+            this.item.setOrnament(PopupMenu.Ornament.NONE);
             this._label.remove_style_class_name('selected-stream');
         }
     },
