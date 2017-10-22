@@ -1,25 +1,21 @@
-/* combined menu */
+/* common */
 
-.masterslider.smaller .masterlabel,
-.masterslider.smaller .slider {
-    width: 198px;
+.popup-menu-item .svm-container-line {
+    padding-right: 0;
+}
+
+.svm-container-line {
+    padding-bottom: 0;
 }
 
 
 /* stand-alone menu */
 
-.shellvolumemixer {
+.shell-volume-mixer-button {
     width: 360px;
 }
 
-.shellvolumemixer .masterslider .masterlabel,
-.shellvolumemixer .masterslider .slider {
+.shell-volume-mixer-button .svm-master-slider .svm-master-label,
+.shell-volume-mixer-button .svm-master-slider .slider {
     width: 258px;
-}
-
-
-/* common */
-
-.selected-stream {
-    font-weight: bold;
 }

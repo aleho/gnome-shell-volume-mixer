@@ -47,7 +47,7 @@ const Button = new Lang.Class({
 
         this._mixerMenu.connect('icon-changed', Lang.bind(this, this._onIconChanged));
 
-        this.menu.actor.add_style_class_name('shellvolumemixer');
+        this.menu.actor.add_style_class_name('shell-volume-mixer-button');
         this.menu.addMenuItem(this._mixerMenu);
 
         this._onIconChanged();
