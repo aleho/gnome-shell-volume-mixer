@@ -64,9 +64,19 @@ function replaceOriginal() {
     volumeActor.hide();
     volumeIcon.hide();
 
+    // get current indicator position
+    let indicators = aggregateMenu._indicators.get_children();
+    let indicatorPos = 4;
+    for (let i = 0; i < indicators.length; i++) {
+        if (volumeIndicator.indicators == indicators[i]) {
+            indicatorPos = i;
+            break;
+        }
+    }
+
     // add our own indicator and menu
     aggregateMenu._volume = gvmIndicator;
-    aggregateMenu._indicators.insert_child_at_index(gvmIndicator.indicators, 3);
+    aggregateMenu._indicators.insert_child_at_index(gvmIndicator.indicators, indicatorPos);
     aggregateMenu.menu.addMenuItem(gvmIndicator.menu, 0);
 
     aggregateMenu.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem(), 1);
