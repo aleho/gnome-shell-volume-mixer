@@ -32,7 +32,7 @@ const VOL_ICONS = [
 ];
 
 
-const Mixer = new Lang.Class({
+var Mixer = new Lang.Class({
     Name: 'ShellVolumeMixerMixer',
 
     _init: function() {

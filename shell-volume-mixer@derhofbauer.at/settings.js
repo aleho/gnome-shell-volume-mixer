@@ -17,20 +17,20 @@ const Lang = imports.lang;
 
 const Utils = Extension.imports.utils;
 
-const POS_MENU = 0;
-const POS_LEFT = 1;
-const POS_CENTER = 2;
-const POS_RIGHT = 3;
+var POS_MENU = 0;
+var POS_LEFT = 1;
+var POS_CENTER = 2;
+var POS_RIGHT = 3;
 
 const SETTINGS_SCHEMA = 'org.gnome.shell.extensions.shell-volume-mixer';
-const MEDIAKEYS_SCHEMA = 'org.gnome.settings-daemon.plugins.media-keys';
-const VOLUME_STEP_DEFAULT = 6;
+var MEDIAKEYS_SCHEMA = 'org.gnome.settings-daemon.plugins.media-keys';
+var VOLUME_STEP_DEFAULT = 6;
 
 const SIGNALS = {};
 const GSETTINGS = {};
 
 
-const Settings = new Lang.Class({
+var Settings = new Lang.Class({
     Name: 'Settings',
 
     set settings(value) {

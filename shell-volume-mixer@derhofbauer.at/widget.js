@@ -170,7 +170,7 @@ const VolumeSlider = new Lang.Class({
 });
 
 
-function makeItemLine(ornament) {
+let makeItemLine = function(ornament) {
     let line = new St.BoxLayout({ style_class: 'popup-menu-item svm-container-line' });
 
     if (ornament === undefined) {
@@ -182,9 +182,9 @@ function makeItemLine(ornament) {
     }
 
     return line;
-}
+};
 
-function prepareMenuItem(instance) {
+let prepareMenuItem = function(instance) {
     instance.actor.get_children().map(Lang.bind(instance, function (child) {
         instance.actor.remove_actor(child);
     }));
@@ -202,7 +202,7 @@ function prepareMenuItem(instance) {
 
     instance.container.add(instance.firstLine, { expand: true });
     instance.container.add(instance.secondLine, { expand: true });
-}
+};
 
 /**
  * Submenu item for the sink selection menu.
@@ -397,7 +397,7 @@ const StreamSlider = new Lang.Class({
 
             let x, y;
 
-            if (event && event.showInfoAtMouseCursor === true) {
+            if (event && 'showInfoAtMouseCursor' in event && event.showInfoAtMouseCursor === true) {
                 [x, y] = event.get_coords();
                 let [w, h] = this._volumeInfo.size;
                 x += 15;
@@ -430,10 +430,11 @@ const StreamSlider = new Lang.Class({
 });
 
 
+
 /**
  * Slider replacing the master volume slider.
  */
-const MasterSlider = new Lang.Class({
+var MasterSlider = new Lang.Class({
     Name: 'MasterSlider',
     Extends: StreamSlider,
 
@@ -475,7 +476,7 @@ const MasterSlider = new Lang.Class({
 /**
  * Slider for output sinks (e.g. alsa devices, different profiles).
  */
-const OutputSlider = new Lang.Class({
+var OutputSlider = new Lang.Class({
     Name: 'OutputSlider',
     Extends: StreamSlider,
 
@@ -551,7 +552,7 @@ const OutputSlider = new Lang.Class({
 /**
  * Slider for system sounds.
  */
-const EventsSlider = new Lang.Class({
+var EventsSlider = new Lang.Class({
     Name: 'EventsSlider',
     Extends: StreamSlider,
 
@@ -564,7 +565,7 @@ const EventsSlider = new Lang.Class({
 /**
  * Slider for input sinks (e.g. recorders, media players).
  */
-const InputSlider = new Lang.Class({
+var InputSlider = new Lang.Class({
     Name: 'InputSlider',
     Extends: StreamSlider,
 

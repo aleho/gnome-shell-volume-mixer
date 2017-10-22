@@ -19,7 +19,7 @@ const Menu = Extension.imports.menu;
 /**
  * Stand-alone panel menu
  */
-const Button = new Lang.Class({
+var Button = new Lang.Class({
     Name: 'ShellVolumeMixerButton',
     Extends: PanelMenu.Button,
 

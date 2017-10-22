@@ -20,7 +20,7 @@ const Settings = Extension.imports.settings;
 const Widget = Extension.imports.widget;
 const Utils = Extension.imports.utils;
 
-const Menu = new Lang.Class({
+var Menu = new Lang.Class({
     Name: 'ShellVolumeMixerMenu',
     Extends: Volume.VolumeMenu,
 
@@ -209,7 +209,7 @@ const Menu = new Lang.Class({
 /**
  * Customized indicator using our Menu.
  */
-const Indicator = new Lang.Class({
+var Indicator = new Lang.Class({
     Name: 'GvmIndicator',
     Extends: PanelMenu.SystemIndicator,
 

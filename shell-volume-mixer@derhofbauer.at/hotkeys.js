@@ -15,7 +15,7 @@ const Shell = imports.gi.Shell;
 
 const BINDINGS = {};
 
-const Hotkeys = new Lang.Class({
+var Hotkeys = new Lang.Class({
     Name: 'Hotkeys',
 
     _init: function(settings) {
