@@ -6,7 +6,7 @@
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported Settings, cleanup */
+/* exported Settings, cleanup, openDialog */
 /* exported POS_MENU, POS_LEFT, POS_CENTER, POS_RIGHT */
 /* exported MEDIAKEYS_SCHEMA, VOLUME_STEP_DEFAULT */
 
@@ -263,5 +263,22 @@ function cleanup() {
             GSETTINGS[schema].disconnect(SIGNALS[schema][signal]);
             delete SIGNALS[schema][signal];
         }
+    }
+}
+
+
+/**
+ * Opens the preferences dialog for this extension.
+ */
+function openDialog() {
+    let preferences = imports.gi.Shell.AppSystem.get_default().lookup_app('gnome-shell-extension-prefs.desktop');
+
+    if (preferences.get_state() != preferences.SHELL_APP_STATE_RUNNING) {
+        let info = preferences.get_app_info();
+
+        info.launch_uris(
+            [Extension.metadata.uuid],
+            global.create_app_launch_context(global.display.get_current_time_roundtrip(), -1)
+        );
     }
 }

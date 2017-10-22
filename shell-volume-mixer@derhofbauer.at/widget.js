@@ -447,6 +447,16 @@ var MasterSlider = new Lang.Class({
 
         this.parent(control, options);
         this._slider.actor.accessible_name = _('Volume');
+
+        this.item.menu.addAction(_('Settings'), Lang.bind(this, function () {
+            Settings.openDialog();
+        }));
+    },
+
+    addSliderItem: function (item) {
+        let pos = (this.item.menu._getMenuItems().length || 0) - 1;
+
+        this.item.menu.addMenuItem(item, pos < 0 ? 0 : pos);
     },
 
     /**

@@ -178,7 +178,7 @@ var Menu = new Lang.Class({
             slider.setSelected(isSelected);
 
             this._outputs[stream.id] = slider;
-            this._output.item.menu.addMenuItem(slider.item);
+            this._output.addSliderItem(slider.item);
         }
     },
 
