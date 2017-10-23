@@ -1,9 +1,8 @@
 /**
  * Shell Volume Mixer
  *
- * Volume.VolumeMenu implementation.
+ * Volume menu item implementation.
  *
- * @author Harry Karvonen <harry.karvonen@gmail.com>
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
@@ -13,12 +12,13 @@ const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Gvc = imports.gi.Gvc;
 const Lang = imports.lang;
 const PopupMenu = imports.ui.popupMenu;
-const Volume = imports.ui.status.volume;
 const PanelMenu = imports.ui.panelMenu;
 
 const Settings = Extension.imports.settings;
-const Widget = Extension.imports.widget;
+const Slider = Extension.imports.widget.slider;
+const Volume = Extension.imports.widget.volume;
 const Utils = Extension.imports.utils;
+
 
 var Menu = new Lang.Class({
     Name: 'ShellVolumeMixerMenu',
@@ -62,7 +62,7 @@ var Menu = new Lang.Class({
             }
         }
 
-        this._output = new Widget.MasterSlider(this._control, {
+        this._output = new Volume.MasterSlider(this._control, {
             mixer: mixer,
             detailed: this.options.detailed,
             symbolicIcons: this.options.symbolicIcons
@@ -157,21 +157,21 @@ var Menu = new Lang.Class({
 
         // system sounds
         if (stream instanceof Gvc.MixerEventRole) {
-            let slider = new Widget.EventsSlider(control, options);
+            let slider = new Volume.EventsSlider(control, options);
 
             this._items[stream.id] = slider;
             this.addMenuItem(slider.item, 1);
 
         // input stream
         } else if (stream instanceof Gvc.MixerSinkInput) {
-            let slider = new Widget.InputSlider(control, options);
+            let slider = new Volume.InputSlider(control, options);
 
             this._items[stream.id] = slider;
             this.addMenuItem(slider.item);
 
         // output stream
         } else if (stream instanceof Gvc.MixerSink) {
-            let slider = new Widget.OutputSlider(control, options);
+            let slider = new Volume.OutputSlider(control, options);
 
             let isSelected = this._output.stream
                     && this._output.stream.id == stream.id;

@@ -10,18 +10,17 @@ SOURCES =  \
 	locale/*/*/*.mo \
 	pautils/cardinfo.py \
 	pautils/pa.py \
+	widget/*.js \
 	extension.js \
 	hotkeys.js \
 	menu.js \
 	metadata.json \
 	mixer.js \
-	panel.js \
 	prefs.js \
 	prefs.ui \
 	settings.js \
 	stylesheet.css \
 	utils.js \
-	widget.js \
 	$(GSCHEMA) $(SCHEMA_COMP)
 
 SCHEMA_COMP = schemas/gschemas.compiled

@@ -1,13 +1,12 @@
 /**
  * Shell Volume Mixer
  *
- * Advanced mixer extension.
+ * Stand-alone menu panel button.
  *
- * @author Harry Karvonen <harry.karvonen@gmail.com>
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported Button */
+/* exported PanelButton */
 
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Lang = imports.lang;
@@ -19,8 +18,8 @@ const Menu = Extension.imports.menu;
 /**
  * Stand-alone panel menu
  */
-var Button = new Lang.Class({
-    Name: 'ShellVolumeMixerButton',
+var PanelButton = new Lang.Class({
+    Name: 'ShellVolumeMixerPanelButton',
     Extends: PanelMenu.Button,
 
     _init: function(mixer, options) {

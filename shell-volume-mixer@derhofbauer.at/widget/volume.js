@@ -1,13 +1,12 @@
 /**
  * Shell Volume Mixer
  *
- * Mixer widgets.
+ * Volume widgets.
  *
- * @author Harry Karvonen <harry.karvonen@gmail.com>
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported MasterSlider, OutputSlider, EventsSlider, InputSlider */
+/* exported MasterSlider, OutputSlider, EventsSlider, InputSlider, InputStreamSlider */
 
 const Clutter = imports.gi.Clutter;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
@@ -16,260 +15,13 @@ const Lang = imports.lang;
 const Main = imports.ui.main;
 const Mainloop = imports.mainloop;
 const PopupMenu = imports.ui.popupMenu;
-const Slider = imports.ui.slider;
 const St = imports.gi.St;
-const Tweener = imports.ui.tweener;
 const Volume = imports.ui.status.volume;
 
+const FloatingLabel = Extension.imports.widget.floatingLabel.FloatingLabel;
+const MenuItem = Extension.imports.widget.menuItem;
 const Settings = Extension.imports.settings;
-const Utils = Extension.imports.utils;
-
-/**
- * A tooltip-like label to display the current value of a slider.
- *
- * Shamelessly stolen from gnome-shell/js/ui/dash.js.
- */
-const FloatingLabel = new Lang.Class({
-    Name: 'FloatingLabel',
-
-    _init: function() {
-        this._label = new St.Label({ style_class: 'dash-label floating-label' });
-        this.text = '100%';
-        this._label.hide();
-        Main.layoutManager.addChrome(this._label);
-    },
-
-    get text() {
-        return this._label.get_text();
-    },
-
-    set text(text) {
-        this._label.set_text(text);
-    },
-
-    get size() {
-        return this._label.get_size();
-    },
-
-    show: function(x, y, animate) {
-        this._label.opacity = 0;
-        this._label.show();
-        this._label.raise_top();
-
-        let labelHeight = this._label.get_height();
-        let labelWidth = this._label.get_width();
-
-        x = Math.floor(x - labelWidth / 2);
-        y = y - labelHeight;
-        this._label.set_position(x, y);
-
-        let duration = animate !== false ? 0.15 : 0;
-
-        Tweener.addTween(this._label, {
-            opacity: 255,
-            time: duration,
-            transition: 'easeOutQuad'
-        });
-    },
-
-    hide: function(animate) {
-        let duration = animate !== false ? 0.1 : 0;
-
-        Tweener.addTween(this._label, {
-            opacity: 0,
-            time: duration,
-            transition: 'easeOutQuad',
-            onComplete: Lang.bind(this, function() {
-                this._label.hide();
-            })
-        });
-    }
-});
-
-
-/**
- * Slider with configurable steps.
- */
-const VolumeSlider = new Lang.Class({
-    Name: 'VolumeSlider',
-    Extends: Slider.Slider,
-
-    _init: function(value, step) {
-        this._step = step || Settings.VOLUME_STEP_DEFAULT;
-        this.parent(value);
-    },
-
-    scroll: function(event) {
-        if (event.is_pointer_emulated()) {
-            return Clutter.EVENT_PROPAGATE;
-        }
-
-        let direction = 'up';
-        let scrollDir = event.get_scroll_direction();
-
-        if (scrollDir == Clutter.ScrollDirection.SMOOTH) {
-            let [dx, dy] = event.get_scroll_delta();
-            if (dy > 0) {
-                direction = 'down';
-            } else if (dy == 0) {
-                // bugfix first dy event being zero
-                direction = false;
-            }
-        } else if (scrollDir == Clutter.ScrollDirection.DOWN) {
-            direction = 'down';
-        }
-
-        if (direction) {
-            this._value = this._calcNewValue(direction);
-        }
-
-        this.actor.queue_repaint();
-        this.emit('value-changed', this._value, event);
-        return Clutter.EVENT_STOP;
-    },
-
-    onKeyPressEvent: function(actor, event) {
-        let key = event.get_key_symbol();
-
-        if (key == Clutter.KEY_Right || key == Clutter.KEY_Left) {
-            let dir = (key == Clutter.KEY_Right) ? 'up' : 'down';
-            this._value = this._calcNewValue(dir);
-
-            this.actor.queue_repaint();
-            this.emit('value-changed', this._value);
-            this.emit('drag-end');
-
-            return Clutter.EVENT_STOP;
-        }
-
-        return Clutter.EVENT_PROPAGATE;
-    },
-
-    _calcNewValue: function(direction) {
-        let value = this._value;
-        let step = this._step / 100;
-
-        if (direction == 'down') {
-            value -= step;
-        } else {
-            value += step;
-        }
-
-        return Math.min(Math.max(0, value), 1);
-    },
-
-    /**
-     * Allow middle button event to bubble up for mute / unmute.
-     */
-    startDragging: function(event) {
-        if (event.get_button() == 2) {
-            return Clutter.EVENT_PROPAGATE;
-        }
-        return this.parent(event);
-    }
-});
-
-
-let makeItemLine = function(ornament) {
-    let line = new St.BoxLayout({ style_class: 'popup-menu-item svm-container-line' });
-
-    if (ornament === undefined) {
-        ornament = new St.Label({ style_class: 'popup-menu-ornament' });
-    }
-
-    if (ornament) {
-        line.add(ornament);
-    }
-
-    return line;
-};
-
-let prepareMenuItem = function(instance) {
-    instance.actor.get_children().map(Lang.bind(instance, function (child) {
-        instance.actor.remove_actor(child);
-    }));
-
-    instance.container = new St.BoxLayout({ vertical: true });
-    instance.actor.add(instance.container, { expand: true });
-
-    if (!instance.firstLine) {
-        instance.firstLine = makeItemLine(instance._ornamentLabel);
-    }
-
-    if (!instance.secondLine) {
-        instance.secondLine = makeItemLine();
-    }
-
-    instance.container.add(instance.firstLine, { expand: true });
-    instance.container.add(instance.secondLine, { expand: true });
-};
-
-/**
- * Submenu item for the sink selection menu.
- */
-const MasterMenuItem = new Lang.Class({
-    Name: 'MasterMenuItem',
-    Extends: PopupMenu.PopupSubMenuMenuItem,
-
-    _init: function(sliderVolumeStep) {
-        this.parent('', true);
-        prepareMenuItem(this);
-
-        this._slider = new VolumeSlider(0, sliderVolumeStep);
-
-        this.firstLine.add_child(this.icon);
-        this.firstLine.add(this.label, { expand: true });
-        this.firstLine.add_child(this._triangleBin);
-
-        this.secondLine.add(this._slider.actor, { expand: true });
-
-        this.label.add_style_class_name('svm-master-label');
-        this.actor.add_style_class_name('svm-master-slider svm-menu-item');
-    },
-
-    _onButtonReleaseEvent: function(actor, event) {
-        if (event.get_button() == 2) {
-            return Clutter.EVENT_STOP;
-        }
-        return this.parent(actor, event);
-    },
-
-    /**
-     * Change volume on left / right.
-     */
-    _onKeyPressEvent: function(actor, event) {
-        let symbol = event.get_key_symbol();
-
-        if (symbol == Clutter.KEY_Right || symbol == Clutter.KEY_Left) {
-            return this._slider.onKeyPressEvent(actor, event);
-        }
-
-        return this.parent(actor, event);
-    }
-});
-
-
-/**
- * Sub menu item implementation for dropdown menus (via master slider).
- */
-const SubMenuItem = new Lang.Class({
-    Name: 'OutputStreamSlider',
-    Extends: PopupMenu.PopupBaseMenuItem,
-
-    _init: function(params) {
-        this.parent(params);
-        prepareMenuItem(this);
-    },
-
-    addChildAt: function(child, pos) {
-        let line = makeItemLine();
-
-        line.add_child(child);
-        this.container.insert_child_at_index(line, pos);
-
-        return line;
-    }
-});
+const Slider = Extension.imports.widget.slider;
 
 
 /**
@@ -288,7 +40,7 @@ const StreamSlider = new Lang.Class({
         this._mixer = options.mixer;
 
         if (!this.item) {
-            this.item = new SubMenuItem({ activate: false });
+            this.item = new MenuItem.SubMenuItem({ activate: false });
         }
 
         if (this.icon) {
@@ -307,7 +59,7 @@ const StreamSlider = new Lang.Class({
         }
 
         if (!this._slider) {
-            this._slider = new VolumeSlider(0, this._mixer.getNormalizedStep());
+            this._slider = new Slider.VolumeSlider(0, this._mixer.getNormalizedStep());
             this.item.secondLine.add(this._slider.actor, { expand: true });
         }
 
@@ -439,7 +191,7 @@ var MasterSlider = new Lang.Class({
     Extends: StreamSlider,
 
     _init: function(control, options) {
-        this.item = new MasterMenuItem(options.mixer.getNormalizedStep());
+        this.item = new MenuItem.MasterMenuItem(options.mixer.getNormalizedStep());
 
         this._slider = this.item._slider;
         this._icon = this.item.icon;
@@ -545,10 +297,10 @@ var OutputSlider = new Lang.Class({
 
     setSelected: function(selected) {
         if (selected !== false) {
-            this.item.setOrnament(PopupMenu.Ornament.DOT);
+            this.item.setSelected(true);
             this._label.add_style_class_name('selected-stream');
         } else {
-            this.item.setOrnament(PopupMenu.Ornament.NONE);
+            this.item.setSelected(false);
             this._label.remove_style_class_name('selected-stream');
         }
     },
@@ -594,3 +346,10 @@ var InputSlider = new Lang.Class({
         this._label.text = text || '[unknown]';
     }
 });
+
+
+/**
+ * Just re-declarations for now.
+ */
+var VolumeMenu = Volume.VolumeMenu;
+var InputStreamSlider = Volume.InputStreamSlider;

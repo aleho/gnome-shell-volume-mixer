@@ -15,7 +15,7 @@ const PopupMenu = imports.ui.popupMenu;
 
 const Menu = Extension.imports.menu;
 const Mixer = Extension.imports.mixer;
-const Panel = Extension.imports.panel;
+const PanelButton = Extension.imports.widget.panelButton.PanelButton;
 const Settings = Extension.imports.settings;
 
 let settings;
@@ -92,7 +92,7 @@ function addPanelButton(position) {
         volumeIcon.hide();
     }
 
-    menu = new Panel.Button(mixer, {
+    menu = new PanelButton(mixer, {
         separator: false
     });
 
