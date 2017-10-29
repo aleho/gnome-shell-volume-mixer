@@ -34,12 +34,15 @@ var Menu = new Lang.Class({
             detailed: this._settings.get_boolean('show-detailed-sliders'),
             systemSounds: this._settings.get_boolean('show-system-sounds'),
             virtualStreams: this._settings.get_boolean('show-virtual-streams'),
-            symbolicIcons: this._settings.get_boolean('use-symbolic-icons')
+            symbolicIcons: this._settings.get_boolean('use-symbolic-icons'),
+            alwaysShowInputStreams: this._settings.get_boolean('always-show-input-streams')
         };
 
-        // submenu items
+        // master-menu items
         this._outputs = {};
-        // menu items (except for first, MasterSlider)
+        // input-menu items
+        this._inputs = {};
+        // menu items (all other menu items)
         this._items = {};
 
         this._mixer = mixer;
@@ -62,18 +65,36 @@ var Menu = new Lang.Class({
             }
         }
 
+
         this._output = new Volume.MasterSlider(this._control, {
             mixer: mixer,
             detailed: this.options.detailed,
             symbolicIcons: this.options.symbolicIcons
         });
+
         this._output.connect('stream-updated', Lang.bind(this, function() {
             this.emit('icon-changed');
         }));
-        this.addMenuItem(this._output.item);
 
-        this._input = new Volume.InputStreamSlider(this._control);
-        this.addMenuItem(this._input.item);
+
+        this._inputMenu = new Volume.AggregatedInput(this._control, {
+            mixer: mixer,
+            detailed: this.options.detailed,
+            symbolicIcons: this.options.symbolicIcons
+        });
+
+
+        this._input = new Volume.InputStreamSlider(this._control, {
+            mixer: mixer,
+            showAlways: this.options.alwaysShowInputStreams,
+            detailed: this.options.detailed,
+            symbolicIcons: this.options.symbolicIcons
+        });
+
+
+        this.addMenuItem(this._output.item, 0);
+        this.addMenuItem(this._inputMenu.item, 2);
+        this._inputMenu.setInputStream(this._input);
 
         if (options.separator) {
             this._addSeparator();
@@ -91,9 +112,15 @@ var Menu = new Lang.Class({
         for (let id in this._outputs) {
             this._outputs[id].hideVolumeInfo();
         }
+
+        for (let id in this._inputs) {
+            this._inputs[id].hideVolumeInfo();
+        }
+
         for (let id in this._items) {
             this._items[id].hideVolumeInfo();
         }
+
         this._output.hideVolumeInfo();
 
         this.parent(animate);
@@ -109,7 +136,7 @@ var Menu = new Lang.Class({
         }
 
         this._separator = new PopupMenu.PopupSeparatorMenuItem();
-        this.addMenuItem(this._separator, 2);
+        this.addMenuItem(this._separator, 3);
     },
 
     _onControlStateChanged: function() {
@@ -141,6 +168,7 @@ var Menu = new Lang.Class({
     _addStream: function(control, stream) {
         if (stream.id in this._items
                 || stream.id in this._outputs
+                || stream.id in this._inputs
                 || stream.is_event_stream
                 || (stream.is_virtual && !this.options.virtualStreams)
                 || (stream instanceof Gvc.MixerEventRole
@@ -162,25 +190,34 @@ var Menu = new Lang.Class({
             this._items[stream.id] = slider;
             this.addMenuItem(slider.item, 1);
 
-        // input stream
+        // input stream (add to multi-input menu)
         } else if (stream instanceof Gvc.MixerSinkInput) {
-            let slider = new Volume.InputSlider(control, options);
+            this._addInputStream(stream, control, options);
 
-            this._items[stream.id] = slider;
-            this.addMenuItem(slider.item);
-
-        // output stream
+        // output stream (add to master-menu)
         } else if (stream instanceof Gvc.MixerSink) {
-            let slider = new Volume.OutputSlider(control, options);
-
-            let isSelected = this._output.stream
-                    && this._output.stream.id == stream.id;
-            slider.setSelected(isSelected);
-
-            this._outputs[stream.id] = slider;
-            this._output.addSliderItem(slider.item);
+            this._addOutputStream(stream, control, options);
         }
     },
+
+    _addInputStream: function(stream, control, options) {
+        let slider = new Volume.InputSlider(control, options);
+
+        this._inputs[stream.id] = slider;
+        this._inputMenu.addSlider(slider);
+    },
+
+    _addOutputStream: function(stream, control, options) {
+        let slider = new Volume.OutputSlider(control, options);
+
+        let isSelected = this._output.stream
+                && this._output.stream.id == stream.id;
+        slider.setSelected(isSelected);
+
+        this._outputs[stream.id] = slider;
+        this._output.addSliderItem(slider.item);
+    },
+
 
     _streamAdded: function(control, id) {
         let stream = control.lookup_stream_id(id);
@@ -191,17 +228,27 @@ var Menu = new Lang.Class({
         if (id in this._items) {
             this._items[id].item.destroy();
             delete this._items[id];
+
         } else if (id in this._outputs) {
             this._outputs[id].item.destroy();
             delete this._outputs[id];
+
+        } else if (id in this._inputs) {
+            this._inputs[id].item.destroy();
+            delete this._inputs[id];
+            this._inputMenu.refresh();
         }
     },
 
     _streamChanged: function(control, id) {
-        if (this._items[id]) {
+        if (id in this._items) {
             this._items[id].refresh();
-        } else if (this._outputs[id]) {
+
+        } else if (id in this._outputs) {
             this._outputs[id].refresh();
+
+        } else if (id in this._inputs) {
+            this._inputs[id].refresh();
         }
     }
 });
