@@ -34,6 +34,11 @@
             <summary>Show virtual streams</summary>
             <description>Whether to show virtual streams in the applications menu</description>
         </key>
+        <key name="always-show-input-streams" type="b">
+            <default>false</default>
+            <summary>Always show input streams</summary>
+	    <description>Show input streams even if no application is recording</description>
+        </key>
         <key name="use-symbolic-icons" type="b">
             <default>true</default>
             <summary>Use symbolic icons</summary>
