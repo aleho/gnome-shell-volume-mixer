@@ -1,7 +1,7 @@
 # Polish translation for GNOME Shell Volume Mixer.
 # Copyright (C) 2017
 # This file is distributed under the same license as the GNOME Shell Volume Mixer.
-# Piotr Komur <pkomur@gmail.com, 2017.
+# Piotr Komur, pkomur@gmail.com, 2017.
 #
 msgid ""
 msgstr ""
