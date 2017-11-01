@@ -101,7 +101,7 @@ var MasterMenuItem = new Lang.Class({
 
 
 /**
- * Sub menu item implementation for dropdown menus (via master slider).
+ * Sub menu item implementation for dropdown menus (via master slider menu or input menu).
  */
 var SubMenuItem = new Lang.Class({
     Name: 'OutputStreamSlider',

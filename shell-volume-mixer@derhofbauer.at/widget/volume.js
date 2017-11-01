@@ -6,7 +6,7 @@
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported MasterSlider, OutputSlider, EventsSlider, InputSlider, InputStreamSlider */
+/* exported MasterSlider, OutputSlider, EventsSlider, InputSlider, InputStreamSlider, VolumeMenu */
 
 const Clutter = imports.gi.Clutter;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
