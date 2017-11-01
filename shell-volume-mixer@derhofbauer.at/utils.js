@@ -17,6 +17,7 @@ const Gettext = imports.gettext;
 var _;
 
 const SEP = repeatString('#', 60);
+const LOG_PREAMBLE = 'Shell Volume Mixer';
 
 
 /**
@@ -112,14 +113,14 @@ function getCards() {
  * @param string, ...
  */
 function l() {
-    log('LOG\n'
-            + SEP
-            + '\n\n' + Array.prototype.slice.call(arguments).join(' ')
-            + '\n\n' + SEP);
+    log(LOG_PREAMBLE + '\n'
+        + SEP
+        + '\n\n' + Array.prototype.slice.call(arguments).join(' ')
+        + '\n\n' + SEP);
 }
 
 function info() {
-    log('Shell Volume Mixer | '
+    log(LOG_PREAMBLE + ' | '
         + Array.prototype.slice.call(arguments).join(' '));
 }
 
@@ -130,7 +131,7 @@ function info() {
  * @param maxDepth
  */
 function d(object, maxDepth) {
-    maxDepth = maxDepth || 8;
+    maxDepth = maxDepth || 1;
     l(_dumpObject(object, maxDepth));
 }
 
@@ -151,7 +152,7 @@ function error(module, context, message) {
         message = context;
         context = undefined;
     }
-    let output = '### Shell Volume Mixer ERROR | ';
+    let output = 'ERROR | ';
     if (module) {
         output += module + '.js | ';
     }
