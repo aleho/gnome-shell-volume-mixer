@@ -12,11 +12,13 @@ const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 
+const Gettext = Extension.imports.gettext;
 const Settings = Extension.imports.settings;
 const Utils = Extension.imports.utils;
+const __ = Extension.imports.gettext._;
 
 let preferences;
-let _;
+
 
 const Preferences = new Lang.Class({
     Name: 'ShellVolumeMixerPreferences',
@@ -42,7 +44,8 @@ const Preferences = new Lang.Class({
     },
 
     _init: function() {
-        _ = Utils.initGettext();
+        // just init gettext here
+        Gettext.getLocal();
         this._settings = new Settings.Settings();
     },
 
@@ -283,8 +286,9 @@ const Preferences = new Lang.Class({
             return;
         }
 
-        this._showMessage(_('Error retrieving card details'),
-                _('Helper script did not return valid card data.'));
+        this._showMessage(__('Error retrieving card details'),
+            __('Helper script did not return valid card data.'));
+
         this._cardsWarningShown = true;
     },
 
