@@ -6,15 +6,11 @@
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported getCards, l, d, error, repeatString, getExtensionPath, initGettext, versionGreaterOrEqual */
+/* exported getCards, l, d, error, repeatString, getExtensionPath, versionGreaterOrEqual */
 
 const Config = imports.misc.config;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const GLib = imports.gi.GLib;
-
-const DOMAIN = 'gnome-shell-extensions-shell-volume-mixer';
-const Gettext = imports.gettext;
-var _;
 
 const SEP = repeatString('#', 60);
 const LOG_PREAMBLE = 'Shell Volume Mixer';
@@ -270,25 +266,4 @@ function _dumpObject(object, maxDepth, currDepth) {
  */
 function repeatString(string, times) {
     return new Array(times + 1).join(string);
-}
-
-/**
- * Initializes and returns a gettext object ("_").
- */
-function initGettext() {
-    if (_) {
-        return _;
-    }
-
-    let domain = Extension.metadata['gettext-domain'] || DOMAIN;
-    let localeDir = getExtensionPath('locale');
-
-    if (localeDir) {
-        Gettext.bindtextdomain(domain, localeDir);
-    } else {
-        Gettext.bindtextdomain(domain, Config.LOCALEDIR);
-    }
-
-    _ = Gettext.domain(DOMAIN).gettext;
-    return _;
 }
