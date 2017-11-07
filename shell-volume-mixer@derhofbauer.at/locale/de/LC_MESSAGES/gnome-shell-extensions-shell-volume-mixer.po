@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNOME Shell Volume Mixer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-29 17:11+0100\n"
-"PO-Revision-Date: 2017-10-29 17:23+0100\n"
+"POT-Creation-Date: 2017-11-07 23:12+0100\n"
+"PO-Revision-Date: 2017-11-07 23:16+0100\n"
 "Last-Translator: Alexander Hofbauer <alex@derhofbauer.at>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -19,115 +19,109 @@ msgstr ""
 "X-Generator: Poedit 2.0.4\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-Basepath: ../../..\n"
-"X-Poedit-KeywordsList: _;title;label\n"
-"X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPathExcluded-0: schemas\n"
-"X-Poedit-SearchPathExcluded-1: pautils\n"
-"X-Poedit-SearchPathExcluded-2: locale\n"
 
-#: prefs.js:286
+#: prefs.js:288
 msgid "Error retrieving card details"
 msgstr "Fehler beim Abfragen der Karten"
 
-#: prefs.js:287
+#: prefs.js:289
 msgid "Helper script did not return valid card data."
 msgstr "Hilfsprogramm gab keine gültigen Daten zurück."
 
-#: widget/volume.js:211 prefs.ui:378
-msgid "Settings"
-msgstr "Einstellungen"
-
-#: widget/volume.js:253 widget/volume.js:255
+#: widget/volume.js:255 widget/volume.js:257
 msgid "Inputs"
 msgstr "Eingänge"
 
-#: widget/volume.js:392
+#: widget/volume.js:394
 msgid "unknown"
 msgstr "unbekannt"
 
-#: prefs.ui:54
+#: prefs.ui:56
 msgid "Position of volume mixer"
 msgstr "Position des Lautstärkereglers"
 
-#: prefs.ui:67
+#: prefs.ui:70
 msgid "Status Menu"
 msgstr "Statusmenü"
 
-#: prefs.ui:68
+#: prefs.ui:71
 msgid "Left"
 msgstr "Links"
 
-#: prefs.ui:69
+#: prefs.ui:72
 msgid "Center"
 msgstr "Zentriert"
 
-#: prefs.ui:70
+#: prefs.ui:73
 msgid "Right"
 msgstr "Rechts"
 
-#: prefs.ui:83
+#: prefs.ui:88
 msgid "Remove original slider"
 msgstr "Originalen Lautstärkeregler entfernen"
 
-#: prefs.ui:95
+#: prefs.ui:101
 msgid "Show detailed sliders"
 msgstr "Details an den Schiebereglern anzeigen"
 
-#: prefs.ui:134
+#: prefs.ui:141
 msgid "Hotkey for profile switcher"
 msgstr "Hotkey für Profilumschalter"
 
-#: prefs.ui:156
+#: prefs.ui:164
 msgid "(e.g. \"<Super>p\")"
 msgstr "(z.B. \"<Super>p\")"
 
-#: prefs.ui:198
+#: prefs.ui:207
 msgid "Volume Steps (%)"
 msgstr "Lautstärke-Schritte (%)"
 
-#: prefs.ui:223
+#: prefs.ui:234
 msgid "Use volume boost"
 msgstr "Verstärkung nutzen"
 
-#: prefs.ui:248
+#: prefs.ui:260
 msgid "Show system sounds"
 msgstr "Systemklänge anzeigen"
 
-#: prefs.ui:260
+#: prefs.ui:273
 msgid "Use symbolic icons"
 msgstr "Symbolische Icons verwenden"
 
-#: prefs.ui:296
+#: prefs.ui:310
 msgid "Show virtual streams"
 msgstr "Virtuelle Streams anzeigen"
 
-#: prefs.ui:320
+#: prefs.ui:335
 msgid "Always show input streams"
 msgstr "Eingänge immer anzeigen"
 
-#: prefs.ui:344
+#: prefs.ui:359
 msgid "Shows the slider even if no application is recording"
 msgstr ""
 "Zeigt Aufnahmeströme (Mikrofone) immer an, auch wenn keine Applikation "
 "gerade aufnimmt"
 
-#: prefs.ui:415 prefs.ui:582
+#: prefs.ui:445
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: prefs.ui:482 prefs.ui:649
 msgid "Devices"
 msgstr "Geräte"
 
-#: prefs.ui:466
+#: prefs.ui:533
 msgid "Card"
 msgstr "Karte"
 
-#: prefs.ui:480
+#: prefs.ui:547
 msgid "Profile"
 msgstr "Profil"
 
-#: prefs.ui:493
+#: prefs.ui:560
 msgid "Switch"
 msgstr "Umschalter"
 
-#: prefs.ui:506
+#: prefs.ui:573
 msgid "Display"
 msgstr "Anzeigen"
