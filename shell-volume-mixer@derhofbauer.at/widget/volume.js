@@ -18,10 +18,12 @@ const PopupMenu = imports.ui.popupMenu;
 const St = imports.gi.St;
 const Volume = imports.ui.status.volume;
 
+const __ = Extension.imports.gettext._;
 const FloatingLabel = Extension.imports.widget.floatingLabel.FloatingLabel;
 const MenuItem = Extension.imports.widget.menuItem;
 const Settings = Extension.imports.settings;
 const Slider = Extension.imports.widget.slider;
+const Utils = Extension.imports.utils;
 
 
 /**
@@ -250,9 +252,9 @@ var AggregatedInput = new Lang.Class({
     Name: 'AggregatedInput',
 
     _init: function() {
-        this.item = new PopupMenu.PopupSubMenuMenuItem(_('Inputs'), true);
+        this.item = new PopupMenu.PopupSubMenuMenuItem(__('Inputs'), true);
         this.item.icon.icon_name = 'applications-multimedia-symbolic';
-        this.item.actor.accessible_name = _('Inputs');
+        this.item.actor.accessible_name = __('Inputs');
 
         this._inputStream = null;
     },
@@ -389,7 +391,7 @@ var InputSlider = new Lang.Class({
             }
         }
 
-        this._label.text = text || '[' + _('unknown') + ']';
+        this._label.text = text || '[' + __('unknown') + ']';
     }
 });
 
