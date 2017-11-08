@@ -555,7 +555,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkTreeViewColumn" id="colum-quickswitch">
+                      <object class="GtkTreeViewColumn" id="column-quickswitch">
                         <property name="sizing">fixed</property>
                         <property name="title" translatable="yes">Switch</property>
                         <child>
@@ -567,7 +567,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkTreeViewColumn" id="colum-display">
+                      <object class="GtkTreeViewColumn" id="column-display">
                         <property name="visible">False</property>
                         <property name="sizing">fixed</property>
                         <property name="title" translatable="yes">Display</property>
