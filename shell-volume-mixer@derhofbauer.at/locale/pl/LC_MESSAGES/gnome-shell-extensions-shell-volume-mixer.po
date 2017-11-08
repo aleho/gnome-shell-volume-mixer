@@ -1,1 +1,127 @@
+# Polish translation for GNOME Shell Volume Mixer.
+# Copyright (C) 2017
+# This file is distributed under the same license as the GNOME Shell Volume Mixer.
+# Piotr Komur pkomur@gmail.com, 2017.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: GNOME Shell Volume Mixer\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-11-07 23:12+0100\n"
+"PO-Revision-Date: 2017-11-08 18:33+0100\n"
+"Last-Translator: Piotr Komur <pkomur@gmail.com>\n"
+"Language-Team: Poland\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.4\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Basepath: ../../..\n"
+"X-Poedit-KeywordsList: _;title;label\n"
+"X-Poedit-SearchPath-0: .\n"
 
+#: prefs.js:288
+msgid "Error retrieving card details"
+msgstr "Błąd podczas pobierania danych karty."
+
+#: prefs.js:289
+msgid "Helper script did not return valid card data."
+msgstr "Narzędzie nie zwróciło prawidłowych danych."
+
+#: widget/volume.js:255 widget/volume.js:257
+msgid "Inputs"
+msgstr "Wejścia"
+
+#: widget/volume.js:394
+msgid "unknown"
+msgstr "nieznany"
+
+#: prefs.ui:56
+msgid "Position of volume mixer"
+msgstr "Położenie miksera"
+
+#: prefs.ui:70
+msgid "Status Menu"
+msgstr "Menu systemowe"
+
+#: prefs.ui:71
+msgid "Left"
+msgstr "Z lewej"
+
+#: prefs.ui:72
+msgid "Center"
+msgstr "Po środku"
+
+#: prefs.ui:73
+msgid "Right"
+msgstr "Z prawej"
+
+#: prefs.ui:88
+msgid "Remove original slider"
+msgstr "Ukryj systemowy regulator"
+
+#: prefs.ui:101
+msgid "Show detailed sliders"
+msgstr "Pokaż szczegóły urządzenia"
+
+#: prefs.ui:141
+msgid "Hotkey for profile switcher"
+msgstr "Skrót klawiszowy przełączania profilów"
+
+#: prefs.ui:164
+msgid "(e.g. \"<Super>p\")"
+msgstr "(np. \"<Super>p\")"
+
+#: prefs.ui:207
+msgid "Volume Steps (%)"
+msgstr "Krok regulacji głośności (%)"
+
+#: prefs.ui:234
+msgid "Use volume boost"
+msgstr "Zezwalaj na regulację głośności >100 %"
+
+#: prefs.ui:260
+msgid "Show system sounds"
+msgstr "Pokaż dźwięki systemowe"
+
+#: prefs.ui:273
+msgid "Use symbolic icons"
+msgstr "Pokaż ikony symboliczne"
+
+#: prefs.ui:310
+msgid "Show virtual streams"
+msgstr "Pokaż strumienie wirtualne"
+
+#: prefs.ui:335
+msgid "Always show input streams"
+msgstr "Pokaż strumienie wejściowe"
+
+#: prefs.ui:359
+msgid "Shows the slider even if no application is recording"
+msgstr "(Pokazuje regulatory, nawet przy braku aktywnych programów nagrywających)"
+
+#: prefs.ui:445
+msgid "Settings"
+msgstr "Ustawienia"
+
+#: prefs.ui:482 prefs.ui:649
+msgid "Devices"
+msgstr "Urządzenia"
+
+#: prefs.ui:533
+msgid "Card"
+msgstr "Karta"
+
+#: prefs.ui:547
+msgid "Profile"
+msgstr "Profil"
+
+#: prefs.ui:560
+msgid "Switch"
+msgstr "Przełącznik"
+
+#: prefs.ui:573
+msgid "Display"
+msgstr ""
