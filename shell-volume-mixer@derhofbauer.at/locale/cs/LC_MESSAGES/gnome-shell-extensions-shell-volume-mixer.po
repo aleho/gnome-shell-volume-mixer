@@ -1,29 +1,26 @@
-# Czech translation for GNOME Shell Volume Mixer.
-# Copyright (C) 2017
-# This file is distributed under the same license as the GNOME Shell Volume Mixer.
-# Daniel Rusek <mail@asciiwolf.com>
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: GNOME Shell Volume Mixer\n"
+"Project-Id-Version: gnome-shell-volume-mixer\n"
 "POT-Creation-Date: 2017-11-07 23:12+0100\n"
-"PO-Revision-Date: 2017-11-13 22:08+0100\n"
-"Last-Translator: Daniel Rusek <mail@asciiwolf.com>\n"
+"Last-Translator: aleho <alex@derhofbauer.at>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: ;__\n"
-"PO-Revision-Date: \n"
-"Language-Team: \n"
-"X-Generator: Poedit 2.0.3\n"
+"PO-Revision-Date: 2017-11-14 17:08-0500\n"
+"Language-Team: Czech\n"
+"X-Generator: crowdin.com\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"Language: cs\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: locale\n"
 "X-Poedit-SearchPathExcluded-1: pautils\n"
 "X-Poedit-SearchPathExcluded-2: schemas\n"
+"X-Crowdin-Project: gnome-shell-volume-mixer\n"
+"X-Crowdin-Language: cs\n"
+"X-Crowdin-File: /master/shell-volume-mixer@derhofbauer.at/locale/translations.pot\n"
+"Language: cs_CZ\n"
 
 #: prefs.js:288
 msgid "Error retrieving card details"
@@ -128,3 +125,4 @@ msgstr "Přepínač"
 #: prefs.ui:573
 msgid "Display"
 msgstr "Zobrazit"
+
