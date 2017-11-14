@@ -1,0 +1,130 @@
+# Czech translation for GNOME Shell Volume Mixer.
+# Copyright (C) 2017
+# This file is distributed under the same license as the GNOME Shell Volume Mixer.
+# Daniel Rusek <mail@asciiwolf.com>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: GNOME Shell Volume Mixer\n"
+"POT-Creation-Date: 2017-11-07 23:12+0100\n"
+"PO-Revision-Date: 2017-11-13 22:08+0100\n"
+"Last-Translator: Daniel Rusek <mail@asciiwolf.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: ;__\n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.0.3\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Language: cs\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: locale\n"
+"X-Poedit-SearchPathExcluded-1: pautils\n"
+"X-Poedit-SearchPathExcluded-2: schemas\n"
+
+#: prefs.js:288
+msgid "Error retrieving card details"
+msgstr "Chyba při získávání detailů o kartě"
+
+#: prefs.js:289
+msgid "Helper script did not return valid card data."
+msgstr "Pomocný skript nevrátil platná data o kartě."
+
+#: widget/volume.js:255 widget/volume.js:257
+msgid "Inputs"
+msgstr "Vstupy"
+
+#: widget/volume.js:394
+msgid "unknown"
+msgstr "neznámé"
+
+#: prefs.ui:56
+msgid "Position of volume mixer"
+msgstr "Umístění směšovače hlasitosti"
+
+#: prefs.ui:70
+msgid "Status Menu"
+msgstr "Stavové menu"
+
+#: prefs.ui:71
+msgid "Left"
+msgstr "Vlevo"
+
+#: prefs.ui:72
+msgid "Center"
+msgstr "Uprostřed"
+
+#: prefs.ui:73
+msgid "Right"
+msgstr "Vpravo"
+
+#: prefs.ui:88
+msgid "Remove original slider"
+msgstr "Odstranit původní posuvníky"
+
+#: prefs.ui:101
+msgid "Show detailed sliders"
+msgstr "Zobrazit detailní posuvníky"
+
+#: prefs.ui:141
+msgid "Hotkey for profile switcher"
+msgstr "Klávesová zkratka pro přepínač profilů"
+
+#: prefs.ui:164
+msgid "(e.g. \"<Super>p\")"
+msgstr "(např. „<Super>p”)"
+
+#: prefs.ui:207
+msgid "Volume Steps (%)"
+msgstr "Kroky hlasitosti (%)"
+
+#: prefs.ui:234
+msgid "Use volume boost"
+msgstr "Použít zesílení hlasitosti"
+
+#: prefs.ui:260
+msgid "Show system sounds"
+msgstr "Zobrazit systémové zvuky"
+
+#: prefs.ui:273
+msgid "Use symbolic icons"
+msgstr "Použít symbolické ikony"
+
+#: prefs.ui:310
+msgid "Show virtual streams"
+msgstr "Zobrazit virtuální proudy"
+
+#: prefs.ui:335
+msgid "Always show input streams"
+msgstr "Vždy zobrazit vstupní proudy"
+
+#: prefs.ui:359
+msgid "Shows the slider even if no application is recording"
+msgstr "Zobrazí posuvník i pokud žádná aplikace nenahrává zvuk"
+
+#: prefs.ui:445
+msgid "Settings"
+msgstr "Nastavení"
+
+#: prefs.ui:482 prefs.ui:649
+msgid "Devices"
+msgstr "Zařízení"
+
+#: prefs.ui:533
+msgid "Card"
+msgstr "Karta"
+
+#: prefs.ui:547
+msgid "Profile"
+msgstr "Profil"
+
+#: prefs.ui:560
+msgid "Switch"
+msgstr "Přepínač"
+
+#: prefs.ui:573
+msgid "Display"
+msgstr "Zobrazit"
