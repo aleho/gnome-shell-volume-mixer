@@ -9,7 +9,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: ;__\n"
-"PO-Revision-Date: 2017-11-14 17:08-0500\n"
+"PO-Revision-Date: 2017-11-14 17:21-0500\n"
 "Language-Team: Polish\n"
 "X-Generator: crowdin.com\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -100,7 +100,7 @@ msgstr "Pokaż strumienie wejściowe"
 
 #: prefs.ui:359
 msgid "Shows the slider even if no application is recording"
-msgstr "(Pokazuje regulatory, nawet przy braku aktywnych programów nagrywających)"
+msgstr "Pokazuje regulatory, nawet przy braku aktywnych programów nagrywających"
 
 #: prefs.ui:445
 msgid "Settings"
