@@ -9,7 +9,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: ;__\n"
-"PO-Revision-Date: 2017-11-28 16:46-0500\n"
+"PO-Revision-Date: 2017-11-28 17:02-0500\n"
 "Language-Team: Italian\n"
 "X-Generator: crowdin.com\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -24,105 +24,105 @@ msgstr ""
 
 #: prefs.js:288
 msgid "Error retrieving card details"
-msgstr ""
+msgstr "Errore nel recuperare le informazioni sulla scheda"
 
 #: prefs.js:289
 msgid "Helper script did not return valid card data."
-msgstr ""
+msgstr "Lo script di aiuto non ha restituito dati della scheda validi"
 
 #: widget/volume.js:255 widget/volume.js:257
 msgid "Inputs"
-msgstr ""
+msgstr "Sorgenti"
 
 #: widget/volume.js:394
 msgid "unknown"
-msgstr ""
+msgstr "sconosciuto"
 
 #: prefs.ui:56
 msgid "Position of volume mixer"
-msgstr ""
+msgstr "Posizione mixer del volume"
 
 #: prefs.ui:70
 msgid "Status Menu"
-msgstr ""
+msgstr "Menù di stato"
 
 #: prefs.ui:71
 msgid "Left"
-msgstr ""
+msgstr "Sinistra"
 
 #: prefs.ui:72
 msgid "Center"
-msgstr ""
+msgstr "Centro"
 
 #: prefs.ui:73
 msgid "Right"
-msgstr ""
+msgstr "Destra"
 
 #: prefs.ui:88
 msgid "Remove original slider"
-msgstr ""
+msgstr "Rimuovere cursore di scorrimento originale"
 
 #: prefs.ui:101
 msgid "Show detailed sliders"
-msgstr ""
+msgstr "Mostrare cursore di scorrimento dettagliato"
 
 #: prefs.ui:141
 msgid "Hotkey for profile switcher"
-msgstr ""
+msgstr "Scorciatoia selettore del profilo"
 
 #: prefs.ui:164
 msgid "(e.g. \"<Super>p\")"
-msgstr ""
+msgstr "(esempio «<Super>p»)"
 
 #: prefs.ui:207
 msgid "Volume Steps (%)"
-msgstr ""
+msgstr "Percentuale di aumento (%)"
 
 #: prefs.ui:234
 msgid "Use volume boost"
-msgstr ""
+msgstr "Usare l'aumento di volume"
 
 #: prefs.ui:260
 msgid "Show system sounds"
-msgstr ""
+msgstr "Mostra i suoni di sistema"
 
 #: prefs.ui:273
 msgid "Use symbolic icons"
-msgstr ""
+msgstr "Usare le icone simboliche"
 
 #: prefs.ui:310
 msgid "Show virtual streams"
-msgstr ""
+msgstr "Mostrare i flussi virtuali"
 
 #: prefs.ui:335
 msgid "Always show input streams"
-msgstr ""
+msgstr "Mostrare sempre i flussi di input"
 
 #: prefs.ui:359
 msgid "Shows the slider even if no application is recording"
-msgstr ""
+msgstr "Mostra il cursore di scorrimento anche se nessuna applicazione sta registrando"
 
 #: prefs.ui:445
 msgid "Settings"
-msgstr ""
+msgstr "Impostazioni"
 
 #: prefs.ui:482 prefs.ui:649
 msgid "Devices"
-msgstr ""
+msgstr "Dispositivi"
 
 #: prefs.ui:533
 msgid "Card"
-msgstr ""
+msgstr "Scheda"
 
 #: prefs.ui:547
 msgid "Profile"
-msgstr ""
+msgstr "Profilo"
 
 #: prefs.ui:560
 msgid "Switch"
-msgstr ""
+msgstr "Attiva"
 
 #: prefs.ui:573
 msgid "Display"
-msgstr ""
+msgstr "Visualizza"
 
