@@ -1,0 +1,128 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-shell-volume-mixer\n"
+"POT-Creation-Date: 2017-11-07 23:12+0100\n"
+"Last-Translator: aleho <alex@derhofbauer.at>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: ;__\n"
+"PO-Revision-Date: 2017-11-28 16:46-0500\n"
+"Language-Team: Italian\n"
+"X-Generator: crowdin.com\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: locale\n"
+"X-Poedit-SearchPathExcluded-1: pautils\n"
+"X-Poedit-SearchPathExcluded-2: schemas\n"
+"X-Crowdin-Project: gnome-shell-volume-mixer\n"
+"X-Crowdin-Language: it\n"
+"X-Crowdin-File: /master/shell-volume-mixer@derhofbauer.at/locale/translations.pot\n"
+"Language: it_IT\n"
+
+#: prefs.js:288
+msgid "Error retrieving card details"
+msgstr ""
+
+#: prefs.js:289
+msgid "Helper script did not return valid card data."
+msgstr ""
+
+#: widget/volume.js:255 widget/volume.js:257
+msgid "Inputs"
+msgstr ""
+
+#: widget/volume.js:394
+msgid "unknown"
+msgstr ""
+
+#: prefs.ui:56
+msgid "Position of volume mixer"
+msgstr ""
+
+#: prefs.ui:70
+msgid "Status Menu"
+msgstr ""
+
+#: prefs.ui:71
+msgid "Left"
+msgstr ""
+
+#: prefs.ui:72
+msgid "Center"
+msgstr ""
+
+#: prefs.ui:73
+msgid "Right"
+msgstr ""
+
+#: prefs.ui:88
+msgid "Remove original slider"
+msgstr ""
+
+#: prefs.ui:101
+msgid "Show detailed sliders"
+msgstr ""
+
+#: prefs.ui:141
+msgid "Hotkey for profile switcher"
+msgstr ""
+
+#: prefs.ui:164
+msgid "(e.g. \"<Super>p\")"
+msgstr ""
+
+#: prefs.ui:207
+msgid "Volume Steps (%)"
+msgstr ""
+
+#: prefs.ui:234
+msgid "Use volume boost"
+msgstr ""
+
+#: prefs.ui:260
+msgid "Show system sounds"
+msgstr ""
+
+#: prefs.ui:273
+msgid "Use symbolic icons"
+msgstr ""
+
+#: prefs.ui:310
+msgid "Show virtual streams"
+msgstr ""
+
+#: prefs.ui:335
+msgid "Always show input streams"
+msgstr ""
+
+#: prefs.ui:359
+msgid "Shows the slider even if no application is recording"
+msgstr ""
+
+#: prefs.ui:445
+msgid "Settings"
+msgstr ""
+
+#: prefs.ui:482 prefs.ui:649
+msgid "Devices"
+msgstr ""
+
+#: prefs.ui:533
+msgid "Card"
+msgstr ""
+
+#: prefs.ui:547
+msgid "Profile"
+msgstr ""
+
+#: prefs.ui:560
+msgid "Switch"
+msgstr ""
+
+#: prefs.ui:573
+msgid "Display"
+msgstr ""
+
