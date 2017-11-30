@@ -1,4 +1,4 @@
-VERSION = 0.14.0
+VERSION = 0.14.1
 EXTENSION = shell-volume-mixer@derhofbauer.at
 
 SRCDIR = $(EXTENSION)
@@ -11,16 +11,10 @@ SOURCES =  \
 	pautils/cardinfo.py \
 	pautils/pa.py \
 	widget/*.js \
-	extension.js \
-	hotkeys.js \
-	menu.js \
+	*.js \
 	metadata.json \
-	mixer.js \
-	prefs.js \
 	prefs.ui \
-	settings.js \
 	stylesheet.css \
-	utils.js \
 	$(GSCHEMA) $(SCHEMA_COMP)
 
 SCHEMA_COMP = schemas/gschemas.compiled
