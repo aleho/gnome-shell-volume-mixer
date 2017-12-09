@@ -516,8 +516,10 @@ var Mixer = new Lang.Class({
 
         if (this._defaultSink) {
             let port = this._defaultSink.get_port();
-            if (port.port != 'analog-output-speaker'
-                    && port.port != 'analog-output') {
+            if (port
+                && port.port != 'analog-output-speaker'
+                && port.port != 'analog-output'
+            ) {
                 label.push(port.human_port);
             }
         }
