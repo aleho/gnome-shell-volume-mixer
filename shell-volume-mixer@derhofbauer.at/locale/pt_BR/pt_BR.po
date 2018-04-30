@@ -1,0 +1,127 @@
+# This file is distributed under the same license as the GNOME Shell Volume Mixer.
+# Alexander Hofbauer <alex@derhofbauer.at>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: GNOME Shell Volume Mixer\n"
+"POT-Creation-Date: 2017-11-07 23:12+0100\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: ;__\n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.0.4\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Last-Translator: \n"
+"Language: pt_BR\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: locale\n"
+"X-Poedit-SearchPathExcluded-1: pautils\n"
+"X-Poedit-SearchPathExcluded-2: schemas\n"
+
+#: prefs.js:288
+msgid "Error retrieving card details"
+msgstr "Erro ao recuperar detalhes da placa"
+
+#: prefs.js:289
+msgid "Helper script did not return valid card data."
+msgstr "O script ajudante não retornou dados de placa válidos."
+
+#: widget/volume.js:255 widget/volume.js:257
+msgid "Inputs"
+msgstr "Entradas"
+
+#: widget/volume.js:394
+msgid "unknown"
+msgstr "desconhecido"
+
+#: prefs.ui:56
+msgid "Position of volume mixer"
+msgstr "Posição do mixador de volume"
+
+#: prefs.ui:70
+msgid "Status Menu"
+msgstr "Menu de Status"
+
+#: prefs.ui:71
+msgid "Left"
+msgstr "Esquerda"
+
+#: prefs.ui:72
+msgid "Center"
+msgstr "Centro"
+
+#: prefs.ui:73
+msgid "Right"
+msgstr "Direita"
+
+#: prefs.ui:88
+msgid "Remove original slider"
+msgstr "Remover controle deslizante"
+
+#: prefs.ui:101
+msgid "Show detailed sliders"
+msgstr "Exibir controles deslizantes detalhados"
+
+#: prefs.ui:141
+msgid "Hotkey for profile switcher"
+msgstr "Tecla de atalho para seletor de perfil"
+
+#: prefs.ui:164
+msgid "(e.g. \"<Super>p\")"
+msgstr "(ex. \"<Super>p\")"
+
+#: prefs.ui:207
+msgid "Volume Steps (%)"
+msgstr "Percentual de aumento (%)"
+
+#: prefs.ui:234
+msgid "Use volume boost"
+msgstr "Usar aumento de volume"
+
+#: prefs.ui:260
+msgid "Show system sounds"
+msgstr "Exibir sons do sistema"
+
+#: prefs.ui:273
+msgid "Use symbolic icons"
+msgstr "Usar ícones simbólicos"
+
+#: prefs.ui:310
+msgid "Show virtual streams"
+msgstr "Exibir fluxos virtuais"
+
+#: prefs.ui:335
+msgid "Always show input streams"
+msgstr "Sempre exibir fluxos de entrada"
+
+#: prefs.ui:359
+msgid "Shows the slider even if no application is recording"
+msgstr "Exibe o controle deslizante mesmo se nenhum aplicativo estiver gravando"
+
+#: prefs.ui:445
+msgid "Settings"
+msgstr "Configurações"
+
+#: prefs.ui:482 prefs.ui:649
+msgid "Devices"
+msgstr "Dispositivos"
+
+#: prefs.ui:533
+msgid "Card"
+msgstr "Placa"
+
+#: prefs.ui:547
+msgid "Profile"
+msgstr "Perfil"
+
+#: prefs.ui:560
+msgid "Switch"
+msgstr "Ativar"
+
+#: prefs.ui:573
+msgid "Display"
+msgstr "Mostrar"
