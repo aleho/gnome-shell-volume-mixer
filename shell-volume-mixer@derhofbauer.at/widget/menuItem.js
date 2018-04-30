@@ -44,14 +44,16 @@ let prepareMenuItem = function(instance) {
 
     if (!instance.firstLine) {
         instance.firstLine = makeItemLine(instance._ornamentLabel);
+        instance.container.add(instance.firstLine, { expand: true });
     }
 
     if (!instance.secondLine) {
         instance.secondLine = makeItemLine();
+        instance.container.add(instance.secondLine, { expand: true });
     }
 
-    instance.container.add(instance.firstLine, { expand: true });
-    instance.container.add(instance.secondLine, { expand: true });
+    instance.firstLine.add_style_class_name('line-1');
+    instance.secondLine.add_style_class_name('line-2');
 };
 
 
@@ -73,6 +75,7 @@ var MasterMenuItem = new Lang.Class({
         this.firstLine.add_child(this._triangleBin);
 
         this.secondLine.add(this._slider.actor, { expand: true });
+        this.secondLine.add_style_class_name('svm-master-slider-line');
 
         this.label.add_style_class_name('svm-master-label');
         this.actor.add_style_class_name('svm-master-slider svm-menu-item');

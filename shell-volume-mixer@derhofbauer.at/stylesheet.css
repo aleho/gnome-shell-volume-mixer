@@ -11,16 +11,28 @@
     padding-left: 0;
 }
 
-.svm-menu-item-container .popup-menu-ornament {
-    margin-left: 0;
-    padding-left: 0;
-}
-
 .svm-menu-item-container .svm-container-line {
     margin-left: 0;
     padding-left: 0;
     padding-bottom: 0;
 }
+
+
+/** copy/paste from gnome-shell **/
+.svm-master-slider-line .popup-menu-ornament:ltr {
+    padding-left: 20px;
+    margin-left: 1.09em;
+}
+.svm-master-slider-line .popup-menu-ornament:rtl {
+    padding-right: 20px;
+    margin-right: 1.09em;
+}
+
+.popup-sub-menu .svm-container-line.line-1 .popup-menu-ornament {
+    padding-left: 0;
+    margin-left: 0;
+}
+
 
 .popup-menu-item .svm-container-line {
     padding-right: 0;
