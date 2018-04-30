@@ -9,7 +9,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: ;__\n"
-"PO-Revision-Date: 2018-04-30 15:18-0400\n"
+"PO-Revision-Date: 2018-04-30 15:29-0400\n"
 "Language-Team: Portuguese, Brazilian\n"
 "X-Generator: crowdin.com\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -24,105 +24,105 @@ msgstr ""
 
 #: prefs.js:288
 msgid "Error retrieving card details"
-msgstr ""
+msgstr "Erro ao recuperar detalhes da placa"
 
 #: prefs.js:289
 msgid "Helper script did not return valid card data."
-msgstr ""
+msgstr "O script ajudante não retornou dados de placa válidos."
 
 #: widget/volume.js:255 widget/volume.js:257
 msgid "Inputs"
-msgstr ""
+msgstr "Entradas"
 
 #: widget/volume.js:394
 msgid "unknown"
-msgstr ""
+msgstr "desconhecido"
 
 #: prefs.ui:56
 msgid "Position of volume mixer"
-msgstr ""
+msgstr "Posição do mixador de volume"
 
 #: prefs.ui:70
 msgid "Status Menu"
-msgstr ""
+msgstr "Menu de Status"
 
 #: prefs.ui:71
 msgid "Left"
-msgstr ""
+msgstr "Esquerda"
 
 #: prefs.ui:72
 msgid "Center"
-msgstr ""
+msgstr "Centro"
 
 #: prefs.ui:73
 msgid "Right"
-msgstr ""
+msgstr "Direita"
 
 #: prefs.ui:88
 msgid "Remove original slider"
-msgstr ""
+msgstr "Remover controle deslizante"
 
 #: prefs.ui:101
 msgid "Show detailed sliders"
-msgstr ""
+msgstr "Exibir controles deslizantes detalhados"
 
 #: prefs.ui:141
 msgid "Hotkey for profile switcher"
-msgstr ""
+msgstr "Tecla de atalho para seletor de perfil"
 
 #: prefs.ui:164
 msgid "(e.g. \"<Super>p\")"
-msgstr ""
+msgstr "(ex. \"<Super>p\")"
 
 #: prefs.ui:207
 msgid "Volume Steps (%)"
-msgstr ""
+msgstr "Percentual de aumento (%)"
 
 #: prefs.ui:234
 msgid "Use volume boost"
-msgstr ""
+msgstr "Usar aumento de volume"
 
 #: prefs.ui:260
 msgid "Show system sounds"
-msgstr ""
+msgstr "Exibir sons do sistema"
 
 #: prefs.ui:273
 msgid "Use symbolic icons"
-msgstr ""
+msgstr "Usar ícones simbólicos"
 
 #: prefs.ui:310
 msgid "Show virtual streams"
-msgstr ""
+msgstr "Exibir fluxos virtuais"
 
 #: prefs.ui:335
 msgid "Always show input streams"
-msgstr ""
+msgstr "Sempre exibir fluxos de entrada"
 
 #: prefs.ui:359
 msgid "Shows the slider even if no application is recording"
-msgstr ""
+msgstr "Exibe o controle deslizante mesmo se nenhum aplicativo estiver gravando"
 
 #: prefs.ui:445
 msgid "Settings"
-msgstr ""
+msgstr "Configurações"
 
 #: prefs.ui:482 prefs.ui:649
 msgid "Devices"
-msgstr ""
+msgstr "Dispositivos"
 
 #: prefs.ui:533
 msgid "Card"
-msgstr ""
+msgstr "Placa"
 
 #: prefs.ui:547
 msgid "Profile"
-msgstr ""
+msgstr "Perfil"
 
 #: prefs.ui:560
 msgid "Switch"
-msgstr ""
+msgstr "Ativar"
 
 #: prefs.ui:573
 msgid "Display"
-msgstr ""
+msgstr "Mostrar"
 
