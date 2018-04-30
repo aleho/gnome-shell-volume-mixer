@@ -39,7 +39,7 @@ let prepareMenuItem = function(instance) {
         instance.actor.remove_actor(child);
     });
 
-    instance.container = new St.BoxLayout({ vertical: true });
+    instance.container = new St.BoxLayout({ vertical: true, style_class: 'svm-menu-item-container' });
     instance.actor.add(instance.container, { expand: true });
 
     if (!instance.firstLine) {
