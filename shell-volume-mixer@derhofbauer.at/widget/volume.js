@@ -67,19 +67,19 @@ const StreamSlider = new Lang.Class({
 
         this._volumeInfo = new FloatingLabel();
 
-        this._slider.connect('value-changed', Lang.bind(this, this._sliderChanged));
-        this._slider.connect('drag-end', Lang.bind(this, this._notifyVolumeChange));
+        this._slider.connect('value-changed', this._sliderChanged.bind(this));
+        this._slider.connect('drag-end', this._notifyVolumeChange.bind(this));
 
         if (this._onButtonPress) {
-            this.item.actor.connect('button-press-event', Lang.bind(this, this._onButtonPress));
+            this.item.actor.connect('button-press-event', this._onButtonPress.bind(this));
         }
 
         if (this._onKeyPress) {
-            this.item.actor.connect('key-press-event', Lang.bind(this, this._onKeyPress));
+            this.item.actor.connect('key-press-event', this._onKeyPress.bind(this));
         }
 
         if (this._slider._onScrollEvent) {
-            this.item.actor.connect('scroll-event', Lang.bind(this._slider, this._slider._onScrollEvent));
+            this.item.actor.connect('scroll-event', this._slider._onScrollEvent.bind(this._slider));
         }
 
         this.stream = options.stream || null;
@@ -172,12 +172,12 @@ const StreamSlider = new Lang.Class({
             this._volumeInfo.show(x, y);
         }
 
-        this._labelTimeoutId = Mainloop.timeout_add(1000, Lang.bind(this, function() {
+        this._labelTimeoutId = Mainloop.timeout_add(1000, function() {
             this._infoShowing = false;
             this._labelTimeoutId = undefined;
             this._volumeInfo.hide();
             return GLib.SOURCE_REMOVE;
-        }));
+        }.bind(this));
     },
 
     hideVolumeInfo: function() {
@@ -210,9 +210,9 @@ var MasterSlider = new Lang.Class({
         this.parent(control, options);
         this._slider.actor.accessible_name = _('Volume');
 
-        this.item.menu.addAction(_('Settings'), Lang.bind(this, function () {
+        this.item.menu.addAction(_('Settings'), function () {
             Settings.openDialog();
-        }));
+        }.bind(this));
     },
 
     addSliderItem: function (item) {
@@ -267,9 +267,9 @@ var AggregatedInput = new Lang.Class({
     addSlider: function (slider, pos) {
         this.item.menu.addMenuItem(slider.item, pos || undefined);
 
-        slider.connect('stream-updated', Lang.bind(this, function () {
+        slider.connect('stream-updated', function () {
             this.refresh();
-        }));
+        }.bind(this));
     },
 
     refresh: function() {
@@ -407,8 +407,8 @@ var InputStreamSlider = new Lang.Class({
         this.parent(control, options);
 
         this._slider.actor.accessible_name = _('Microphone');
-        this._control.connect('stream-added', Lang.bind(this, this._maybeShowInput));
-        this._control.connect('stream-removed', Lang.bind(this, this._maybeShowInput));
+        this._control.connect('stream-added', this._maybeShowInput.bind(this));
+        this._control.connect('stream-removed', this._maybeShowInput.bind(this));
     },
 
     _connectStream: function(stream) {

@@ -35,9 +35,9 @@ let makeItemLine = function(ornament) {
 };
 
 let prepareMenuItem = function(instance) {
-    instance.actor.get_children().map(Lang.bind(instance, function (child) {
+    instance.actor.get_children().map(function (child) {
         instance.actor.remove_actor(child);
-    }));
+    });
 
     instance.container = new St.BoxLayout({ vertical: true });
     instance.actor.add(instance.container, { expand: true });

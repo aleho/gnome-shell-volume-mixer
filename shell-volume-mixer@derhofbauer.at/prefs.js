@@ -70,14 +70,14 @@ const Preferences = new Lang.Class({
         }
 
         this._deviceSelection = this._objects.treeDevices.get_selection();
-        this._deviceSelection.set_select_function(Lang.bind(this, this.onDeviceSelection));
-        this._deviceSelection.connect('changed', Lang.bind(this, this.onDeviceSelectionChanged));
+        this._deviceSelection.set_select_function(this.onDeviceSelection.bind(this));
+        this._deviceSelection.connect('changed', this.onDeviceSelectionChanged.bind(this));
 
         this._pinnedSelection = this._objects.treePinned.get_selection();
-        this._pinnedSelection.connect('changed', Lang.bind(this, this.onPinnedSelectionChanged));
+        this._pinnedSelection.connect('changed', this.onPinnedSelectionChanged.bind(this));
 
-        this._objects.rndQuickswitch.connect('toggled', Lang.bind(this, this.onQuickswitchToggled));
-        this._objects.rndDisplay.connect('toggled', Lang.bind(this, this.onDisplayToggled));
+        this._objects.rndQuickswitch.connect('toggled', this.onQuickswitchToggled.bind(this));
+        this._objects.rndDisplay.connect('toggled', this.onDisplayToggled.bind(this));
 
         this._objects.cmbPosition.set_active(this._settings.get_enum('position'));
         this._objects.swRemoveOriginal.set_active(this._settings.get_boolean('remove-original'));
@@ -266,9 +266,9 @@ const Preferences = new Lang.Class({
      * @param setting Key in settings, passed to the callback.
      */
     _bindSignal: function(id, signal, callback, setting) {
-        this._objects[id].connect(signal, Lang.bind(this, function(widget) {
+        this._objects[id].connect(signal, function(widget) {
             callback.apply(this, [widget, setting]);
-        }));
+        }.bind(this));
     },
 
 

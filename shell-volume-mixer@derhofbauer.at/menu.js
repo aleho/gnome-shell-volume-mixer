@@ -59,7 +59,7 @@ var Menu = new Lang.Class({
 
         for (let name in signals) {
             try {
-                mixer.connect(name, Lang.bind(this, signals[name]));
+                mixer.connect(name, signals[name].bind(this));
             } catch (exception) {
                 Utils.info('Could not connect to signal -', exception);
             }
@@ -72,9 +72,9 @@ var Menu = new Lang.Class({
             symbolicIcons: this.options.symbolicIcons
         });
 
-        this._output.connect('stream-updated', Lang.bind(this, function() {
+        this._output.connect('stream-updated', function() {
             this.emit('icon-changed');
-        }));
+        }.bind(this));
 
 
         this._inputMenu = new Volume.AggregatedInput(this._control, {
@@ -270,11 +270,11 @@ var Indicator = new Lang.Class({
         this._control = mixer.control;
 
         this._volumeMenu = new Menu(mixer, options);
-        this._volumeMenu.connect('icon-changed', Lang.bind(this, this.updateIcon));
+        this._volumeMenu.connect('icon-changed', this.updateIcon.bind(this));
 
         this.menu.addMenuItem(this._volumeMenu);
 
-        this.indicators.connect('scroll-event', Lang.bind(this, this._onScrollEvent));
+        this.indicators.connect('scroll-event', this._onScrollEvent.bind(this));
     },
 
     updateIcon: function() {

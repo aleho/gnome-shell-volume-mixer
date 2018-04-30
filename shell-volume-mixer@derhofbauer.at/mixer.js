@@ -49,10 +49,10 @@ var Mixer = new Lang.Class({
         this._cards = this._getCardDetails();
         [this._pinned, this._cycled] = this._parsePinnedProfiles();
 
-        this.connect('state-changed', Lang.bind(this, this._onStateChanged));
-        this.connect('card-added', Lang.bind(this, this._onCardAdded));
-        this.connect('card-removed', Lang.bind(this, this._onCardRemoved));
-        this.connect('default-sink-changed', Lang.bind(this, this._onDefaultSinkChanged));
+        this.connect('state-changed', this._onStateChanged.bind(this));
+        this.connect('card-added', this._onCardAdded.bind(this));
+        this.connect('card-removed', this._onCardRemoved.bind(this));
+        this.connect('default-sink-changed', this._onDefaultSinkChanged.bind(this));
 
         this._bindProfileHotkey();
 
@@ -94,7 +94,7 @@ var Mixer = new Lang.Class({
             return;
         }
 
-        this._hotkeys.bind('profile-switcher-hotkey', Lang.bind(this, this._switchProfile));
+        this._hotkeys.bind('profile-switcher-hotkey', this._switchProfile.bind(this));
     },
 
     /**
@@ -102,9 +102,9 @@ var Mixer = new Lang.Class({
      */
     _bindMediaKeys: function() {
         let mkSettings = new Settings.Settings(Settings.MEDIAKEYS_SCHEMA);
-        this._hotkeys.bindProxy(mkSettings, 'volume-down', Lang.bind(this, this.decreaseMasterVolume));
-        this._hotkeys.bindProxy(mkSettings, 'volume-up', Lang.bind(this, this.increaseMasterVolume));
-        this._hotkeys.bindProxy(mkSettings, 'volume-mute', Lang.bind(this, this.muteMasterVolume));
+        this._hotkeys.bindProxy(mkSettings, 'volume-down', this.decreaseMasterVolume.bind(this));
+        this._hotkeys.bindProxy(mkSettings, 'volume-up', this.increaseMasterVolume.bind(this));
+        this._hotkeys.bindProxy(mkSettings, 'volume-mute', this.muteMasterVolume.bind(this));
     },
 
 

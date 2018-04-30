@@ -42,9 +42,9 @@ var PanelButton = new Lang.Class({
         this._box.add(this._bin);
 
         this.actor.add_actor(this._box);
-        this.actor.connect('scroll-event', Lang.bind(this, this._onScrollEvent));
+        this.actor.connect('scroll-event', this._onScrollEvent.bind(this));
 
-        this._mixerMenu.connect('icon-changed', Lang.bind(this, this._onIconChanged));
+        this._mixerMenu.connect('icon-changed', this._onIconChanged.bind(this));
 
         this.menu.actor.add_style_class_name('shell-volume-mixer-button');
         this.menu.addMenuItem(this._mixerMenu);

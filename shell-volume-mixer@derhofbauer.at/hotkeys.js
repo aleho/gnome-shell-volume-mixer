@@ -79,7 +79,7 @@ var Hotkeys = new Lang.Class({
         }
 
         this._proxyStringSettingChange(fromSettings, setting);
-        fromSettings.connect('changed::' + setting, Lang.bind(this, this._proxyStringSettingChange));
+        fromSettings.connect('changed::' + setting, this._proxyStringSettingChange.bind(this));
 
         this._proxies[setting] = fromSettings;
 

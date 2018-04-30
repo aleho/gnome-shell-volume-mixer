@@ -70,9 +70,9 @@ var FloatingLabel = new Lang.Class({
             opacity: 0,
             time: duration,
             transition: 'easeOutQuad',
-            onComplete: Lang.bind(this, function() {
+            onComplete: function() {
                 this._label.hide();
-            })
+            }.bind(this)
         });
     }
 });
