@@ -22,7 +22,7 @@ var PanelButton = new Lang.Class({
     Name: 'ShellVolumeMixerPanelButton',
     Extends: PanelMenu.Button,
 
-    _init: function(mixer, options) {
+    _init(mixer, options) {
         this.parent(0.0, 'ShellVolumeMixer');
 
         this._mixerMenu = new Menu.Menu(mixer, {
@@ -52,11 +52,11 @@ var PanelButton = new Lang.Class({
         this._onIconChanged();
     },
 
-    _onScrollEvent: function(actor, event) {
+    _onScrollEvent(actor, event) {
         this._mixerMenu.scroll(event);
     },
 
-    _onIconChanged: function() {
+    _onIconChanged() {
         if (this._mixerMenu.outputHasHeadphones()) {
             this.setIcon('audio-headphones-symbolic');
         } else {
@@ -64,7 +64,7 @@ var PanelButton = new Lang.Class({
         }
     },
 
-    setIcon: function(icon_name) {
+    setIcon(icon_name) {
         this._icon.icon_name = icon_name;
     }
 });

@@ -18,7 +18,7 @@ const BINDINGS = {};
 var Hotkeys = new Lang.Class({
     Name: 'Hotkeys',
 
-    _init: function(settings) {
+    _init(settings) {
         this._settings = settings;
         this._bindings = BINDINGS;
         this._proxies = {};
@@ -27,7 +27,7 @@ var Hotkeys = new Lang.Class({
     /**
      * Binds a hotkey using the local settings instance.
      */
-    bind: function(setting, callback) {
+    bind(setting, callback) {
         if (this._bindings[setting]) {
             return false;
         }
@@ -48,7 +48,7 @@ var Hotkeys = new Lang.Class({
     /**
      * Unbinds a hotkey.
      */
-    unbind: function(setting) {
+    unbind(setting) {
         if (!this._bindings[setting]) {
             return false;
         }
@@ -67,7 +67,7 @@ var Hotkeys = new Lang.Class({
     /**
      * Binds a hotkey, proxying string changes from another settings object.
      */
-    bindProxy: function(fromSettings, setting, callback) {
+    bindProxy(fromSettings, setting, callback) {
         if (this._bindings[setting]) {
             return false;
         }
@@ -89,7 +89,7 @@ var Hotkeys = new Lang.Class({
     /**
      * Unbinds all hotkeys.
      */
-    unbindAll: function() {
+    unbindAll() {
         for (let setting in this._bindings) {
             this.unbind(setting);
         }
@@ -100,7 +100,7 @@ var Hotkeys = new Lang.Class({
      * Helper to use Shell's keybindings (which expects an array) with string
      * keybindings.
      */
-    _proxyStringSettingChange: function(gsettings, key) {
+    _proxyStringSettingChange(gsettings, key) {
         let value = gsettings.get_string(key) || '';
         let proxy = this._settings.get_array(key);
 

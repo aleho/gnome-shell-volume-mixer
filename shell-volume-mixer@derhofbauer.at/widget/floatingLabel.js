@@ -23,7 +23,7 @@ const Tweener = imports.ui.tweener;
 var FloatingLabel = new Lang.Class({
     Name: 'FloatingLabel',
 
-    _init: function() {
+    _init() {
         this._label = new St.Label({ style_class: 'dash-label floating-label' });
         this.text = '100%';
         this._label.hide();
@@ -42,7 +42,7 @@ var FloatingLabel = new Lang.Class({
         return this._label.get_size();
     },
 
-    show: function(x, y, animate) {
+    show(x, y, animate) {
         this._label.opacity = 0;
         this._label.show();
         this._label.raise_top();
@@ -63,7 +63,7 @@ var FloatingLabel = new Lang.Class({
         });
     },
 
-    hide: function(animate) {
+    hide(animate) {
         let duration = animate !== false ? 0.1 : 0;
 
         Tweener.addTween(this._label, {

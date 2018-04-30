@@ -36,7 +36,7 @@ const StreamSlider = new Lang.Class({
     Name: 'OutputStreamSlider',
     Extends: Volume.OutputStreamSlider,
 
-    _init: function(control, options) {
+    _init(control, options) {
         this.options = options || {};
         this._control = control;
         this._mixer = options.mixer;
@@ -85,11 +85,11 @@ const StreamSlider = new Lang.Class({
         this.stream = options.stream || null;
     },
 
-    _onKeyPress: function(actor, event) {
+    _onKeyPress(actor, event) {
         return this._slider.onKeyPressEvent(actor, event);
     },
 
-    _onButtonPress: function(actor, event) {
+    _onButtonPress(actor, event) {
         if (event.get_button() == 2) {
             this._stream.change_is_muted(!this._stream.is_muted);
             return Clutter.EVENT_STOP;
@@ -97,12 +97,12 @@ const StreamSlider = new Lang.Class({
         return this._slider.startDragging(event);
     },
 
-    refresh: function() {
+    refresh() {
         this._updateLabel();
         this._updateSliderIcon();
     },
 
-    _updateSliderIcon: function() {
+    _updateSliderIcon() {
         if (this._stream && !this.options.symbolicIcons) {
             this._icon.gicon = this._stream.get_gicon();
         } else {
@@ -112,16 +112,16 @@ const StreamSlider = new Lang.Class({
         this.emit('stream-updated');
     },
 
-    _connectStream: function(stream) {
+    _connectStream(stream) {
         this.parent(stream);
         this.refresh();
     },
 
-    _updateLabel: function() {
+    _updateLabel() {
         this._label.text = this._stream.name || this._stream.description || '';
     },
 
-    _sliderChanged: function(slider, value, event) {
+    _sliderChanged(slider, value, event) {
         if (!this._stream) {
             return;
         }
@@ -138,7 +138,7 @@ const StreamSlider = new Lang.Class({
         this._showVolumeInfo(percent, event);
     },
 
-    _updateVolume: function() {
+    _updateVolume() {
         let muted = this._stream.is_muted;
         let max = this._mixer.getVolMax();
 
@@ -146,7 +146,7 @@ const StreamSlider = new Lang.Class({
         this.emit('stream-updated');
     },
 
-    _showVolumeInfo: function(value, event) {
+    _showVolumeInfo(value, event) {
         this._volumeInfo.text = value + '%';
 
         if (this._labelTimeoutId) {
@@ -180,7 +180,7 @@ const StreamSlider = new Lang.Class({
         }.bind(this));
     },
 
-    hideVolumeInfo: function() {
+    hideVolumeInfo() {
         if (this._labelTimeoutId) {
             Mainloop.source_remove(this._labelTimeoutId);
             this._labelTimeoutId = undefined;
@@ -200,7 +200,7 @@ var MasterSlider = new Lang.Class({
     Name: 'MasterSlider',
     Extends: StreamSlider,
 
-    _init: function(control, options) {
+    _init(control, options) {
         this.item = new MenuItem.MasterMenuItem(options.mixer.getNormalizedStep());
 
         this._slider = this.item._slider;
@@ -215,7 +215,7 @@ var MasterSlider = new Lang.Class({
         }.bind(this));
     },
 
-    addSliderItem: function (item) {
+    addSliderItem(item) {
         let pos = (this.item.menu._getMenuItems().length || 0) - 1;
 
         this.item.menu.addMenuItem(item, pos < 0 ? 0 : pos);
@@ -224,21 +224,21 @@ var MasterSlider = new Lang.Class({
     /**
      * Override button click to allow for mute / unmute and menu to be opened.
      */
-    _onButtonPress: function(actor, event) {
+    _onButtonPress(actor, event) {
         if (event.get_button() == 2) {
             this._stream.change_is_muted(!this._stream.is_muted);
         }
         return Clutter.EVENT_STOP;
     },
 
-    _updateLabel: function() {
+    _updateLabel() {
         this._label.text = this._stream.description;
     },
 
     /**
      * Mouse scroll event triggered by scrolling over panel icon.
      */
-    scroll: function(event) {
+    scroll(event) {
         event.showInfoAtMouseCursor = !Main.panel.statusArea.aggregateMenu.menu.isOpen;
         return this._slider.scroll(event);
     }
@@ -251,7 +251,7 @@ var MasterSlider = new Lang.Class({
 var AggregatedInput = new Lang.Class({
     Name: 'AggregatedInput',
 
-    _init: function() {
+    _init() {
         this.item = new PopupMenu.PopupSubMenuMenuItem(__('Inputs'), true);
         this.item.icon.icon_name = 'applications-multimedia-symbolic';
         this.item.actor.accessible_name = __('Inputs');
@@ -259,12 +259,12 @@ var AggregatedInput = new Lang.Class({
         this._inputStream = null;
     },
 
-    setInputStream: function(inputSlider) {
+    setInputStream(inputSlider) {
         this._inputStream = inputSlider;
         this.addSlider(inputSlider, 0);
     },
 
-    addSlider: function (slider, pos) {
+    addSlider(slider, pos) {
         this.item.menu.addMenuItem(slider.item, pos || undefined);
 
         slider.connect('stream-updated', function () {
@@ -272,7 +272,7 @@ var AggregatedInput = new Lang.Class({
         }.bind(this));
     },
 
-    refresh: function() {
+    refresh() {
         let hasVisibleItems = (this.item.menu.numMenuItems > 1
             || (this.item.menu.numMenuItems > 0 && this._inputStream.isVisible())
         );
@@ -290,7 +290,7 @@ var OutputSlider = new Lang.Class({
     Name: 'OutputSlider',
     Extends: StreamSlider,
 
-    _init: function(control, options) {
+    _init(control, options) {
         if (options.detailed) {
             this._details = new St.Label({ text: '', style_class: 'svm-slider-details' });
         }
@@ -302,7 +302,7 @@ var OutputSlider = new Lang.Class({
         }
     },
 
-    _onButtonPress: function(actor, event) {
+    _onButtonPress(actor, event) {
         if (event.get_button() == 1) {
             this._setAsDefault();
             return Clutter.EVENT_PROPAGATE;
@@ -310,7 +310,7 @@ var OutputSlider = new Lang.Class({
         return this.parent(actor, event);
     },
 
-    _onKeyPress: function(actor, event) {
+    _onKeyPress(actor, event) {
         let symbol = event.get_key_symbol();
         if (symbol == Clutter.KEY_space || symbol == Clutter.KEY_Return) {
             this._setAsDefault();
@@ -320,7 +320,7 @@ var OutputSlider = new Lang.Class({
         return this.parent(actor, event);
     },
 
-    _updateLabel: function() {
+    _updateLabel() {
         let text = this._stream.description;
         let description = this._stream.name;
 
@@ -343,7 +343,7 @@ var OutputSlider = new Lang.Class({
         }
     },
 
-    setSelected: function(selected) {
+    setSelected(selected) {
         if (selected !== false) {
             this.item.setSelected(true);
             this._label.add_style_class_name('selected-stream');
@@ -353,7 +353,7 @@ var OutputSlider = new Lang.Class({
         }
     },
 
-    _setAsDefault: function() {
+    _setAsDefault() {
         this._control.set_default_sink(this._stream);
     }
 });
@@ -366,7 +366,7 @@ var EventsSlider = new Lang.Class({
     Name: 'EventsSlider',
     Extends: StreamSlider,
 
-    _updateLabel: function() {
+    _updateLabel() {
         this._label.text = this._stream.name;
     }
 });
@@ -379,7 +379,7 @@ var InputSlider = new Lang.Class({
     Name: 'InputSlider',
     Extends: StreamSlider,
 
-    _updateLabel: function() {
+    _updateLabel() {
         let text = this._stream.name;
         let description = this._stream.description;
 
@@ -403,7 +403,7 @@ var InputStreamSlider = new Lang.Class({
     Name: 'InputStreamSlider',
     Extends: StreamSlider,
 
-    _init: function(control, options) {
+    _init(control, options) {
         this.parent(control, options);
 
         this._slider.actor.accessible_name = _('Microphone');
@@ -411,12 +411,12 @@ var InputStreamSlider = new Lang.Class({
         this._control.connect('stream-removed', this._maybeShowInput.bind(this));
     },
 
-    _connectStream: function(stream) {
+    _connectStream(stream) {
         this.parent(stream);
         this._maybeShowInput();
     },
 
-    _maybeShowInput: function() {
+    _maybeShowInput() {
         if (this.options.showAlways === true) {
             this._showInput = true;
             this._updateVisibility();
@@ -425,21 +425,21 @@ var InputStreamSlider = new Lang.Class({
         }
     },
 
-    isVisible: function() {
+    isVisible() {
         return this._shouldBeVisible();
     },
 
-    _shouldBeVisible: function() {
+    _shouldBeVisible() {
         return Volume.InputStreamSlider.prototype._shouldBeVisible.call(this);
     },
 
-    _updateLabel: function() {
+    _updateLabel() {
         this.parent();
 
         this._label.text = _('Microphone');
     },
 
-    _updateSliderIcon: function() {
+    _updateSliderIcon() {
         if (this._stream && !this.options.symbolicIcons) {
             this._icon.gicon = this._stream.get_gicon();
         } else {

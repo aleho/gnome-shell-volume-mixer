@@ -43,13 +43,13 @@ const Preferences = new Lang.Class({
         rndDisplay: null
     },
 
-    _init: function() {
+    _init() {
         // just init gettext here
         Gettext.getLocal();
         this._settings = new Settings.Settings();
     },
 
-    buildWidget: function() {
+    buildWidget() {
         this.builder = new Gtk.Builder();
         this.builder.add_from_file(Utils.getExtensionPath('prefs.ui'));
 
@@ -64,7 +64,7 @@ const Preferences = new Lang.Class({
         return this._widget;
     },
 
-    _connectAndInitUi: function() {
+    _connectAndInitUi() {
         for (let k in this._objects) {
             this._objects[k] = this.builder.get_object(k);
         }
@@ -111,7 +111,7 @@ const Preferences = new Lang.Class({
     /**
      * Initializes the content of the cards / profiles selection tree.
      */
-    _initCards: function() {
+    _initCards() {
         this._cards = {};
         let cards = Utils.getCards();
 
@@ -174,7 +174,7 @@ const Preferences = new Lang.Class({
      * Updates the content of the selection list with all values from the
      * settings key.
      */
-    _populatePinned: function() {
+    _populatePinned() {
         let pinned = this._settings.get_array('pinned-profiles');
         this._pinned.clear();
 
@@ -215,7 +215,7 @@ const Preferences = new Lang.Class({
     /**
      * Returns the entries in the selection list as array of strings.
      */
-    _storePinned: function() {
+    _storePinned() {
         let values = [];
         let [success, iter] = this._pinned.get_iter_first();
 
@@ -236,7 +236,7 @@ const Preferences = new Lang.Class({
     /**
      * Shows a message dialog bound to the parent window.
      */
-    _showMessage: function(title, text, type) {
+    _showMessage(title, text, type) {
         type = type || 'WARNING';
         Utils.l(Gtk.MessageType[type]);
 
@@ -265,7 +265,7 @@ const Preferences = new Lang.Class({
      * @param callback
      * @param setting Key in settings, passed to the callback.
      */
-    _bindSignal: function(id, signal, callback, setting) {
+    _bindSignal(id, signal, callback, setting) {
         this._objects[id].connect(signal, function(widget) {
             callback.apply(this, [widget, setting]);
         }.bind(this));
@@ -275,7 +275,7 @@ const Preferences = new Lang.Class({
     /**
      * Callback for notebook tab selection.
      */
-    onSwitchPage: function(tabs) {
+    onSwitchPage(tabs) {
         if (this._hasCards || this._cardsWarningShown) {
             return;
         }
@@ -295,7 +295,7 @@ const Preferences = new Lang.Class({
     /**
      * Callback for change event of combobox.
      */
-    onPositionChanged: function(cmbPosition, setting) {
+    onPositionChanged(cmbPosition, setting) {
         let value = cmbPosition.get_active();
 
         if (setting) {
@@ -317,21 +317,21 @@ const Preferences = new Lang.Class({
     /**
      * Callback for all switches.
      */
-    onSwitchActivate: function(widget, setting) {
+    onSwitchActivate(widget, setting) {
         this._settings.set_boolean(setting, widget.active);
     },
 
     /**
      * Callback for change event of volume step spinner.
      */
-    onVolumeStepChanged: function(widget) {
+    onVolumeStepChanged(widget) {
         this._settings.set_int('volume-step', parseInt(widget.get_text()));
     },
 
     /**
      * Callback for change event of profile switcher hotkey.
      */
-    onProfileSwitchChanged: function(widget, setting) {
+    onProfileSwitchChanged(widget, setting) {
         let entry = widget.get_text().trim();
 
         if (!entry) {
@@ -358,7 +358,7 @@ const Preferences = new Lang.Class({
     /**
      * Selection event for devices, before selection is set.
      */
-    onDeviceSelection: function(selection, model, path) {
+    onDeviceSelection(selection, model, path) {
         if (!path || path.get_depth() < 2) {
             return false;
         }
@@ -369,7 +369,7 @@ const Preferences = new Lang.Class({
     /**
      * Determines whether selection allows to enable the add button.
      */
-    onDeviceSelectionChanged: function(selection) {
+    onDeviceSelectionChanged(selection) {
         this._objects.btnAddDevice.set_sensitive(false);
 
         if (selection.count_selected_rows() <= 0) {
@@ -396,7 +396,7 @@ const Preferences = new Lang.Class({
     /**
      * Determines whether selection allows to enable the remove button.
      */
-    onPinnedSelectionChanged: function(selection) {
+    onPinnedSelectionChanged(selection) {
         if (selection.count_selected_rows() > 0) {
             this._objects.btnRemoveDevice.set_sensitive(true);
         } else {
@@ -408,7 +408,7 @@ const Preferences = new Lang.Class({
     /**
      * Callback for add button.
      */
-    onAddDevice: function(widget) {
+    onAddDevice(widget) {
         widget.set_sensitive(false);
 
         let [isSelected, store, iter] = this._deviceSelection.get_selected();
@@ -438,7 +438,7 @@ const Preferences = new Lang.Class({
     /**
      * Callback for remove button.
      */
-    onRemoveDevice: function() {
+    onRemoveDevice() {
         let [isSelected, store, iter] = this._pinnedSelection.get_selected();
 
         if (!isSelected) {
@@ -472,7 +472,7 @@ const Preferences = new Lang.Class({
     /**
      * Toggle event for quickswitch switches.
      */
-    onQuickswitchToggled: function(widget, path) {
+    onQuickswitchToggled(widget, path) {
         let active = !widget.active;
         let [success, iter] = this._pinned.get_iter_from_string(path);
         if (!success) {
@@ -485,7 +485,7 @@ const Preferences = new Lang.Class({
     /**
      * Toggle event for display switches.
      */
-    onDisplayToggled: function(widget, path) {
+    onDisplayToggled(widget, path) {
         let active = !widget.active;
         let [success, iter] = this._pinned.get_iter_from_string(path);
         if (!success) {

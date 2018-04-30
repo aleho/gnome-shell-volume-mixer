@@ -44,7 +44,7 @@ var Settings = new Lang.Class({
         return GSETTINGS[this.schema];
     },
 
-    _init: function(schema) {
+    _init(schema) {
         this.schema = schema || SETTINGS_SCHEMA;
 
         if (!SIGNALS[this.schema]) {
@@ -57,7 +57,7 @@ var Settings = new Lang.Class({
     /**
      * Initializes a single instance of Gio.Settings for this extension.
      */
-    _initSettings: function() {
+    _initSettings() {
         let instance;
 
         // for all schemas != app schema
@@ -98,7 +98,7 @@ var Settings = new Lang.Class({
      * @param schema Name of the schema to initialize.
      * @returns {Gio.Settings}
      */
-    _getSettings: function(schema) {
+    _getSettings(schema) {
         if (Gio.Settings.list_schemas().indexOf(schema) == -1) {
             return null;
         }
@@ -115,7 +115,7 @@ var Settings = new Lang.Class({
      * @param signal
      * @param callback
      */
-    connect: function(signal, callback) {
+    connect(signal, callback) {
         // already connected
         if (this._signals && this._signals[signal]) {
             Utils.error(
@@ -135,14 +135,14 @@ var Settings = new Lang.Class({
      *
      * @param callback
      */
-    connectChanged: function(callback) {
+    connectChanged(callback) {
         this.connect('changed::', callback);
     },
 
     /**
      * Disconnects all connected signals.
      */
-    disconnectAll: function() {
+    disconnectAll() {
         for (let signal in this._signals) {
             this.disconnect(this._signals[signal]);
         }
@@ -151,7 +151,7 @@ var Settings = new Lang.Class({
     /**
      * Disconnects a signal by name.
      */
-    disconnect: function(signal) {
+    disconnect(signal) {
         if (this._signals[signal]) {
             this.settings.disconnect(this._signals[signal]);
             delete this._signals[signal];
@@ -164,7 +164,7 @@ var Settings = new Lang.Class({
     /**
      * Disconnects a signal by id.
      */
-    disconnectById: function(signalId) {
+    disconnectById(signalId) {
         for (let name in this._signals) {
             let id = this._signals[name];
             if (signalId == id) {
@@ -181,70 +181,70 @@ var Settings = new Lang.Class({
     /**
      * Retrieves the value of an 's' type key.
      */
-    get_string: function(key) {
+    get_string(key) {
         return this.settings.get_string(key);
     },
 
     /**
      * Sets the value of an 's' type key.
      */
-    set_string: function(key, value) {
+    set_string(key, value) {
         return this.settings.set_string(key, value);
     },
 
     /**
      * Retrieves the value of an 'i' type key.
      */
-    get_int: function(key) {
+    get_int(key) {
         return this.settings.get_int(key);
     },
 
     /**
      * Sets the value of an 'i' type key.
      */
-    set_int: function(key, value) {
+    set_int(key, value) {
         return this.settings.set_int(key, value);
     },
 
     /**
      * Retrieves the value of a 'b' type key.
      */
-    get_boolean: function(key) {
+    get_boolean(key) {
         return this.settings.get_boolean(key);
     },
 
     /**
      * Sets the value of a 'b' type key.
      */
-    set_boolean: function(key, value) {
+    set_boolean(key, value) {
         return this.settings.set_boolean(key, value);
     },
 
     /**
      * Retrieves the value of an enum key.
      */
-    get_enum: function(key) {
+    get_enum(key) {
         return this.settings.get_enum(key);
     },
 
     /**
      * Sets the value of an enum key.
      */
-    set_enum: function(key, value) {
+    set_enum(key, value) {
         return this.settings.set_enum(key, value);
     },
 
     /**
      * Retrieves the value of an array key.
      */
-    get_array: function(key) {
+    get_array(key) {
         return this.settings.get_strv(key);
     },
 
     /**
      * Sets the value of an array key.
      */
-    set_array: function(key, value) {
+    set_array(key, value) {
         return this.settings.set_strv(key, value);
     }
 });

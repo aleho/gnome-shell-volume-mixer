@@ -24,12 +24,12 @@ var VolumeSlider = new Lang.Class({
     Name: 'VolumeSlider',
     Extends: Slider.Slider,
 
-    _init: function(value, step) {
+    _init(value, step) {
         this._step = step || Settings.VOLUME_STEP_DEFAULT;
         this.parent(value);
     },
 
-    scroll: function(event) {
+    scroll(event) {
         if (event.is_pointer_emulated()) {
             return Clutter.EVENT_PROPAGATE;
         }
@@ -58,7 +58,7 @@ var VolumeSlider = new Lang.Class({
         return Clutter.EVENT_STOP;
     },
 
-    onKeyPressEvent: function(actor, event) {
+    onKeyPressEvent(actor, event) {
         let key = event.get_key_symbol();
 
         if (key == Clutter.KEY_Right || key == Clutter.KEY_Left) {
@@ -75,7 +75,7 @@ var VolumeSlider = new Lang.Class({
         return Clutter.EVENT_PROPAGATE;
     },
 
-    _calcNewValue: function(direction) {
+    _calcNewValue(direction) {
         let value = this._value;
         let step = this._step / 100;
 
@@ -91,7 +91,7 @@ var VolumeSlider = new Lang.Class({
     /**
      * Allow middle button event to bubble up for mute / unmute.
      */
-    startDragging: function(event) {
+    startDragging(event) {
         if (event.get_button() == 2) {
             return Clutter.EVENT_PROPAGATE;
         }

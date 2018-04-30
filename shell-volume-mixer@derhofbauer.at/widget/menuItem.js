@@ -62,7 +62,7 @@ var MasterMenuItem = new Lang.Class({
     Name: 'MasterMenuItem',
     Extends: PopupMenu.PopupSubMenuMenuItem,
 
-    _init: function(sliderVolumeStep) {
+    _init(sliderVolumeStep) {
         this.parent('', true);
         prepareMenuItem(this);
 
@@ -78,7 +78,7 @@ var MasterMenuItem = new Lang.Class({
         this.actor.add_style_class_name('svm-master-slider svm-menu-item');
     },
 
-    _onButtonReleaseEvent: function(actor, event) {
+    _onButtonReleaseEvent(actor, event) {
         if (event.get_button() == 2) {
             return Clutter.EVENT_STOP;
         }
@@ -88,7 +88,7 @@ var MasterMenuItem = new Lang.Class({
     /**
      * Change volume on left / right.
      */
-    _onKeyPressEvent: function(actor, event) {
+    _onKeyPressEvent(actor, event) {
         let symbol = event.get_key_symbol();
 
         if (symbol == Clutter.KEY_Right || symbol == Clutter.KEY_Left) {
@@ -107,12 +107,12 @@ var SubMenuItem = new Lang.Class({
     Name: 'OutputStreamSlider',
     Extends: PopupMenu.PopupBaseMenuItem,
 
-    _init: function(params) {
+    _init(params) {
         this.parent(params);
         prepareMenuItem(this);
     },
 
-    addChildAt: function(child, pos) {
+    addChildAt(child, pos) {
         let line = makeItemLine();
 
         line.add_child(child);
@@ -121,7 +121,7 @@ var SubMenuItem = new Lang.Class({
         return line;
     },
 
-    setSelected: function(selected) {
+    setSelected(selected) {
         this.setOrnament(selected === true ? PopupMenu.Ornament.DOT : PopupMenu.Ornament.NONE);
     }
 });

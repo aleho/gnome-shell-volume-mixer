@@ -24,7 +24,7 @@ var Menu = new Lang.Class({
     Name: 'ShellVolumeMixerMenu',
     Extends: Volume.VolumeMenu,
 
-    _init: function(mixer, options) {
+    _init(mixer, options) {
         // no this.parent(); shouldn't go through VolumeMenu's setup
         PopupMenu.PopupMenuSection.prototype._init.call(this);
 
@@ -103,12 +103,12 @@ var Menu = new Lang.Class({
         this._onControlStateChanged();
     },
 
-    open: function(animate) {
+    open(animate) {
         this._output.hideVolumeInfo();
         this.parent(animate);
     },
 
-    close: function(animate) {
+    close(animate) {
         for (let id in this._outputs) {
             this._outputs[id].hideVolumeInfo();
         }
@@ -126,11 +126,11 @@ var Menu = new Lang.Class({
         this.parent(animate);
     },
 
-    outputHasHeadphones: function() {
+    outputHasHeadphones() {
         return this._output._hasHeadphones;
     },
 
-    _addSeparator: function() {
+    _addSeparator() {
         if (this._separator) {
             this._separator.destroy();
         }
@@ -139,7 +139,7 @@ var Menu = new Lang.Class({
         this.addMenuItem(this._separator, 3);
     },
 
-    _onControlStateChanged: function() {
+    _onControlStateChanged() {
         this.parent();
 
         if (this._control.get_state() != Gvc.MixerControlState.READY) {
@@ -152,7 +152,7 @@ var Menu = new Lang.Class({
         }
     },
 
-    _readOutput: function() {
+    _readOutput() {
         this.parent();
 
         if (!this._output.stream) {
@@ -165,7 +165,7 @@ var Menu = new Lang.Class({
         }
     },
 
-    _addStream: function(control, stream) {
+    _addStream(control, stream) {
         if (stream.id in this._items
                 || stream.id in this._outputs
                 || stream.id in this._inputs
@@ -200,14 +200,14 @@ var Menu = new Lang.Class({
         }
     },
 
-    _addInputStream: function(stream, control, options) {
+    _addInputStream(stream, control, options) {
         let slider = new Volume.InputSlider(control, options);
 
         this._inputs[stream.id] = slider;
         this._inputMenu.addSlider(slider);
     },
 
-    _addOutputStream: function(stream, control, options) {
+    _addOutputStream(stream, control, options) {
         let slider = new Volume.OutputSlider(control, options);
 
         let isSelected = this._output.stream
@@ -219,12 +219,12 @@ var Menu = new Lang.Class({
     },
 
 
-    _streamAdded: function(control, id) {
+    _streamAdded(control, id) {
         let stream = control.lookup_stream_id(id);
         this._addStream(control, stream);
     },
 
-    _streamRemoved: function(control, id) {
+    _streamRemoved(control, id) {
         if (id in this._items) {
             this._items[id].item.destroy();
             delete this._items[id];
@@ -240,7 +240,7 @@ var Menu = new Lang.Class({
         }
     },
 
-    _streamChanged: function(control, id) {
+    _streamChanged(control, id) {
         if (id in this._items) {
             this._items[id].refresh();
 
@@ -260,7 +260,7 @@ var Indicator = new Lang.Class({
     Name: 'GvmIndicator',
     Extends: PanelMenu.SystemIndicator,
 
-    _init: function(mixer, options) {
+    _init(mixer, options) {
         options = options || {};
 
         this.parent();
@@ -277,7 +277,7 @@ var Indicator = new Lang.Class({
         this.indicators.connect('scroll-event', this._onScrollEvent.bind(this));
     },
 
-    updateIcon: function() {
+    updateIcon() {
         let icon = this._volumeMenu.getIcon();
 
         if (icon != null) {
@@ -288,11 +288,11 @@ var Indicator = new Lang.Class({
         }
     },
 
-    _onScrollEvent: function(actor, event) {
+    _onScrollEvent(actor, event) {
         return this._volumeMenu.scroll(event);
     },
 
-    destroy: function() {
+    destroy() {
         if (this.menu) {
             this.menu.destroy();
             this.menu = null;
