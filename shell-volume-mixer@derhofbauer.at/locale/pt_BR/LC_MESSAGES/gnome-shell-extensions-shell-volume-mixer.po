@@ -1,22 +1,23 @@
+# Brazilian Portuguese translation for GNOME Shell Volume Mixer.
 # This file is distributed under the same license as the GNOME Shell Volume Mixer.
-# Alexander Hofbauer <alex@derhofbauer.at>
+# Ricardo Silva Veloso <ricvelozo@gmail.com>, 2018.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: GNOME Shell Volume Mixer\n"
 "POT-Creation-Date: 2017-11-07 23:12+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Ricardo Silva Veloso <ricvelozo@gmail.com>\n"
+"Language-Team: \n"
+"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: ;__\n"
-"PO-Revision-Date: \n"
-"Language-Team: \n"
 "X-Generator: Poedit 2.0.4\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"Last-Translator: \n"
-"Language: pt_BR\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: locale\n"
 "X-Poedit-SearchPathExcluded-1: pautils\n"
