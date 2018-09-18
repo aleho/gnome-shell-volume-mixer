@@ -95,7 +95,7 @@ function getCards() {
 
     let ret = null;
     try {
-        ret = JSON.parse(output);
+      ret = JSON.parse(output.toString());
     } catch (e) {
         error('utils', 'getCards', e.message);
     }
