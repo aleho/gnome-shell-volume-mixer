@@ -8,7 +8,7 @@
 
 /* exported Settings, cleanup, openDialog */
 /* exported POS_MENU, POS_LEFT, POS_CENTER, POS_RIGHT */
-/* exported MEDIAKEYS_SCHEMA, VOLUME_STEP_DEFAULT */
+/* exported MEDIAKEYS_SCHEMA, SOUND_SETTINGS_SCHEMA, ALLOW_AMPLIFIED_VOLUME_KEY, VOLUME_STEP_DEFAULT */
 
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Gio = imports.gi.Gio;
@@ -23,7 +23,11 @@ var POS_CENTER = 2;
 var POS_RIGHT = 3;
 
 const SETTINGS_SCHEMA = 'org.gnome.shell.extensions.shell-volume-mixer';
+
 var MEDIAKEYS_SCHEMA = 'org.gnome.settings-daemon.plugins.media-keys';
+var SOUND_SETTINGS_SCHEMA = 'org.gnome.desktop.sound';
+var ALLOW_AMPLIFIED_VOLUME_KEY = 'allow-volume-above-100-percent';
+
 var VOLUME_STEP_DEFAULT = 6;
 
 const SIGNALS = {};
@@ -110,7 +114,7 @@ var Settings = new Lang.Class({
 
 
     /**
-     * Registers a listener for a signals.
+     * Registers a listener for a signal.
      *
      * @param signal
      * @param callback
