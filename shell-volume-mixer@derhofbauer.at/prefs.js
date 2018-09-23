@@ -32,7 +32,6 @@ const Preferences = new Lang.Class({
         swShowVirtualStreams: null,
         swAlwaysShowInputStreams: null,
         swUseSymbolicIcons: null,
-        swUseVolumeBoost: null,
         spnVolumeStep: null,
         txtProfileSwitch: null,
         treeDevices: null,
@@ -86,7 +85,6 @@ const Preferences = new Lang.Class({
         this._objects.swShowVirtualStreams.set_active(this._settings.get_boolean('show-virtual-streams'));
         this._objects.swAlwaysShowInputStreams.set_active(this._settings.get_boolean('always-show-input-streams'));
         this._objects.swUseSymbolicIcons.set_active(this._settings.get_boolean('use-symbolic-icons'));
-        this._objects.swUseVolumeBoost.set_active(this._settings.get_boolean('use-volume-boost'));
         this._objects.spnVolumeStep.set_value(this._settings.get_int('volume-step'));
         this._objects.txtProfileSwitch.set_text(this._settings.get_array('profile-switcher-hotkey')[0] || '');
 
@@ -98,7 +96,6 @@ const Preferences = new Lang.Class({
         this._bindSignal('swShowVirtualStreams', 'notify::active', this.onSwitchActivate, 'show-virtual-streams');
         this._bindSignal('swAlwaysShowInputStreams', 'notify::active', this.onSwitchActivate, 'always-show-input-streams');
         this._bindSignal('swUseSymbolicIcons', 'notify::active', this.onSwitchActivate, 'use-symbolic-icons');
-        this._bindSignal('swUseVolumeBoost', 'notify::active', this.onSwitchActivate, 'use-volume-boost');
         this._bindSignal('spnVolumeStep', 'changed', this.onVolumeStepChanged);
         this._bindSignal('txtProfileSwitch', 'changed', this.onProfileSwitchChanged, 'profile-switcher-hotkey');
         this._bindSignal('btnAddDevice', 'clicked', this.onAddDevice);

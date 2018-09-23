@@ -78,10 +78,6 @@ msgstr ""
 msgid "Volume Steps (%)"
 msgstr ""
 
-#: prefs.ui:234
-msgid "Use volume boost"
-msgstr ""
-
 #: prefs.ui:260
 msgid "Show system sounds"
 msgstr ""

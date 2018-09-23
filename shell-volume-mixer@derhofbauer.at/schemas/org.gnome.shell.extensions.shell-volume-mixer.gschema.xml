@@ -44,11 +44,6 @@
             <summary>Use symbolic icons</summary>
             <description>Whether to use the default symbolic icons or those provided by PulseAudio</description>
         </key>
-        <key name="use-volume-boost" type="b">
-            <default>false</default>
-            <summary>Use volume boost</summary>
-            <description>Use PulseAudio's boost to allow the volume to be set above 100%</description>
-        </key>
         <key name="volume-step" type="i">
             <default>6</default>
             <range min="1" max="20"/>

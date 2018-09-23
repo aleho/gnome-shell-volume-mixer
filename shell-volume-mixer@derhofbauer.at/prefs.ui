@@ -226,32 +226,6 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="lblUseVolumeBoost">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">end</property>
-            <property name="valign">baseline</property>
-            <property name="label" translatable="yes">Use volume boost</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">10</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSwitch" id="swUseVolumeBoost">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="halign">end</property>
-            <property name="valign">center</property>
-            <signal name="notify::active" handler="onUseVolumeBoostActivate" swapped="no"/>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">10</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkLabel" id="lblShowSystemSounds">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
