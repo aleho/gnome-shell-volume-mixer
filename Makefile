@@ -6,11 +6,11 @@ PACKAGE = shell-volume-mixer-$(VERSION).zip
 
 FILES = LICENSE README.md
 
-SOURCES =  \
+SOURCES = \
 	locale/*/*/*.mo \
 	pautils/cardinfo.py \
 	pautils/pa.py \
-	widget/*.js \
+	lib/*.js \
 	*.js \
 	metadata.json \
 	prefs.ui \
@@ -20,10 +20,12 @@ SOURCES =  \
 SCHEMA_COMP = schemas/gschemas.compiled
 GSCHEMA = schemas/org.gnome.shell.extensions.shell-volume-mixer.gschema.xml
 
-
 SRCFILES = $(addprefix $(SRCDIR)/, $(SOURCES) $(GSCHEMA) $(GSCHEMA_COMP))
 
-dist: clean $(PACKAGE)
+
+dist: clean install-deps check package
+
+package: $(PACKAGE)
 
 $(SRCDIR)/$(SCHEMA_COMP): $(SRCDIR)/$(GSCHEMA)
 	glib-compile-schemas --targetdir=$(SRCDIR)/schemas $(SRCDIR)/schemas
@@ -32,8 +34,15 @@ $(PACKAGE): $(SRCFILES) $(FILES)
 	cd $(SRCDIR) && zip -r ../$(PACKAGE) $(SOURCES)
 	zip $(PACKAGE) $(FILES)
 
+install-deps:
+	npm install
+
+check: install-deps
+	node_modules/.bin/eslint $(SRCDIR)
+
 clean:
 	@test ! -f "$(SRCDIR)/$(SCHEMA_COMP)" || rm $(SRCDIR)/$(SCHEMA_COMP)
 	@test ! -f "$(PACKAGE)" || rm $(PACKAGE)
+
 
 .PHONY: clean
