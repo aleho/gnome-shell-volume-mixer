@@ -72,14 +72,6 @@ msgstr "Hotkey für Profilumschalter"
 msgid "(e.g. \"<Super>p\")"
 msgstr "(z.B. \"<Super>p\")"
 
-#: prefs.ui:207
-msgid "Volume Steps (%)"
-msgstr "Lautstärke-Schritte (%)"
-
-#: prefs.ui:234
-msgid "Use volume boost"
-msgstr "Verstärkung nutzen"
-
 #: prefs.ui:260
 msgid "Show system sounds"
 msgstr "Systemklänge anzeigen"

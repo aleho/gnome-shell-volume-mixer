@@ -64,14 +64,6 @@ msgstr "Scorciatoia selettore del profilo"
 msgid "(e.g. \"<Super>p\")"
 msgstr "(esempio «<Super>p»)"
 
-#: prefs.ui:207
-msgid "Volume Steps (%)"
-msgstr "Percentuale di aumento (%)"
-
-#: prefs.ui:234
-msgid "Use volume boost"
-msgstr "Usare l'aumento di volume"
-
 #: prefs.ui:260
 msgid "Show system sounds"
 msgstr "Mostra i suoni di sistema"

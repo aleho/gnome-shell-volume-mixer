@@ -8,27 +8,31 @@
 
 /* exported Menu */
 
-const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Gvc = imports.gi.Gvc;
-const Lang = imports.lang;
+const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const PopupMenu = imports.ui.popupMenu;
-const PanelMenu = imports.ui.panelMenu;
 
-const Settings = Extension.imports.settings;
-const Slider = Extension.imports.widget.slider;
-const Volume = Extension.imports.widget.volume;
-const Utils = Extension.imports.utils;
+const { Settings } = Lib.settings;
+const Volume = Lib.widget.volume;
+const Utils = Lib.utils.utils;
 
 
-var Menu = new Lang.Class({
-    Name: 'ShellVolumeMixerMenu',
-    Extends: Volume.VolumeMenu,
+/**
+ * Extension of Volume.VolumeMenu without its constructor().
+ */
+class VolumeMenuExtension extends PopupMenu.PopupMenuSection {}
+Utils.mixin(VolumeMenuExtension, Volume.VolumeMenu);
 
-    _init(mixer, options) {
-        // no this.parent(); shouldn't go through VolumeMenu's setup
-        PopupMenu.PopupMenuSection.prototype._init.call(this);
 
-        this._settings = new Settings.Settings();
+/**
+ * Our own ui.status.VolumeMenu implementation.
+ */
+var Menu = class extends VolumeMenuExtension
+{
+    constructor(mixer, options) {
+        super();
+
+        this._settings = new Settings();
 
         this.options = {
             detailed: this._settings.get_boolean('show-detailed-sliders'),
@@ -48,7 +52,11 @@ var Menu = new Lang.Class({
         this._mixer = mixer;
         this._control = mixer.control;
 
-        let signals = {
+        this._init(mixer, options);
+    }
+
+    _init(mixer, options) {
+        const signals = {
             'state-changed': this._onControlStateChanged,
             'default-sink-changed': this._readOutput,
             'default-source-changed': this._readInput,
@@ -61,10 +69,9 @@ var Menu = new Lang.Class({
             try {
                 mixer.connect(name, signals[name].bind(this));
             } catch (exception) {
-                Utils.info('Could not connect to signal -', exception);
+                Utils.info(`Could not connect to signal ${name} -`, exception);
             }
         }
-
 
         this._output = new Volume.MasterSlider(this._control, {
             mixer: mixer,
@@ -72,9 +79,9 @@ var Menu = new Lang.Class({
             symbolicIcons: this.options.symbolicIcons
         });
 
-        this._output.connect('stream-updated', function() {
+        this._output.connect('stream-updated', () => {
             this.emit('icon-changed');
-        }.bind(this));
+        });
 
 
         this._inputMenu = new Volume.AggregatedInput(this._control, {
@@ -101,12 +108,12 @@ var Menu = new Lang.Class({
         }
 
         this._onControlStateChanged();
-    },
+    }
 
     open(animate) {
         this._output.hideVolumeInfo();
-        this.parent(animate);
-    },
+        super.open(animate);
+    }
 
     close(animate) {
         for (let id in this._outputs) {
@@ -123,12 +130,12 @@ var Menu = new Lang.Class({
 
         this._output.hideVolumeInfo();
 
-        this.parent(animate);
-    },
+        super.close(animate);
+    }
 
     outputHasHeadphones() {
         return this._output._hasHeadphones;
-    },
+    }
 
     _addSeparator() {
         if (this._separator) {
@@ -137,33 +144,7 @@ var Menu = new Lang.Class({
 
         this._separator = new PopupMenu.PopupSeparatorMenuItem();
         this.addMenuItem(this._separator, 3);
-    },
-
-    _onControlStateChanged() {
-        this.parent();
-
-        if (this._control.get_state() != Gvc.MixerControlState.READY) {
-            return;
-        }
-
-        let streams = this._control.get_streams();
-        for (let stream of streams) {
-            this._addStream(this._control, stream);
-        }
-    },
-
-    _readOutput() {
-        this.parent();
-
-        if (!this._output.stream) {
-            // safety check for failed setups
-            return;
-        }
-
-        for (let id in this._outputs) {
-            this._outputs[id].setSelected(this._output.stream.id == id);
-        }
-    },
+    }
 
     _addStream(control, stream) {
         if (stream.id in this._items
@@ -198,14 +179,14 @@ var Menu = new Lang.Class({
         } else if (stream instanceof Gvc.MixerSink) {
             this._addOutputStream(stream, control, options);
         }
-    },
+    }
 
     _addInputStream(stream, control, options) {
         let slider = new Volume.InputSlider(control, options);
 
         this._inputs[stream.id] = slider;
         this._inputMenu.addSlider(slider);
-    },
+    }
 
     _addOutputStream(stream, control, options) {
         let slider = new Volume.OutputSlider(control, options);
@@ -216,13 +197,13 @@ var Menu = new Lang.Class({
 
         this._outputs[stream.id] = slider;
         this._output.addSliderItem(slider.item);
-    },
+    }
 
 
     _streamAdded(control, id) {
         let stream = control.lookup_stream_id(id);
         this._addStream(control, stream);
-    },
+    }
 
     _streamRemoved(control, id) {
         if (id in this._items) {
@@ -238,7 +219,7 @@ var Menu = new Lang.Class({
             delete this._inputs[id];
             this._inputMenu.refresh();
         }
-    },
+    }
 
     _streamChanged(control, id) {
         if (id in this._items) {
@@ -251,51 +232,38 @@ var Menu = new Lang.Class({
             this._inputs[id].refresh();
         }
     }
-});
 
-/**
- * Customized indicator using our Menu.
- */
-var Indicator = new Lang.Class({
-    Name: 'GvmIndicator',
-    Extends: PanelMenu.SystemIndicator,
+    _onControlStateChanged() {
+        super._onControlStateChanged();
 
-    _init(mixer, options) {
-        options = options || {};
-
-        this.parent();
-
-        this._primaryIndicator = this._addIndicator();
-
-        this._control = mixer.control;
-
-        this._volumeMenu = new Menu(mixer, options);
-        this._volumeMenu.connect('icon-changed', this.updateIcon.bind(this));
-
-        this.menu.addMenuItem(this._volumeMenu);
-
-        this.indicators.connect('scroll-event', this._onScrollEvent.bind(this));
-    },
-
-    updateIcon() {
-        let icon = this._volumeMenu.getIcon();
-
-        if (icon != null) {
-            this.indicators.show();
-            this._primaryIndicator.icon_name = icon;
-        } else {
-            this.indicators.hide();
+        if (this._control.get_state() != Gvc.MixerControlState.READY) {
+            return;
         }
-    },
 
-    _onScrollEvent(actor, event) {
-        return this._volumeMenu.scroll(event);
-    },
-
-    destroy() {
-        if (this.menu) {
-            this.menu.destroy();
-            this.menu = null;
+        let streams = this._control.get_streams();
+        for (let stream of streams) {
+            this._addStream(this._control, stream);
         }
     }
-});
+
+    _readOutput() {
+        super._readOutput();
+
+        if (!this._output.stream) {
+            // safety check for failed setups
+            return;
+        }
+
+        for (let id in this._outputs) {
+            this._outputs[id].setSelected(this._output.stream.id == id);
+        }
+    }
+
+    _readInput() {
+        if (!this._input)  {
+            return;
+        }
+
+        super._readInput();
+    }
+};

@@ -12,6 +12,12 @@ Middle mouse click on a slider mutes the selected stream.
 ![screenshot 1](/screenshot_1.png?raw=true "Outputs menu") ![screenshot 2](/screenshot_2.png?raw=true "Inputs menu")
 
 
+Requirements
+------------
+
+- Pulseaudio (for retrieval of card details)
+- gettext (for building of language files)
+
 
 Installation
 ------------
@@ -25,18 +31,22 @@ copy it's content manually to
 ".~/.local/share/gnome-shell/extensions/shell-volume-mixer@derhofbauer.at".
 
 
-GNOME Settings Daemon (GSD)
----------------------------
+Volume Steps
+------------
 
-GSD hardcodes the step for each key press of volume keys to 6% of maximum
-volume. While this might be OK for most people, some would prefer a
+
+GNOME Settings Daemon (GSD) hardcodes the step for each key press of volume keys
+to 6% of maximum. While this might be OK for most people, some would prefer a
 configurable setting. There's a bug in GNOME's tracker which, according to the
 comments by developers, won't ever get fixed in a way that could allow
 configurable volume
 steps<sup>[[1]](https://bugzilla.gnome.org/show_bug.cgi?id=650371)</sup>.
 
-Shell Volume Mixer tries to grab GSD's hotkeys to provide configurable steps
-for sliders and media keys.
+Shell Volume Mixer tried to grab GSD's hotkeys to provide configurable steps
+for sliders and media keys in the past, but at some point this stopped working.
+
+GNOME's current solution to the problem is Shift + Key, i.e. hold down the shift
+button to switch to a 2% step.
 
 
 Acknowledgments

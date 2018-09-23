@@ -8,16 +8,15 @@
 
 /* exported Mixer */
 
-const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Gio = imports.gi.Gio;
 const Gvc = imports.gi.Gvc;
-const Lang = imports.lang;
+const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const Main = imports.ui.main;
 const Volume = imports.ui.status.volume;
 
-const Hotkeys = Extension.imports.hotkeys;
-const Settings = Extension.imports.settings;
-const Utils = Extension.imports.utils;
+const Hotkeys = Lib.utils.hotkeys;
+const Settings = Lib.settings;
+const Utils = Lib.utils.utils;
 
 const signals = [];
 const STREAM_NO_MATCH = 0;
@@ -32,15 +31,11 @@ const VOL_ICONS = [
 ];
 
 
-var Mixer = new Lang.Class({
-    Name: 'ShellVolumeMixerMixer',
-
-    _init() {
+var Mixer = class
+{
+    constructor() {
         this._settings = new Settings.Settings();
         this._hotkeys = new Hotkeys.Hotkeys(this._settings);
-
-        this.volumeStep = this._settings.get_int('volume-step');
-        this.boostVolume = this._settings.get_boolean('use-volume-boost');
 
         this._control = Volume.getMixerControl();
         this._state = this._control.get_state();
@@ -56,22 +51,17 @@ var Mixer = new Lang.Class({
 
         this._bindProfileHotkey();
 
-        if (this.boostVolume
-                || this.volumeStep != Settings.VOLUME_STEP_DEFAULT) {
-            this._bindMediaKeys();
-        }
-
         this._onStateChanged(this._control, this._state);
-    },
+    }
 
     get control() {
         return this._control;
-    },
+    }
 
     connect(signal, callback) {
         let id = this._control.connect(signal, callback);
         signals.push(id);
-    },
+    }
 
 
     /**
@@ -83,7 +73,7 @@ var Mixer = new Lang.Class({
         }
 
         this._hotkeys.unbindAll();
-    },
+    }
 
 
     /**
@@ -95,128 +85,7 @@ var Mixer = new Lang.Class({
         }
 
         this._hotkeys.bind('profile-switcher-hotkey', this._switchProfile.bind(this));
-    },
-
-    /**
-     * Binds volume down / up media keys to our own handlers.
-     */
-    _bindMediaKeys() {
-        let mkSettings = new Settings.Settings(Settings.MEDIAKEYS_SCHEMA);
-        this._hotkeys.bindProxy(mkSettings, 'volume-down', this.decreaseMasterVolume.bind(this));
-        this._hotkeys.bindProxy(mkSettings, 'volume-up', this.increaseMasterVolume.bind(this));
-        this._hotkeys.bindProxy(mkSettings, 'volume-mute', this.muteMasterVolume.bind(this));
-    },
-
-
-    decreaseMasterVolume() {
-        this.changeStreamVolume(this._defaultSink, 'down');
-    },
-
-    increaseMasterVolume() {
-        this.changeStreamVolume(this._defaultSink, 'up');
-    },
-
-    muteMasterVolume() {
-        let muted = !this._defaultSink.is_muted;
-        let level = 0;
-        let percent = 0;
-
-        this._defaultSink.change_is_muted(muted);
-
-        if (!muted) {
-            let volume = this._defaultSink.volume;
-            let max = this.getVolMax();
-            let virtMax = this._control.get_vol_max_norm();
-            level = Math.round(volume / max * 100);
-            percent = Math.round(volume / virtMax * 100);
-        }
-
-        this._showVolumeOsd(level, percent);
-    },
-
-
-    /**
-     * Changes a stream's volume by a step down / up.
-     */
-    changeStreamVolume(stream, dir) {
-        let volume = stream.volume;
-        let max = this.getVolMax();
-        let virtMax = this._control.get_vol_max_norm();
-        let step = Math.round(virtMax * (this.volumeStep / 100));
-
-        let rem = this.volumeStep > 1 ? volume % step : 0;
-
-        if (dir == 'down') {
-            volume -= step;
-            if (rem > 0) {
-                volume += step - rem;
-            }
-
-        } else {
-            volume += step - rem;
-        }
-
-        volume = this.setStreamVolume(stream, volume);
-
-        let level = Math.round(volume / max * 100);
-        let percent = Math.round(volume / virtMax * 100);
-
-        this._showVolumeOsd(level, percent);
-    },
-
-    /**
-     * Updates the volume of a stream to a certain value.
-     *
-     * @returns The volume level set.
-     */
-    setStreamVolume(stream, volume) {
-        let max = this.getVolMax();
-        volume = Math.max(0, volume);
-        volume = Math.min(max, volume);
-
-        let prevMuted = stream.is_muted;
-
-        if (volume < 1) {
-            stream.volume = 0;
-            if (!prevMuted) {
-                stream.change_is_muted(true);
-            }
-        } else {
-            stream.volume = volume;
-            if (prevMuted) {
-                stream.change_is_muted(false);
-            }
-        }
-
-        stream.push_volume();
-        return volume;
-    },
-
-    /**
-     * Returns the max volume, depending on boost being enabled.
-     */
-    getVolMax() {
-        return this.boostVolume
-                ? this._control.get_vol_max_amplified()
-                : this._control.get_vol_max_norm();
-    },
-
-    /**
-     * Returns the amount of a step on a (slider) scale from 0 to 1.
-     */
-    getNormalizedStep() {
-        if (!this.boostVolume) {
-            return this.volumeStep;
-        }
-
-        let norm = this._control.get_vol_max_norm();
-        let ampl = this._control.get_vol_max_amplified();
-
-        let step = norm / ampl * this.volumeStep;
-        step = Math.round(step * 100) / 100;
-        return step;
-    },
-
+    }
 
     /**
      * Adds a card to our array of cards.
@@ -251,7 +120,7 @@ var Mixer = new Lang.Class({
         let pacard = this._cards[index];
         pacard.card = card;
         this._cardNames[pacard.name] = index;
-    },
+    }
 
     /**
      * Updates the default sink, trying to mark the currently active card.
@@ -279,7 +148,7 @@ var Mixer = new Lang.Class({
                 break;
             }
         }
-    },
+    }
 
     /**
      * Callback for state changes.
@@ -297,14 +166,14 @@ var Mixer = new Lang.Class({
         }
 
         this._updateDefaultSink(this._control.get_default_sink());
-    },
+    }
 
     /**
      * Callback for default sink changes.
      */
     _onDefaultSinkChanged(control, id) {
         this._updateDefaultSink(control.lookup_stream_id(id));
-    },
+    }
 
     /**
      * Signal for added cards.
@@ -313,7 +182,7 @@ var Mixer = new Lang.Class({
         // we're actually looking up card.index
         let card = control.lookup_card_id(index);
         this._addCard(card);
-    },
+    }
 
     /**
      * Signal for removed cards.
@@ -326,7 +195,7 @@ var Mixer = new Lang.Class({
             }
             delete this._cards[index];
         }
-    },
+    }
 
 
     /**
@@ -350,7 +219,7 @@ var Mixer = new Lang.Class({
         }
 
         return cards;
-    },
+    }
 
     /**
      * Reads all pinned profiles from settings.
@@ -396,7 +265,7 @@ var Mixer = new Lang.Class({
         }
 
         return [visible, cycled];
-    },
+    }
 
 
     /**
@@ -458,14 +327,14 @@ var Mixer = new Lang.Class({
         }
 
         this._control.set_default_sink(newSink);
-    },
+    }
 
     /**
      * Tries to find out whether a certain stream matches profile for a card.
      */
     _streamMatchesProfile(streamName, cardName, profileName) {
-        let [streamAlsa, streamAddr, streamIndex, streamProfile] = streamName.split('.');
-        let [cardAlsa, cardAddr, cardIndex] = cardName.split('.');
+        let [, streamAddr, streamIndex, streamProfile] = streamName.split('.');
+        let [, cardAddr, cardIndex] = cardName.split('.');
 
         profileName = profileName.split(':');
         // remove direction
@@ -483,7 +352,7 @@ var Mixer = new Lang.Class({
         }
 
         return STREAM_MATCHES;
-    },
+    }
 
     /**
      * Shows a notification window through Shell's OSD Window Manager.
@@ -494,7 +363,7 @@ var Mixer = new Lang.Class({
         let monitor = -1;
         let icon = Gio.Icon.new_for_string('audio-speakers-symbolic');
         Main.osdWindowManager.show(monitor, icon, text);
-    },
+    }
 
     /**
      * Shows the current volume on OSD.
@@ -524,14 +393,6 @@ var Mixer = new Lang.Class({
             }
         }
 
-        if (this.boostVolume) {
-            if (percent > 0) {
-                label.push(percent + '%');
-            } else {
-                label.push(' ');
-            }
-        }
-
         let icon = Gio.Icon.new_for_string(VOL_ICONS[n]);
 
         label = label.join('\n');
@@ -541,4 +402,4 @@ var Mixer = new Lang.Class({
 
         Main.osdWindowManager.show(monitor, icon, label, level);
     }
-});
+};

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GNOME Shell Volume Mixer\n"
-"POT-Creation-Date: 2017-11-07 23:12+0100\n"
+"POT-Creation-Date: 2019-03-22 12:42+0100\n"
 "Last-Translator: Alexander Hofbauer <alex@derhofbauer.at>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15,109 +15,105 @@ msgstr ""
 "X-Poedit-KeywordsList: ;__\n"
 "PO-Revision-Date: \n"
 "Language-Team: \n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.2.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: locale\n"
 "X-Poedit-SearchPathExcluded-1: pautils\n"
 "X-Poedit-SearchPathExcluded-2: schemas\n"
 
-#: prefs.js:288
-msgid "Error retrieving card details"
-msgstr ""
-
-#: prefs.js:289
-msgid "Helper script did not return valid card data."
-msgstr ""
-
-#: widget/volume.js:255 widget/volume.js:257
+#: lib/widget/volume.js:260 lib/widget/volume.js:262
 msgid "Inputs"
 msgstr ""
 
-#: widget/volume.js:394
+#: lib/widget/volume.js:395
 msgid "unknown"
 msgstr ""
 
-#: prefs.ui:56
+#: prefs.js:281
+msgid "Error retrieving card details"
+msgstr ""
+
+#: prefs.js:282
+msgid "Helper script did not return valid card data."
+msgstr ""
+
+#: prefs.ui:50
 msgid "Position of volume mixer"
 msgstr ""
 
-#: prefs.ui:70
+#: prefs.ui:64
 msgid "Status Menu"
 msgstr ""
 
-#: prefs.ui:71
+#: prefs.ui:65
 msgid "Left"
 msgstr ""
 
-#: prefs.ui:72
+#: prefs.ui:66
 msgid "Center"
 msgstr ""
 
-#: prefs.ui:73
+#: prefs.ui:67
 msgid "Right"
 msgstr ""
 
-#: prefs.ui:88
+#: prefs.ui:82
 msgid "Remove original slider"
 msgstr ""
 
-#: prefs.ui:101
+#: prefs.ui:95
 msgid "Show detailed sliders"
 msgstr ""
 
-#: prefs.ui:141
+#: prefs.ui:135
 msgid "Hotkey for profile switcher"
 msgstr ""
 
-#: prefs.ui:164
+#: prefs.ui:158
 msgid "(e.g. \"<Super>p\")"
 msgstr ""
 
-#: prefs.ui:207
-msgid "Volume Steps (%)"
-msgstr ""
-
-#: prefs.ui:260
+#: prefs.ui:171
 msgid "Show system sounds"
 msgstr ""
 
-#: prefs.ui:273
+#: prefs.ui:184
 msgid "Use symbolic icons"
 msgstr ""
 
-#: prefs.ui:310
+#: prefs.ui:221
 msgid "Show virtual streams"
 msgstr ""
 
-#: prefs.ui:335
+#: prefs.ui:246
 msgid "Always show input streams"
 msgstr ""
 
-#: prefs.ui:359
+#: prefs.ui:270
 msgid "Shows the slider even if no application is recording"
 msgstr ""
 
-#: prefs.ui:445
+#: prefs.ui:340
 msgid "Settings"
 msgstr ""
 
-#: prefs.ui:482 prefs.ui:649
+#: prefs.ui:377 prefs.ui:544
 msgid "Devices"
 msgstr ""
 
-#: prefs.ui:533
+#: prefs.ui:428
 msgid "Card"
 msgstr ""
 
-#: prefs.ui:547
+#: prefs.ui:442
 msgid "Profile"
 msgstr ""
 
-#: prefs.ui:560
+#: prefs.ui:455
 msgid "Switch"
 msgstr ""
 
-#: prefs.ui:573
+#: prefs.ui:468
 msgid "Display"
 msgstr ""

@@ -77,14 +77,6 @@ msgstr "Klávesová zkratka pro přepínač profilů"
 msgid "(e.g. \"<Super>p\")"
 msgstr "(např. „<Super>p”)"
 
-#: prefs.ui:207
-msgid "Volume Steps (%)"
-msgstr "Kroky hlasitosti (%)"
-
-#: prefs.ui:234
-msgid "Use volume boost"
-msgstr "Použít zesílení hlasitosti"
-
 #: prefs.ui:260
 msgid "Show system sounds"
 msgstr "Zobrazit systémové zvuky"

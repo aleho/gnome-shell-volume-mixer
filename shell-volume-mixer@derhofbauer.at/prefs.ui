@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.1 -->
+<!-- Generated with glade 3.22.1 -->
 <interface domain="gnome-shell-extensions-shell-volume-mixer">
   <requires lib="gtk+" version="3.12"/>
-  <object class="GtkAdjustment" id="adjustmentVolumeStep">
-    <property name="lower">1</property>
-    <property name="upper">20</property>
-    <property name="value">6</property>
-    <property name="step_increment">1</property>
-  </object>
   <object class="GtkTreeStore" id="storeDevices">
     <columns>
       <!-- column-name name -->
@@ -142,7 +136,7 @@
           </object>
           <packing>
             <property name="left_attach">0</property>
-            <property name="top_attach">13</property>
+            <property name="top_attach">10</property>
           </packing>
         </child>
         <child>
@@ -154,7 +148,7 @@
           </object>
           <packing>
             <property name="left_attach">1</property>
-            <property name="top_attach">13</property>
+            <property name="top_attach">10</property>
           </packing>
         </child>
         <child>
@@ -165,64 +159,7 @@
           </object>
           <packing>
             <property name="left_attach">2</property>
-            <property name="top_attach">13</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="placeholder1">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">11</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="placeholder2">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">11</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="placeholder3">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-          </object>
-          <packing>
-            <property name="left_attach">2</property>
-            <property name="top_attach">11</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="lblVolumeStep">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">end</property>
-            <property name="valign">baseline</property>
-            <property name="label" translatable="yes">Volume Steps (%)</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">11</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSpinButton" id="spnVolumeStep">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="valign">center</property>
-            <property name="adjustment">adjustmentVolumeStep</property>
-            <property name="numeric">True</property>
-            <property name="value">6</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">11</property>
+            <property name="top_attach">10</property>
           </packing>
         </child>
         <child>
@@ -375,22 +312,6 @@
             <property name="top_attach">9</property>
             <property name="width">3</property>
           </packing>
-        </child>
-        <child>
-          <object class="GtkSeparator" id="sep4">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_top">10</property>
-            <property name="margin_bottom">10</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">12</property>
-            <property name="width">3</property>
-          </packing>
-        </child>
-        <child>
-          <placeholder/>
         </child>
         <child>
           <placeholder/>

@@ -8,14 +8,14 @@
 
 /* exported Settings, cleanup, openDialog */
 /* exported POS_MENU, POS_LEFT, POS_CENTER, POS_RIGHT */
-/* exported MEDIAKEYS_SCHEMA, SOUND_SETTINGS_SCHEMA, ALLOW_AMPLIFIED_VOLUME_KEY, VOLUME_STEP_DEFAULT */
+/* exported SOUND_SETTINGS_SCHEMA, ALLOW_AMPLIFIED_VOLUME_KEY */
 
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
-const Lang = imports.lang;
+const Lib = Extension.imports.lib;
 
-const Utils = Extension.imports.utils;
+const Utils = Lib.utils.utils;
 
 var POS_MENU = 0;
 var POS_LEFT = 1;
@@ -23,32 +23,27 @@ var POS_CENTER = 2;
 var POS_RIGHT = 3;
 
 const SETTINGS_SCHEMA = 'org.gnome.shell.extensions.shell-volume-mixer';
-
-var MEDIAKEYS_SCHEMA = 'org.gnome.settings-daemon.plugins.media-keys';
 var SOUND_SETTINGS_SCHEMA = 'org.gnome.desktop.sound';
 var ALLOW_AMPLIFIED_VOLUME_KEY = 'allow-volume-above-100-percent';
-
-var VOLUME_STEP_DEFAULT = 6;
 
 const SIGNALS = {};
 const GSETTINGS = {};
 
 
-var Settings = new Lang.Class({
-    Name: 'Settings',
-
+var Settings = class
+{
     set settings(value) {
         // nothing to do here
-    },
+    }
 
     get settings() {
         if (!GSETTINGS[this.schema]) {
             this._initSettings();
         }
         return GSETTINGS[this.schema];
-    },
+    }
 
-    _init(schema) {
+    constructor(schema) {
         this.schema = schema || SETTINGS_SCHEMA;
 
         if (!SIGNALS[this.schema]) {
@@ -56,7 +51,7 @@ var Settings = new Lang.Class({
         }
 
         this._signals = SIGNALS[this.schema];
-    },
+    }
 
     /**
      * Initializes a single instance of Gio.Settings for this extension.
@@ -75,9 +70,10 @@ var Settings = new Lang.Class({
             // try to find the app-schema locally
             if (GLib.file_test(schemaDir + '/gschemas.compiled', GLib.FileTest.EXISTS)) {
                 let schemaSource = Gio.SettingsSchemaSource.new_from_directory(
-                        schemaDir,
-                        Gio.SettingsSchemaSource.get_default(),
-                        false);
+                    schemaDir,
+                    Gio.SettingsSchemaSource.get_default(),
+                    false
+                );
 
                 instance = new Gio.Settings({
                     settings_schema: schemaSource.lookup(this.schema, false)
@@ -94,7 +90,7 @@ var Settings = new Lang.Class({
         }
 
         GSETTINGS[this.schema] = instance;
-    },
+    }
 
     /**
      * Returns a Gio.Settings object for a schema.
@@ -110,7 +106,7 @@ var Settings = new Lang.Class({
         return new Gio.Settings({
             schema: schema
         });
-    },
+    }
 
 
     /**
@@ -123,16 +119,17 @@ var Settings = new Lang.Class({
         // already connected
         if (this._signals && this._signals[signal]) {
             Utils.error(
-                    'settings',
-                    'connect',
-                    'Signal "' + signal + '" already bound for "' + this.schema + '"');
+                'settings',
+                'connect',
+                'Signal "' + signal + '" already bound for "' + this.schema + '"'
+            );
             return false;
         }
 
         let id = this.settings.connect(signal, callback);
         this._signals[signal] = id;
         return id;
-    },
+    }
 
     /**
      * Registers a listener to changed events.
@@ -141,7 +138,7 @@ var Settings = new Lang.Class({
      */
     connectChanged(callback) {
         this.connect('changed::', callback);
-    },
+    }
 
     /**
      * Disconnects all connected signals.
@@ -150,7 +147,7 @@ var Settings = new Lang.Class({
         for (let signal in this._signals) {
             this.disconnect(this._signals[signal]);
         }
-    },
+    }
 
     /**
      * Disconnects a signal by name.
@@ -163,7 +160,7 @@ var Settings = new Lang.Class({
         }
 
         return false;
-    },
+    }
 
     /**
      * Disconnects a signal by id.
@@ -179,7 +176,7 @@ var Settings = new Lang.Class({
         }
 
         return false;
-    },
+    }
 
 
     /**
@@ -187,63 +184,63 @@ var Settings = new Lang.Class({
      */
     get_string(key) {
         return this.settings.get_string(key);
-    },
+    }
 
     /**
      * Sets the value of an 's' type key.
      */
     set_string(key, value) {
         return this.settings.set_string(key, value);
-    },
+    }
 
     /**
      * Retrieves the value of an 'i' type key.
      */
     get_int(key) {
         return this.settings.get_int(key);
-    },
+    }
 
     /**
      * Sets the value of an 'i' type key.
      */
     set_int(key, value) {
         return this.settings.set_int(key, value);
-    },
+    }
 
     /**
      * Retrieves the value of a 'b' type key.
      */
     get_boolean(key) {
         return this.settings.get_boolean(key);
-    },
+    }
 
     /**
      * Sets the value of a 'b' type key.
      */
     set_boolean(key, value) {
         return this.settings.set_boolean(key, value);
-    },
+    }
 
     /**
      * Retrieves the value of an enum key.
      */
     get_enum(key) {
         return this.settings.get_enum(key);
-    },
+    }
 
     /**
      * Sets the value of an enum key.
      */
     set_enum(key, value) {
         return this.settings.set_enum(key, value);
-    },
+    }
 
     /**
      * Retrieves the value of an array key.
      */
     get_array(key) {
         return this.settings.get_strv(key);
-    },
+    }
 
     /**
      * Sets the value of an array key.
@@ -251,7 +248,7 @@ var Settings = new Lang.Class({
     set_array(key, value) {
         return this.settings.set_strv(key, value);
     }
-});
+};
 
 /**
  * Disconnects all signals of all schemas.

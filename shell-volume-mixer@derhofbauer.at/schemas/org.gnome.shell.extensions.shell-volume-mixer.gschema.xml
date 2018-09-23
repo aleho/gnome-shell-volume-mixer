@@ -44,12 +44,6 @@
             <summary>Use symbolic icons</summary>
             <description>Whether to use the default symbolic icons or those provided by PulseAudio</description>
         </key>
-        <key name="volume-step" type="i">
-            <default>6</default>
-            <range min="1" max="20"/>
-            <summary>Size of volume step</summary>
-            <description>Size of the volume step for sliders</description>
-        </key>
         <key name="profile-switcher-hotkey" type="as">
             <default>[]</default>
             <summary>Profile switcher hotkey</summary>
@@ -59,23 +53,6 @@
             <default>[]</default>
             <summary>Pinned profiles</summary>
             <description>Profiles to always show in the list of devices, even if they're not retrieved through Gvc.MixerControl</description>
-        </key>
-
-        <!-- hidden settings for binding of media keys -->
-        <key name="volume-down" type="as">
-            <default>[]</default>
-            <summary>Volume down</summary>
-            <description>Decreases the master volume</description>
-        </key>
-        <key name="volume-up" type="as">
-            <default>[]</default>
-            <summary>Volume up</summary>
-            <description>Increases the master volume</description>
-        </key>
-        <key name="volume-mute" type="as">
-            <default>[]</default>
-            <summary>Volume mute</summary>
-            <description>Mutes / unmutes the master volume</description>
         </key>
     </schema>
 </schemalist>

@@ -8,45 +8,42 @@
 
 /* exported init, buildPrefsWidget */
 
-const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
+const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 
-const Gettext = Extension.imports.gettext;
-const Settings = Extension.imports.settings;
-const Utils = Extension.imports.utils;
-const __ = Extension.imports.gettext._;
+const Gettext = Lib.utils.gettext;
+const Settings = Lib.settings;
+const Utils = Lib.utils.utils;
+const __ = Lib.utils.gettext._;
 
 let preferences;
 
 
-const Preferences = new Lang.Class({
-    Name: 'ShellVolumeMixerPreferences',
+const Preferences = class
+{
+    constructor() {
+        this._objects = {
+            tabs: null,
+            cmbPosition: null,
+            swRemoveOriginal: null,
+            swShowDetailedSliders: null,
+            swShowSystemSounds: null,
+            swShowVirtualStreams: null,
+            swAlwaysShowInputStreams: null,
+            swUseSymbolicIcons: null,
+            txtProfileSwitch: null,
+            treeDevices: null,
+            treePinned: null,
+            btnAddDevice: null,
+            btnRemoveDevice: null,
+            rndQuickswitch: null,
+            rndDisplay: null
+        };
 
-    _objects: {
-        tabs: null,
-        cmbPosition: null,
-        swRemoveOriginal: null,
-        swShowDetailedSliders: null,
-        swShowSystemSounds: null,
-        swShowVirtualStreams: null,
-        swAlwaysShowInputStreams: null,
-        swUseSymbolicIcons: null,
-        spnVolumeStep: null,
-        txtProfileSwitch: null,
-        treeDevices: null,
-        treePinned: null,
-        btnAddDevice: null,
-        btnRemoveDevice: null,
-        rndQuickswitch: null,
-        rndDisplay: null
-    },
-
-    _init() {
         // just init gettext here
         Gettext.getLocal();
         this._settings = new Settings.Settings();
-    },
+    }
 
     buildWidget() {
         this.builder = new Gtk.Builder();
@@ -61,7 +58,7 @@ const Preferences = new Lang.Class({
 
         this._widget = this._objects.tabs;
         return this._widget;
-    },
+    }
 
     _connectAndInitUi() {
         for (let k in this._objects) {
@@ -85,7 +82,6 @@ const Preferences = new Lang.Class({
         this._objects.swShowVirtualStreams.set_active(this._settings.get_boolean('show-virtual-streams'));
         this._objects.swAlwaysShowInputStreams.set_active(this._settings.get_boolean('always-show-input-streams'));
         this._objects.swUseSymbolicIcons.set_active(this._settings.get_boolean('use-symbolic-icons'));
-        this._objects.spnVolumeStep.set_value(this._settings.get_int('volume-step'));
         this._objects.txtProfileSwitch.set_text(this._settings.get_array('profile-switcher-hotkey')[0] || '');
 
         this._bindSignal('tabs', 'switch-page', this.onSwitchPage);
@@ -96,13 +92,12 @@ const Preferences = new Lang.Class({
         this._bindSignal('swShowVirtualStreams', 'notify::active', this.onSwitchActivate, 'show-virtual-streams');
         this._bindSignal('swAlwaysShowInputStreams', 'notify::active', this.onSwitchActivate, 'always-show-input-streams');
         this._bindSignal('swUseSymbolicIcons', 'notify::active', this.onSwitchActivate, 'use-symbolic-icons');
-        this._bindSignal('spnVolumeStep', 'changed', this.onVolumeStepChanged);
         this._bindSignal('txtProfileSwitch', 'changed', this.onProfileSwitchChanged, 'profile-switcher-hotkey');
         this._bindSignal('btnAddDevice', 'clicked', this.onAddDevice);
         this._bindSignal('btnRemoveDevice', 'clicked', this.onRemoveDevice);
 
         this.onPositionChanged(this._objects.cmbPosition);
-    },
+    }
 
 
     /**
@@ -148,7 +143,7 @@ const Preferences = new Lang.Class({
                 }
 
                 this._devices.set(this._devices.append(row), [0, 1, 2],
-                        [profiletext, card.name, profile.name]);
+                    [profiletext, card.name, profile.name]);
 
                 profiles[profile.name] = {
                     description: profile.description,
@@ -165,7 +160,7 @@ const Preferences = new Lang.Class({
         }
 
         this._objects.treeDevices.expand_all();
-    },
+    }
 
     /**
      * Updates the content of the selection list with all values from the
@@ -207,7 +202,7 @@ const Preferences = new Lang.Class({
                 entry.card, entry.profile
             ]);
         }
-    },
+    }
 
     /**
      * Returns the entries in the selection list as array of strings.
@@ -227,7 +222,7 @@ const Preferences = new Lang.Class({
         }
 
         this._settings.set_array('pinned-profiles', values);
-    },
+    }
 
 
     /**
@@ -246,11 +241,11 @@ const Preferences = new Lang.Class({
             modal: true
         });
 
-        dialog.connect('response', function() {
+        dialog.connect('response', () => {
             dialog.destroy();
         });
         dialog.show();
-    },
+    }
 
 
     /**
@@ -263,10 +258,10 @@ const Preferences = new Lang.Class({
      * @param setting Key in settings, passed to the callback.
      */
     _bindSignal(id, signal, callback, setting) {
-        this._objects[id].connect(signal, function(widget) {
+        this._objects[id].connect(signal, widget => {
             callback.apply(this, [widget, setting]);
-        }.bind(this));
-    },
+        });
+    }
 
 
     /**
@@ -287,7 +282,7 @@ const Preferences = new Lang.Class({
             __('Helper script did not return valid card data.'));
 
         this._cardsWarningShown = true;
-    },
+    }
 
     /**
      * Callback for change event of combobox.
@@ -309,21 +304,14 @@ const Preferences = new Lang.Class({
         } else {
             checkbox.set_sensitive(true);
         }
-    },
+    }
 
     /**
      * Callback for all switches.
      */
     onSwitchActivate(widget, setting) {
         this._settings.set_boolean(setting, widget.active);
-    },
-
-    /**
-     * Callback for change event of volume step spinner.
-     */
-    onVolumeStepChanged(widget) {
-        this._settings.set_int('volume-step', parseInt(widget.get_text()));
-    },
+    }
 
     /**
      * Callback for change event of profile switcher hotkey.
@@ -349,7 +337,7 @@ const Preferences = new Lang.Class({
         widget.set_text(hotkey);
         // Main.wm.addKeybinding expects an array
         this._settings.set_array(setting, [hotkey]);
-    },
+    }
 
 
     /**
@@ -361,7 +349,7 @@ const Preferences = new Lang.Class({
         }
 
         return true;
-    },
+    }
 
     /**
      * Determines whether selection allows to enable the add button.
@@ -388,7 +376,7 @@ const Preferences = new Lang.Class({
         }
 
         this._objects.btnAddDevice.set_sensitive(true);
-    },
+    }
 
     /**
      * Determines whether selection allows to enable the remove button.
@@ -399,7 +387,7 @@ const Preferences = new Lang.Class({
         } else {
             this._objects.btnRemoveDevice.set_sensitive(false);
         }
-    },
+    }
 
 
     /**
@@ -428,9 +416,9 @@ const Preferences = new Lang.Class({
         profile.pinned = true;
 
         this._pinned.set(this._pinned.append(), [0, 1, 2, 3, 4, 5],
-                [card.description, profile.description, true, true, cardid, profileid]);
+            [card.description, profile.description, true, true, cardid, profileid]);
         this._storePinned();
-    },
+    }
 
     /**
      * Callback for remove button.
@@ -457,13 +445,13 @@ const Preferences = new Lang.Class({
             return;
         }
 
-        cardidSel = store.get_value(iter, 1);
-        profileidSel = store.get_value(iter, 2);
+        let cardidSel = store.get_value(iter, 1);
+        let profileidSel = store.get_value(iter, 2);
 
         if (cardid == cardidSel && profileid == profileidSel) {
             this._objects.btnAddDevice.set_sensitive(true);
         }
-    },
+    }
 
 
     /**
@@ -477,7 +465,7 @@ const Preferences = new Lang.Class({
         }
         this._pinned.set_value(iter, 2, active);
         this._storePinned();
-    },
+    }
 
     /**
      * Toggle event for display switches.
@@ -491,7 +479,7 @@ const Preferences = new Lang.Class({
         this._pinned.set_value(iter, 3, active);
         this._storePinned();
     }
-});
+};
 
 
 function init() {

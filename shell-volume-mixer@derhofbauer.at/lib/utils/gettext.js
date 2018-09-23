@@ -11,8 +11,9 @@
 const Config = imports.misc.config;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Gettext = imports.gettext;
+const Lib = Extension.imports.lib;
 
-const Utils = Extension.imports.utils;
+const Utils = Lib.utils.utils;
 
 const DOMAIN = 'gnome-shell-extensions-shell-volume-mixer';
 let localGettext;

@@ -8,24 +8,22 @@
 
 /* exported PanelButton */
 
-const Extension = imports.misc.extensionUtils.getCurrentExtension();
-const Lang = imports.lang;
+const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const PanelMenu = imports.ui.panelMenu;
 const St = imports.gi.St;
 
-const Menu = Extension.imports.menu;
+const { Menu } = Lib.menu.menu;
+
 
 /**
  * Stand-alone panel menu
  */
-var PanelButton = new Lang.Class({
-    Name: 'ShellVolumeMixerPanelButton',
-    Extends: PanelMenu.Button,
+var PanelButton = class extends PanelMenu.Button
+{
+    constructor(mixer) {
+        super(0.0, 'ShellVolumeMixer');
 
-    _init(mixer, options) {
-        this.parent(0.0, 'ShellVolumeMixer');
-
-        this._mixerMenu = new Menu.Menu(mixer, {
+        this._mixerMenu = new Menu(mixer, {
             separator: true
         });
 
@@ -42,7 +40,6 @@ var PanelButton = new Lang.Class({
         this._box.add(this._bin);
 
         this.actor.add_actor(this._box);
-        this.actor.connect('scroll-event', this._onScrollEvent.bind(this));
 
         this._mixerMenu.connect('icon-changed', this._onIconChanged.bind(this));
 
@@ -50,11 +47,7 @@ var PanelButton = new Lang.Class({
         this.menu.addMenuItem(this._mixerMenu);
 
         this._onIconChanged();
-    },
-
-    _onScrollEvent(actor, event) {
-        this._mixerMenu.scroll(event);
-    },
+    }
 
     _onIconChanged() {
         if (this._mixerMenu.outputHasHeadphones()) {
@@ -62,9 +55,9 @@ var PanelButton = new Lang.Class({
         } else {
             this.setIcon(this._mixerMenu.getIcon());
         }
-    },
+    }
 
     setIcon(icon_name) {
         this._icon.icon_name = icon_name;
     }
-});
+};
