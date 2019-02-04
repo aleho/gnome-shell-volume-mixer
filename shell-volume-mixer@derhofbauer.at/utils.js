@@ -8,7 +8,6 @@
 
 /* exported getCards, l, d, error, repeatString, getExtensionPath, versionGreaterOrEqual */
 
-const ByteArray = imports.byteArray;
 const Config = imports.misc.config;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const GLib = imports.gi.GLib;
@@ -96,9 +95,6 @@ function getCards() {
 
     let ret = null;
     try {
-        if (output instanceof Uint8Array) {
-            output = ByteArray.toString(output);
-        }
         ret = JSON.parse(output);
     } catch (e) {
         error('utils', 'getCards', e.message);
