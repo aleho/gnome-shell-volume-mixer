@@ -31,6 +31,7 @@ const VOL_ICONS = [
     'audio-volume-high-symbolic'
 ];
 
+const WIDGET_VOLUME = Extension.imports.widget.volume; //added
 
 var Mixer = new Lang.Class({
     Name: 'ShellVolumeMixerMixer',
@@ -56,8 +57,8 @@ var Mixer = new Lang.Class({
 
         this._bindProfileHotkey();
 
-        if (this.boostVolume
-                || this.volumeStep != Settings.VOLUME_STEP_DEFAULT) {
+        if (this.boostVolume ||
+            this.volumeStep != Settings.VOLUME_STEP_DEFAULT) {
             this._bindMediaKeys();
         }
 
@@ -196,9 +197,9 @@ var Mixer = new Lang.Class({
      * Returns the max volume, depending on boost being enabled.
      */
     getVolMax() {
-        return this.boostVolume
-                ? this._control.get_vol_max_amplified()
-                : this._control.get_vol_max_norm();
+        return this.boostVolume ?
+            this._control.get_vol_max_amplified() :
+            this._control.get_vol_max_norm();
     },
 
     /**
@@ -472,8 +473,8 @@ var Mixer = new Lang.Class({
         profileName.shift();
         let profile = profileName.join(':');
 
-        if (streamAddr != cardAddr
-                || streamIndex != cardIndex) {
+        if (streamAddr != cardAddr ||
+            streamIndex != cardIndex) {
             // cards don't match, certainly no hit
             return STREAM_NO_MATCH;
         }
@@ -516,10 +517,12 @@ var Mixer = new Lang.Class({
 
         if (this._defaultSink) {
             let port = this._defaultSink.get_port();
-            if (port
-                && port.port != 'analog-output-speaker'
-                && port.port != 'analog-output'
-            ) {
+            if (!port) { //added
+                label.push(WIDGET_VOLUME.MasterVolumeLabel); //added
+            } //added
+            else if (port.port != 'analog-output-speaker' //changed
+                &&
+                port.port != 'analog-output') {
                 label.push(port.human_port);
             }
         }

@@ -25,7 +25,7 @@ const Settings = Extension.imports.settings;
 const Slider = Extension.imports.widget.slider;
 const Utils = Extension.imports.utils;
 
-
+var MasterVolumeLabel; //added
 /**
  * Basic StreamSlider implementation for Input- and OutputStreams.
  *
@@ -233,6 +233,7 @@ var MasterSlider = new Lang.Class({
 
     _updateLabel() {
         this._label.text = this._stream.description;
+        MasterVolumeLabel = this._label.text; //added
     },
 
     /**
