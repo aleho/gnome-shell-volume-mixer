@@ -1,7 +1,8 @@
-VERSION = 0.15.0
+VERSION = 0.16.0
 EXTENSION = shell-volume-mixer@derhofbauer.at
 
 SRCDIR = $(EXTENSION)
+BUILDDIR = build/
 PACKAGE = shell-volume-mixer-$(VERSION).zip
 
 FILES = LICENSE README.md
@@ -12,7 +13,6 @@ SOURCES = \
 	pautils/pa.py \
 	lib/*.js \
 	*.js \
-	metadata.json \
 	prefs.ui \
 	stylesheet.css \
 	$(GSCHEMA) $(SCHEMA_COMP)
@@ -30,9 +30,13 @@ package: $(PACKAGE)
 $(SRCDIR)/$(SCHEMA_COMP): $(SRCDIR)/$(GSCHEMA)
 	glib-compile-schemas --targetdir=$(SRCDIR)/schemas $(SRCDIR)/schemas
 
-$(PACKAGE): $(SRCFILES) $(FILES)
+$(PACKAGE): $(SRCFILES) $(FILES) metadata.json
 	cd $(SRCDIR) && zip -r ../$(PACKAGE) $(SOURCES)
 	zip $(PACKAGE) $(FILES)
+	cd $(BUILDDIR) && zip ../$(PACKAGE) *
+
+metadata.json: prepare
+	cat $(addprefix $(SRCDIR)/, metadata.json) | grep -v '"version":' > $(BUILDDIR)/metadata.json
 
 install-deps:
 	npm install
@@ -40,7 +44,11 @@ install-deps:
 check: install-deps
 	node_modules/.bin/eslint $(SRCDIR)
 
+prepare:
+	mkdir -p $(BUILDDIR)
+
 clean:
+	@test ! -d "$(BUILDDIR)" || rm -rf $(BUILDDIR)
 	@test ! -f "$(SRCDIR)/$(SCHEMA_COMP)" || rm $(SRCDIR)/$(SCHEMA_COMP)
 	@test ! -f "$(PACKAGE)" || rm $(PACKAGE)
 
