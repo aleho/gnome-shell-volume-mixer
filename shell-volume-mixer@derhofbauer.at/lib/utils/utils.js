@@ -6,7 +6,7 @@
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported getCards, l, d, error, repeatString, getExtensionPath, versionGreaterOrEqual */
+/* exported getCards, l, d, info, error, repeatString, getExtensionPath, versionGreaterOrEqual, mixin */
 
 const ByteArray = imports.byteArray;
 const Config = imports.misc.config;
@@ -106,6 +106,7 @@ function getCards() {
 
     return ret;
 }
+
 
 /**
  * Helper to debug any variables(s) as string, using separators.
@@ -261,6 +262,7 @@ function _dumpObject(object, maxDepth, currDepth) {
     return dump;
 }
 
+
 /**
  * Helper to repeat a given string.
  *
@@ -270,4 +272,16 @@ function _dumpObject(object, maxDepth, currDepth) {
  */
 function repeatString(string, times) {
     return new Array(times + 1).join(string);
+}
+
+
+/**
+ * Allows a target object to recieve all properties from a source.
+ */
+function mixin(target, source) {
+    const sourceProps = Object.getOwnPropertyDescriptors(source.prototype);
+
+    for (let name in sourceProps) {
+        Object.defineProperty(target.prototype, name, sourceProps[name]);
+    }
 }

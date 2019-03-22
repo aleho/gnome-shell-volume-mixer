@@ -74,14 +74,6 @@ msgstr "Skrót klawiszowy przełączania profilów"
 msgid "(e.g. \"<Super>p\")"
 msgstr "(np. \"<Super>p\")"
 
-#: prefs.ui:207
-msgid "Volume Steps (%)"
-msgstr "Krok regulacji głośności (%)"
-
-#: prefs.ui:234
-msgid "Use volume boost"
-msgstr "Zezwalaj na regulację głośności >100 %"
-
 #: prefs.ui:260
 msgid "Show system sounds"
 msgstr "Pokaż dźwięki systemowe"

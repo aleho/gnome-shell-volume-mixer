@@ -75,14 +75,6 @@ msgstr "Tecla de atalho para seletor de perfil"
 msgid "(e.g. \"<Super>p\")"
 msgstr "(ex. \"<Super>p\")"
 
-#: prefs.ui:207
-msgid "Volume Steps (%)"
-msgstr "Percentual de aumento (%)"
-
-#: prefs.ui:234
-msgid "Use volume boost"
-msgstr "Usar aumento de volume"
-
 #: prefs.ui:260
 msgid "Show system sounds"
 msgstr "Exibir sons do sistema"
