@@ -1,4 +1,4 @@
-VERSION = 0.16.0
+VERSION = 0.16.1
 EXTENSION = shell-volume-mixer@derhofbauer.at
 
 SRCDIR = $(EXTENSION)
@@ -11,7 +11,7 @@ SOURCES = \
 	locale/*/*/*.mo \
 	pautils/cardinfo.py \
 	pautils/pa.py \
-	lib/*.js \
+	lib/** \
 	*.js \
 	prefs.ui \
 	stylesheet.css \
