@@ -11,7 +11,7 @@ SOURCES = \
 	locale/*/*/*.mo \
 	pautils/cardinfo.py \
 	pautils/pa.py \
-	lib/*.js \
+	lib/* \
 	*.js \
 	prefs.ui \
 	stylesheet.css \
