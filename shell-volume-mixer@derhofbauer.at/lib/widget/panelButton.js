@@ -32,11 +32,6 @@ var PanelButton = class extends PanelMenu.Button
         this._icon = new St.Icon({ style_class: 'system-status-icon' });
         this._bin = new St.Bin({ child: this._icon });
 
-        this._stateIcon = new St.Icon({
-            icon_name: 'audio-speakers-symbolic',
-            style_class: 'system-status-icon'
-        });
-
         this._box.add(this._bin);
 
         this.actor.add_actor(this._box);
