@@ -108,6 +108,11 @@ function disable() {
     volumeIcon.show();
     aggregateMenu._volume = volumeIndicator;
 
+    if (mixer) {
+        mixer.disconnectAll();
+        mixer = null;
+    }
+
     if (gvmIndicator) {
         aggregateMenu._indicators.remove_actor(gvmIndicator.indicators);
         gvmIndicator.destroy();
@@ -117,11 +122,6 @@ function disable() {
     if (menu) {
         menu.destroy();
         menu = null;
-    }
-
-    if (mixer) {
-        mixer.disconnectAll();
-        mixer = null;
     }
 
     Settings.cleanup();

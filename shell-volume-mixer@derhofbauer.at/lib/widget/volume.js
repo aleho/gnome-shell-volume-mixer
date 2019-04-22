@@ -89,6 +89,8 @@ const StreamSlider = class extends OutputStreamSliderExtension
         this._volumeInfo = new FloatingLabel();
 
 
+        this.item.actor.connect('destroy', this._onDestroy.bind(this));
+
         if (this._onButtonPress) {
             this.item.actor.connect('button-press-event', this._onButtonPress.bind(this));
         }
@@ -203,6 +205,13 @@ const StreamSlider = class extends OutputStreamSliderExtension
 
         this._infoShowing = false;
         this._volumeInfo.hide(false);
+    }
+
+    _onDestroy() {
+        // make sure we clean up all bindings
+        if (this._stream) {
+            this._disconnectStream(this._stream);
+        }
     }
 };
 
@@ -408,8 +417,8 @@ var InputStreamSlider = class extends StreamSlider
         this._showInput = false;
 
         this._slider.actor.accessible_name = _('Microphone');
-        this._control.connect('stream-added', this._maybeShowInput.bind(this));
-        this._control.connect('stream-removed', this._maybeShowInput.bind(this));
+        this._streamAddedId = this._control.connect('stream-added', this._maybeShowInput.bind(this));
+        this._streamRemovedId = this._control.connect('stream-removed', this._maybeShowInput.bind(this));
     }
 
     _connectStream(stream) {
@@ -449,6 +458,18 @@ var InputStreamSlider = class extends StreamSlider
         }
 
         this.emit('stream-updated');
+    }
+
+    _onDestroy() {
+        if (this._streamAddedId) {
+            this._control.disconnect(this._streamAddedId);
+        }
+
+        if (this._streamRemovedId) {
+            this._control.disconnect(this._streamRemovedId);
+        }
+
+        super._onDestroy();
     }
 };
 
