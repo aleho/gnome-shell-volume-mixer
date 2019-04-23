@@ -42,10 +42,10 @@
 /* stand-alone menu */
 
 .shell-volume-mixer-button {
-    width: 360px;
+    /* TODO: this is broken, fix width */
 }
 
 .shell-volume-mixer-button .svm-master-slider .svm-master-label,
 .shell-volume-mixer-button .svm-master-slider .slider {
-    width: 258px;
+    /* TODO: this is broken, fix width */
 }

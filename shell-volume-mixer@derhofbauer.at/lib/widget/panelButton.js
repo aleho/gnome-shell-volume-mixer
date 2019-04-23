@@ -9,6 +9,7 @@
 /* exported PanelButton */
 
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
+const GObject = imports.gi.GObject;
 const PanelMenu = imports.ui.panelMenu;
 const St = imports.gi.St;
 
@@ -18,10 +19,10 @@ const { Menu } = Lib.menu.menu;
 /**
  * Stand-alone panel menu
  */
-var PanelButton = class extends PanelMenu.Button
+var PanelButton = GObject.registerClass(class PanelButton extends PanelMenu.Button
 {
-    constructor(mixer) {
-        super(0.0, 'ShellVolumeMixer');
+    _init(mixer) {
+        super._init(0.0, 'ShellVolumeMixer');
 
         this._mixerMenu = new Menu(mixer, {
             separator: true
@@ -36,7 +37,7 @@ var PanelButton = class extends PanelMenu.Button
 
         this.actor.add_actor(this._box);
 
-        this._mixerMenu.connect('icon-changed', this._onIconChanged.bind(this));
+        this._iconChangedId = this._mixerMenu.connect('icon-changed', this._onIconChanged.bind(this));
 
         this.menu.actor.add_style_class_name('shell-volume-mixer-button');
         this.menu.addMenuItem(this._mixerMenu);
@@ -55,4 +56,13 @@ var PanelButton = class extends PanelMenu.Button
     setIcon(icon_name) {
         this._icon.icon_name = icon_name;
     }
-};
+
+    _onDestroy() {
+        super._onDestroy();
+
+        if (this._iconChangedId) {
+            this._mixerMenu.disconnect(this._iconChangedId);
+            delete this._iconChangedId;
+        }
+    }
+});

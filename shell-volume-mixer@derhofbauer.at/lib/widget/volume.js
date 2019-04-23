@@ -225,6 +225,7 @@ var MasterSlider = class extends StreamSlider
     _init(options) {
         this.item = new MenuItem.MasterMenuItem();
 
+        this._hasHeadphones = false;
         this._slider = this.item._slider;
         this._icon = this.item.icon;
         this._label = this.item.label;

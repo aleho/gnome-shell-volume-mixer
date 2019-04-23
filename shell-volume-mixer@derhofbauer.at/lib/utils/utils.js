@@ -111,7 +111,7 @@ function getCards() {
 /**
  * Helper to debug any variables(s) as string, using separators.
  *
- * @param string, ...
+ * @param {...string}
  */
 function l() {
     log(LOG_PREAMBLE + '\n'
