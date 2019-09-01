@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-gnome-shell-extension-tool -r shell-volume-mixer@derhofbauer.at
