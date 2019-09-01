@@ -1,5 +1,7 @@
 {
+  "license": "GPL-2.0-only",
+  "repository": "https://github.com/aleho/gnome-shell-volume-mixer",
   "devDependencies": {
-    "eslint": "^6.1.0"
+    "eslint": "^6.3.0"
   }
 }
