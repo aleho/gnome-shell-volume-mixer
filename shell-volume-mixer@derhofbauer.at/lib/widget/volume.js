@@ -60,7 +60,7 @@ const StreamSlider = class extends OutputStreamSliderExtension
     }
 
     /**
-     * Init basically copied from Volume.StreamSlider and Volume.StreamSlider
+     * Init basically copied from Volume.StreamSlider and Volume.OutputStreamSlider
      */
     _init(options) {
         if (!this.item) {
@@ -103,6 +103,7 @@ const StreamSlider = class extends OutputStreamSliderExtension
         if (this._slider._onScrollEvent) {
             this.item.connect('scroll-event', this._slider._onScrollEvent.bind(this._slider));
         }
+        this.item.connect('scroll-event', this._onScrollEvent.bind(this));
 
 
         let soundSettings = new Settings.Settings(Settings.SOUND_SETTINGS_SCHEMA);
@@ -129,6 +130,10 @@ const StreamSlider = class extends OutputStreamSliderExtension
         return this._slider.startDragging(event);
     }
 
+    _onScrollEvent(/* slider, event */) {
+        this._showVolumeInfo();
+    }
+
     refresh() {
         this._updateLabel();
         this._updateSliderIcon();
@@ -153,18 +158,12 @@ const StreamSlider = class extends OutputStreamSliderExtension
         this._label.text = this._stream.name || this._stream.description || '';
     }
 
-    _sliderChanged(slider, event) {
-        super._sliderChanged(slider, event);
-
+    _showVolumeInfo(position) {
         if (!this._stream || !this._volumeInfo) {
             return;
         }
 
-        // value is already a proportion of the probably boosted slider
-        this._showVolumeInfo(Math.round(slider.value * 100), event);
-    }
-
-    _showVolumeInfo(value, event) {
+        const value = Math.round(this._slider.value * 100);
         this._volumeInfo.text = value + '%';
 
         if (this._labelTimeoutId) {
@@ -176,12 +175,10 @@ const StreamSlider = class extends OutputStreamSliderExtension
             this._infoShowing = true;
 
             let x, y;
-
-            if (event && 'showInfoAtMouseCursor' in event && event.showInfoAtMouseCursor === true) {
-                [x, y] = event.get_coords();
-                let [, h] = this._volumeInfo.size;
-                x += 15;
-                y += h + 10;
+            if (position) {
+                [x, y] = position;
+                x     += 15;
+                y     += 100;
             } else {
                 [x, y] = this._slider.get_transformed_position();
                 x = x + Math.floor(this._slider.get_width() / 2);
@@ -258,6 +255,18 @@ var MasterSlider = class extends StreamSlider
 
     _updateLabel() {
         this._label.text = this._stream.description;
+    }
+
+    scroll(event) {
+        super.scroll(event);
+
+        // allow icon scrolls with closed menu to be handled as well
+        let position = null;
+        if (event && !Main.panel.statusArea.aggregateMenu.menu.isOpen) {
+            position = event.get_coords();
+        }
+
+        this._showVolumeInfo(position);
     }
 };
 
