@@ -24,7 +24,6 @@ let aggregateMenu;
 let volumeIndicator;
 let volumeIcon;
 let volumeMenu;
-let volumeActor;
 let mixer;
 
 let menu;
@@ -36,7 +35,6 @@ function init() {
     volumeIndicator = aggregateMenu._volume;
     volumeIcon = volumeIndicator._primaryIndicator;
     volumeMenu = volumeIndicator._volumeMenu;
-    volumeActor = volumeMenu.actor;
 }
 
 function enable() {
@@ -61,7 +59,7 @@ function replaceOriginal() {
         separator: false
     });
 
-    volumeActor.hide();
+    volumeMenu.actor.hide();
     volumeIcon.hide();
 
     // get current indicator position
@@ -88,23 +86,23 @@ function replaceOriginal() {
 function addPanelButton(position) {
     let removeOriginal = settings.get_boolean('remove-original');
     if (removeOriginal) {
-        volumeActor.hide();
+        volumeMenu.actor.hide();
         volumeIcon.hide();
     }
 
     menu = new PanelButton(mixer);
 
     if (position === Settings.POS_LEFT) {
-        Main.panel.addToStatusArea('ShellvolumeActor', menu, 999, 'left');
+        Main.panel.addToStatusArea('ShellVolumeMenu', menu, 999, 'left');
     } else if (position === Settings.POS_CENTER) {
-        Main.panel.addToStatusArea('ShellvolumeActor', menu, 999, 'center');
+        Main.panel.addToStatusArea('ShellVolumeMenu', menu, 999, 'center');
     } else {
-        Main.panel.addToStatusArea('ShellvolumeActor', menu);
+        Main.panel.addToStatusArea('ShellVolumeMenu', menu);
     }
 }
 
 function disable() {
-    volumeActor.show();
+    volumeMenu.actor.show();
     volumeIcon.show();
     aggregateMenu._volume = volumeIndicator;
 

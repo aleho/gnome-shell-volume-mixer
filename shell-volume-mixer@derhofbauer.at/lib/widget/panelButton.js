@@ -35,11 +35,11 @@ var PanelButton = GObject.registerClass(class PanelButton extends PanelMenu.Butt
 
         this._box.add(this._bin);
 
-        this.actor.add_actor(this._box);
+        this.add_actor(this._box);
 
         this._iconChangedId = this._mixerMenu.connect('icon-changed', this._onIconChanged.bind(this));
 
-        this.menu.actor.add_style_class_name('shell-volume-mixer-button');
+        this.menu.add_style_class_name('shell-volume-mixer-button');
         this.menu.addMenuItem(this._mixerMenu);
 
         this._onIconChanged();

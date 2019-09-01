@@ -31,12 +31,12 @@ let makeItemLine = function(ornament) {
 };
 
 let prepareMenuItem = function(instance) {
-    instance.actor.get_children().map(child => {
-        instance.actor.remove_actor(child);
+    instance.get_children().map(child => {
+        instance.remove_actor(child);
     });
 
     instance.container = new St.BoxLayout({ vertical: true, style_class: 'svm-menu-item-container' });
-    instance.actor.add(instance.container, { expand: true });
+    instance.add(instance.container, { expand: true });
 
     if (!instance.firstLine) {
         instance.firstLine = makeItemLine(instance._ornamentLabel);
@@ -68,11 +68,11 @@ var MasterMenuItem = class extends PopupMenu.PopupSubMenuMenuItem
         this.firstLine.add(this.label, { expand: true });
         this.firstLine.add_child(this._triangleBin);
 
-        this.secondLine.add(this._slider.actor, { expand: true });
+        this.secondLine.add(this._slider, { expand: true });
         this.secondLine.add_style_class_name('svm-master-slider-line');
 
         this.label.add_style_class_name('svm-master-label');
-        this.actor.add_style_class_name('svm-master-slider svm-menu-item');
+        this.add_style_class_name('svm-master-slider svm-menu-item');
     }
 
     _onButtonReleaseEvent(actor, event) {

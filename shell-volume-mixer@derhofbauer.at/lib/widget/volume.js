@@ -83,24 +83,24 @@ const StreamSlider = class extends OutputStreamSliderExtension
 
         if (!this._slider) {
             this._slider = new Slider.VolumeSlider(0);
-            this.item.secondLine.add(this._slider.actor, { expand: true });
+            this.item.secondLine.add(this._slider, { expand: true });
         }
 
         this._volumeInfo = new FloatingLabel();
 
 
-        this.item.actor.connect('destroy', this._onDestroy.bind(this));
+        this.item.connect('destroy', this._onDestroy.bind(this));
 
         if (this._onButtonPress) {
-            this.item.actor.connect('button-press-event', this._onButtonPress.bind(this));
+            this.item.connect('button-press-event', this._onButtonPress.bind(this));
         }
 
         if (this._onKeyPress) {
-            this.item.actor.connect('key-press-event', this._onKeyPress.bind(this));
+            this.item.connect('key-press-event', this._onKeyPress.bind(this));
         }
 
         if (this._slider._onScrollEvent) {
-            this.item.actor.connect('scroll-event', this._slider._onScrollEvent.bind(this._slider));
+            this.item.connect('scroll-event', this._slider._onScrollEvent.bind(this._slider));
         }
 
 
@@ -182,8 +182,8 @@ const StreamSlider = class extends OutputStreamSliderExtension
                 x += 15;
                 y += h + 10;
             } else {
-                [x, y] = this._slider.actor.get_transformed_position();
-                x = x + Math.floor(this._slider.actor.get_width() / 2);
+                [x, y] = this._slider.get_transformed_position();
+                x = x + Math.floor(this._slider.get_width() / 2);
             }
 
             this._volumeInfo.show(x, y);
@@ -230,7 +230,7 @@ var MasterSlider = class extends StreamSlider
         this._icon = this.item.icon;
         this._label = this.item.label;
 
-        this._slider.actor.accessible_name = _('Volume');
+        this._slider.accessible_name = _('Volume');
 
         this.item.menu.addAction(_('Settings'), () => {
             Settings.openDialog();
@@ -269,7 +269,7 @@ var AggregatedInput = class
     constructor() {
         this.item = new PopupMenu.PopupSubMenuMenuItem(__('Inputs'), true);
         this.item.icon.icon_name = 'applications-multimedia-symbolic';
-        this.item.actor.accessible_name = __('Inputs');
+        this.item.accessible_name = __('Inputs');
 
         this._inputStream = null;
     }
@@ -292,7 +292,7 @@ var AggregatedInput = class
             || (this.item.menu.numMenuItems > 0 && this._inputStream.isVisible())
         );
 
-        this.item.actor.visible = hasVisibleItems;
+        this.item.visible = hasVisibleItems;
     }
 };
 
@@ -417,7 +417,7 @@ var InputStreamSlider = class extends StreamSlider
 
         this._showInput = false;
 
-        this._slider.actor.accessible_name = _('Microphone');
+        this._slider.accessible_name = _('Microphone');
         this._streamAddedId = this._control.connect('stream-added', this._maybeShowInput.bind(this));
         this._streamRemovedId = this._control.connect('stream-removed', this._maybeShowInput.bind(this));
     }
