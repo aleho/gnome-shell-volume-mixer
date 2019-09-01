@@ -9,6 +9,7 @@
 /* exported MasterMenuItem, SubMenuItem */
 
 const Clutter = imports.gi.Clutter;
+const GObject = imports.gi.GObject;
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const PopupMenu = imports.ui.popupMenu;
 const St = imports.gi.St;
@@ -56,10 +57,10 @@ let prepareMenuItem = function(instance) {
 /**
  * Submenu item for the sink selection menu.
  */
-var MasterMenuItem = class extends PopupMenu.PopupSubMenuMenuItem
+var MasterMenuItem = GObject.registerClass(class MasterMenuItem extends PopupMenu.PopupSubMenuMenuItem
 {
-    constructor() {
-        super('', true);
+    _init() {
+        super._init('', true);
         prepareMenuItem(this);
 
         this._slider = new Slider.VolumeSlider(0);
@@ -94,16 +95,16 @@ var MasterMenuItem = class extends PopupMenu.PopupSubMenuMenuItem
 
         return super._onKeyPressEvent(actor, event);
     }
-};
+});
 
 
 /**
  * Sub menu item implementation for dropdown menus (via master slider menu or input menu).
  */
-var SubMenuItem = class extends PopupMenu.PopupBaseMenuItem
+var SubMenuItem = GObject.registerClass(class SubMenuItem extends PopupMenu.PopupBaseMenuItem
 {
-    constructor(params) {
-        super(params);
+    _init(params) {
+        super._init(params);
         prepareMenuItem(this);
     }
 
@@ -119,4 +120,4 @@ var SubMenuItem = class extends PopupMenu.PopupBaseMenuItem
     setSelected(selected) {
         this.setOrnament(selected === true ? PopupMenu.Ornament.DOT : PopupMenu.Ornament.NONE);
     }
-};
+});
