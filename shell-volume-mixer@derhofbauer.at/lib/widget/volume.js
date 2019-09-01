@@ -11,6 +11,7 @@
 const Clutter = imports.gi.Clutter;
 const GLib = imports.gi.GLib;
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
+const Main = imports.ui.main;
 const Mainloop = imports.mainloop;
 const PopupMenu = imports.ui.popupMenu;
 const St = imports.gi.St;
@@ -109,7 +110,7 @@ const StreamSlider = class extends OutputStreamSliderExtension
         this._soundSettings.connect('changed::' + Settings.ALLOW_AMPLIFIED_VOLUME_KEY, this._amplifySettingsChanged.bind(this));
         this._amplifySettingsChanged();
 
-        this._slider.connect('value-changed', this._sliderChanged.bind(this));
+        this._slider.connect('notify::value', this._sliderChanged.bind(this));
         this._slider.connect('drag-end', this._notifyVolumeChange.bind(this));
 
         this.stream = options.stream || null;
@@ -152,15 +153,15 @@ const StreamSlider = class extends OutputStreamSliderExtension
         this._label.text = this._stream.name || this._stream.description || '';
     }
 
-    _sliderChanged(slider, value, event) {
-        super._sliderChanged(slider, value, event);
+    _sliderChanged(slider, event) {
+        super._sliderChanged(slider, event);
 
         if (!this._stream || !this._volumeInfo) {
             return;
         }
 
         // value is already a proportion of the probably boosted slider
-        this._showVolumeInfo(Math.round(value * 100), event);
+        this._showVolumeInfo(Math.round(slider.value * 100), event);
     }
 
     _showVolumeInfo(value, event) {
@@ -288,11 +289,9 @@ var AggregatedInput = class
     }
 
     refresh() {
-        let hasVisibleItems = (this.item.menu.numMenuItems > 1
+        this.item.visible = (this.item.menu.numMenuItems > 1
             || (this.item.menu.numMenuItems > 0 && this._inputStream.isVisible())
         );
-
-        this.item.visible = hasVisibleItems;
     }
 };
 
@@ -359,11 +358,10 @@ var OutputSlider = class extends StreamSlider
     }
 
     setSelected(selected) {
+        this.item.active = selected;
         if (selected !== false) {
-            this.item.setSelected(true);
             this._label.add_style_class_name('selected-stream');
         } else {
-            this.item.setSelected(false);
             this._label.remove_style_class_name('selected-stream');
         }
     }
