@@ -1,8 +1,8 @@
 module.exports = {
-    "env": {
-        "es6": true
+    'env': {
+        'es6': true
     },
-    "globals": {
+    'globals': {
         '_': false,
         'ARGV': false,
         'C_': false,
@@ -22,27 +22,27 @@ module.exports = {
         'uneval': false,
         'window': false
     },
-    "extends": "eslint:recommended",
-    "parserOptions": {
-        "ecmaVersion": 2017
+    'extends': 'eslint:recommended',
+    'parserOptions': {
+        'ecmaVersion': 2017
     },
-    "rules": {
-        "indent": [
-            "error",
+    'rules': {
+        'indent': [
+            'error',
             4
         ],
-        "linebreak-style": [
-            "error",
-            "unix"
+        'linebreak-style': [
+            'error',
+            'unix'
         ],
-        "quotes": [
-            "error",
-            "single",
-            { "allowTemplateLiterals": true }
+        'quotes': [
+            'error',
+            'single',
+            { 'allowTemplateLiterals': true }
         ],
-        "semi": [
-            "error",
-            "always"
+        'semi': [
+            'error',
+            'always'
         ]
     }
 };

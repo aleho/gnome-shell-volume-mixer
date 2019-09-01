@@ -24,8 +24,8 @@ let localGettext;
  */
 function getLocal() {
     if (!localGettext) {
-        let domain = Extension.metadata['gettext-domain'] || DOMAIN;
-        let localeDir = Utils.getExtensionPath('locale');
+        const domain = Extension.metadata['gettext-domain'] || DOMAIN;
+        const localeDir = Utils.getExtensionPath('locale');
 
         if (localeDir) {
             Gettext.bindtextdomain(domain, localeDir);
@@ -47,15 +47,15 @@ function getLocal() {
  * @param args Original gettext call arguments
  */
 function proxy(type, args) {
-    let local = getLocal()[type];
-    let trans = local.apply(local, args);
+    const local = getLocal()[type];
+    const trans = local.apply(local, args);
 
     // compare with original. if unchanged assume missing translation
     if (trans != args[0]) {
         return trans;
     }
 
-    let global = Gettext[type];
+    const global = Gettext[type];
     return global.apply(global, args);
 }
 
@@ -63,6 +63,7 @@ function proxy(type, args) {
 /**
  * _ proxy.
  */
+// eslint-disable-next-line no-redeclare
 function _() {
     return proxy('gettext', arguments);
 }
@@ -70,6 +71,7 @@ function _() {
 /**
  * C_ proxy.
  */
+// eslint-disable-next-line no-redeclare
 function C_() {
     return proxy('pgettext', arguments);
 }
@@ -77,6 +79,7 @@ function C_() {
 /**
  * ngettext proxy.
  */
+// eslint-disable-next-line no-redeclare
 function ngettext() {
     return proxy('ngettext', arguments);
 }
