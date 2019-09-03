@@ -42,6 +42,8 @@ var Menu = class extends VolumeMenuExtension
             alwaysShowInputStreams: this._settings.get_boolean('always-show-input-streams')
         };
 
+        this.actor.add_style_class_name('svm-menu');
+
         // master-menu items
         this._outputs = {};
         // input-menu items

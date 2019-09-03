@@ -387,6 +387,12 @@ var OutputSlider = class extends StreamSlider
  */
 var EventsSlider = class extends StreamSlider
 {
+    _init(options) {
+        super._init(options);
+
+        this.item.add_style_class_name('events-stream-slider');
+    }
+
     _updateLabel() {
         this._label.text = this._stream.name;
     }
