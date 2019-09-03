@@ -9,7 +9,7 @@ switcher to quickly switch between pinned profiles and devices.
 Middle mouse click on a slider mutes the selected stream.
 
 
-![screenshot 1](/screenshot_1.png?raw=true "Outputs menu") ![screenshot 2](/screenshot_2.png?raw=true "Inputs menu")
+<img src="/screenshot_1.png" alt="Outputs menu" width="40%"><img alt="Inputs menu" src="/screenshot_2.png" width="40%">
 
 
 Requirements
