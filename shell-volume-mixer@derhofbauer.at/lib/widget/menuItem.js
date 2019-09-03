@@ -118,6 +118,7 @@ var SubMenuItem = GObject.registerClass(class SubMenuItem extends PopupMenu.Popu
     }
 
     setSelected(selected) {
+        this.active = selected;
         this.setOrnament(selected === true ? PopupMenu.Ornament.DOT : PopupMenu.Ornament.NONE);
     }
 });

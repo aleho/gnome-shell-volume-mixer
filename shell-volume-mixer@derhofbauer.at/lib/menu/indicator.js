@@ -46,7 +46,7 @@ var Indicator = class extends IndicatorExtension
     updateIcon() {
         let icon = this._volumeMenu.getIcon();
 
-        if (icon != null) {
+        if (icon !== null) {
             this.indicators.show();
             this._primaryIndicator.icon_name = icon;
         } else {

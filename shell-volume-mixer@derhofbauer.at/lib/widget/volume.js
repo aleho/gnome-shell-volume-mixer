@@ -367,10 +367,11 @@ var OutputSlider = class extends StreamSlider
     }
 
     setSelected(selected) {
-        this.item.active = selected;
         if (selected !== false) {
+            this.item.setSelected(true);
             this._label.add_style_class_name('selected-stream');
         } else {
+            this.item.setSelected(false);
             this._label.remove_style_class_name('selected-stream');
         }
     }
