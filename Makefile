@@ -7,14 +7,17 @@ PACKAGE = shell-volume-mixer-$(VERSION).zip
 
 FILES = LICENSE README.md
 
+LOCALES_SRC = $(foreach dir,$(SRCDIR)/locale,$(wildcard $(dir)/*/*/*.po))
+LOCALES = $(patsubst %.po,%.mo,$(LOCALES_SRC))
+
 SOURCES = \
-	locale/*/*/*.mo \
 	pautils/cardinfo.py \
 	pautils/pa.py \
 	lib/** \
 	*.js \
 	prefs.ui \
 	stylesheet.css \
+	$(LOCALES:$(SRCDIR)/%=%) \
 	$(GSCHEMA) $(SCHEMA_COMP)
 
 SCHEMA_COMP = schemas/gschemas.compiled
@@ -30,10 +33,13 @@ package: $(PACKAGE)
 $(SRCDIR)/$(SCHEMA_COMP): $(SRCDIR)/$(GSCHEMA)
 	glib-compile-schemas --targetdir=$(SRCDIR)/schemas $(SRCDIR)/schemas
 
-$(PACKAGE): $(SRCFILES) $(FILES) metadata.json
-	cd $(SRCDIR) && zip -r ../$(PACKAGE) $(SOURCES)
+$(PACKAGE): i18n metadata.json $(SRCFILES) $(FILES)
+	cd $(SRCDIR) && zip -r ../$(PACKAGE) $(SOURCES) 
 	zip $(PACKAGE) $(FILES)
 	cd $(BUILDDIR) && zip ../$(PACKAGE) *
+
+i18n: $(LOCALES_SRC)
+	@$(foreach file, $(LOCALES_SRC), msgfmt $(file) -o $(subst .po,.mo,$(file));)
 
 metadata.json: prepare
 	cat $(addprefix $(SRCDIR)/, metadata.json) | grep -v '"version":' > $(BUILDDIR)/metadata.json
@@ -53,4 +59,4 @@ clean:
 	@test ! -f "$(PACKAGE)" || rm $(PACKAGE)
 
 
-.PHONY: clean
+.PHONY: clean i18n
