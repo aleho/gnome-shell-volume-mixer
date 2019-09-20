@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 #
 # Usage: cardinfo.py [card_index] [card_name]
 #

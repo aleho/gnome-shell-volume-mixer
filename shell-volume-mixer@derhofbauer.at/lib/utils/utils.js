@@ -88,7 +88,23 @@ function getCards() {
         return null;
     }
 
-    let [success, output] = GLib.spawn_command_line_sync('python ' + pautil);
+    let success;
+    let output;
+    let pythonError;
+
+    try {
+        [success, output] = GLib.spawn_command_line_sync('/usr/bin/env python3 ' + pautil);
+    } catch (pythonError) {
+        try {
+            [success, output] = GLib.spawn_command_line_sync('/usr/bin/env python ' + pautil);
+        } catch (pythonError) {
+            // eslint-disable-no-empty
+        }
+    } finally {
+        if (pythonError) {
+            error('utils', 'getCards', pythonError.message);
+        }
+    }
 
     if (success !== true || !output) {
         return null;
