@@ -111,7 +111,7 @@ const StreamSlider = class extends OutputStreamSliderExtension
         this._soundSettings.connect('changed::' + Settings.ALLOW_AMPLIFIED_VOLUME_KEY, this._amplifySettingsChanged.bind(this));
         this._amplifySettingsChanged();
 
-        this._slider.connect('notify::value', this._sliderChanged.bind(this));
+        this._sliderChangedId = this._slider.connect('notify::value', this._sliderChanged.bind(this));
         this._slider.connect('drag-end', this._notifyVolumeChange.bind(this));
 
         this.stream = options.stream || null;
