@@ -137,7 +137,7 @@ var Settings = class
      * @param callback
      */
     connectChanged(callback) {
-        this.connect('changed::', callback);
+        this.connect('changed', callback);
     }
 
     /**
