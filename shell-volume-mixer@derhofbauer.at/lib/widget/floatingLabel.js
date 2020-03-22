@@ -9,8 +9,7 @@
 /* exported FloatingLabel */
 
 const Main = imports.ui.main;
-const St = imports.gi.St;
-const Tweener = imports.ui.tweener;
+const {Clutter, St} = imports.gi;
 
 
 
@@ -43,34 +42,37 @@ var FloatingLabel = class
     show(x, y, animate) {
         this._label.opacity = 0;
         this._label.show();
-        this._label.raise_top();
+        Main.uiGroup.set_child_above_sibling(this._label, null);
 
-        let labelHeight = this._label.get_height();
-        let labelWidth = this._label.get_width();
+        const labelHeight = this._label.get_height();
+        const labelWidth = this._label.get_width();
 
-        x = Math.floor(x - labelWidth / 2);
-        y = y - labelHeight;
-        this._label.set_position(x, y);
+        const node = this._label.get_theme_node();
+        const xOffset = node.get_length('-x-offset');
 
-        let duration = animate !== false ? 0.15 : 0;
+        let xPos;
+        if (Clutter.get_default_text_direction() == Clutter.TextDirection.RTL) {
+            xPos = x - labelWidth - xOffset;
+        } else {
+            xPos = x + labelWidth + xOffset;
+        }
 
-        Tweener.addTween(this._label, {
+        const yPos = y - labelHeight;
+
+        this._label.set_position(xPos, yPos);
+        this._label.ease({
             opacity: 255,
-            time: duration,
-            transition: 'easeOutQuad'
+            duration: animate !== false ? 150 : 0,
+            mode: Clutter.AnimationMode.EASE_OUT_QUAD,
         });
     }
 
     hide(animate) {
-        let duration = animate !== false ? 0.1 : 0;
-
-        Tweener.addTween(this._label, {
+        this._label.ease({
             opacity: 0,
-            time: duration,
-            transition: 'easeOutQuad',
-            onComplete: () => {
-                this._label.hide();
-            }
+            duration: animate !== false ? 100 : 0,
+            mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+            onComplete: () => this._label.hide(),
         });
     }
 };
