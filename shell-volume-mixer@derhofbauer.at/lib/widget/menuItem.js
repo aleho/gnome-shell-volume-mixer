@@ -36,17 +36,21 @@ let prepareMenuItem = function(instance) {
         instance.remove_actor(child);
     });
 
-    instance.container = new St.BoxLayout({ vertical: true, style_class: 'svm-menu-item-container' });
-    instance.add(instance.container, { expand: true });
+    instance.container = new St.BoxLayout({
+        vertical: true,
+        x_expand: true,
+        style_class: 'svm-menu-item-container',
+    });
+    instance.add(instance.container);
 
     if (!instance.firstLine) {
         instance.firstLine = makeItemLine(instance._ornamentLabel);
-        instance.container.add(instance.firstLine, { expand: true });
+        instance.container.add(instance.firstLine);
     }
 
     if (!instance.secondLine) {
         instance.secondLine = makeItemLine();
-        instance.container.add(instance.secondLine, { expand: true });
+        instance.container.add(instance.secondLine);
     }
 
     instance.firstLine.add_style_class_name('line-1');
@@ -66,10 +70,16 @@ var MasterMenuItem = GObject.registerClass(class MasterMenuItem extends PopupMen
         this._slider = new Slider.VolumeSlider(0);
 
         this.firstLine.add_child(this.icon);
-        this.firstLine.add(this.label, { expand: true });
+        this.firstLine.add(this.label);
+
+        this.firstLine.add_child(new St.Bin({
+            style_class: 'popup-menu-item-expander',
+            x_expand: true,
+        }));
+
         this.firstLine.add_child(this._triangleBin);
 
-        this.secondLine.add(this._slider, { expand: true });
+        this.secondLine.add(this._slider);
         this.secondLine.add_style_class_name('svm-master-slider-line');
 
         this.label.add_style_class_name('svm-master-label');

@@ -79,12 +79,12 @@ const StreamSlider = class extends OutputStreamSliderExtension
 
         if (!this._label) {
             this._label = new St.Label({ text: '' });
-            this.item.firstLine.add(this._label, { expand: true });
+            this.item.firstLine.add(this._label);
         }
 
         if (!this._slider) {
             this._slider = new Slider.VolumeSlider(0);
-            this.item.secondLine.add(this._slider, { expand: true });
+            this.item.secondLine.add(this._slider);
         }
 
         this._volumeInfo = new FloatingLabel();
