@@ -26,15 +26,23 @@ GSCHEMA = schemas/org.gnome.shell.extensions.shell-volume-mixer.gschema.xml
 SRCFILES = $(addprefix $(SRCDIR)/, $(SOURCES) $(GSCHEMA) $(GSCHEMA_COMP))
 
 
-dist: clean install-deps check package
+dist: clean build check package
+
+build: install-deps
 
 package: $(PACKAGE)
+
+prepare:
+	mkdir -p $(BUILDDIR)
+
+install-deps:
+	npm install
 
 $(SRCDIR)/$(SCHEMA_COMP): $(SRCDIR)/$(GSCHEMA)
 	glib-compile-schemas --targetdir=$(SRCDIR)/schemas $(SRCDIR)/schemas
 
-$(PACKAGE): i18n metadata.json $(SRCFILES) $(FILES)
-	cd $(SRCDIR) && zip -r ../$(PACKAGE) $(SOURCES) 
+$(PACKAGE): i18n stylesheet.css metadata.json $(SRCFILES) $(FILES)
+	cd $(SRCDIR) && zip -r ../$(PACKAGE) $(SOURCES)
 	zip $(PACKAGE) $(FILES)
 	cd $(BUILDDIR) && zip ../$(PACKAGE) *
 
@@ -44,14 +52,11 @@ i18n: $(LOCALES_SRC)
 metadata.json: prepare
 	cat $(addprefix $(SRCDIR)/, metadata.json) | grep -v '"version":' > $(BUILDDIR)/metadata.json
 
-install-deps:
-	npm install
+stylesheet.css:
+	node_modules/.bin/sass --no-source-map styles.scss shell-volume-mixer@derhofbauer.at/stylesheet.css
 
-check: install-deps
+check:
 	node_modules/.bin/eslint $(SRCDIR)
-
-prepare:
-	mkdir -p $(BUILDDIR)
 
 clean:
 	@test ! -d "$(BUILDDIR)" || rm -rf $(BUILDDIR)
