@@ -230,9 +230,11 @@ var MasterSlider = class extends StreamSlider
 
         this._slider.accessible_name = _('Volume');
 
-        this.item.menu.addAction(_('Settings'), () => {
-            Settings.openDialog();
-        });
+        if (Settings.hasPreferencesApp()) {
+            this.item.menu.addAction(_('Settings'), () => {
+                Settings.openDialog();
+            });
+        }
 
         super._init(options);
     }
