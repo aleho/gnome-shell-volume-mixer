@@ -99,10 +99,15 @@ const StreamSlider = class extends OutputStreamSliderExtension
             this.item.connect('key-press-event', this._onKeyPress.bind(this));
         }
 
-        if (this._slider._onScrollEvent) {
-            this.item.connect('scroll-event', this._slider._onScrollEvent.bind(this._slider));
+        if (this._slider.scroll) {
+            this.item.connect('scroll-event', (slider, event) => {
+                return this._slider.scroll(event);
+            });
         }
-        this.item.connect('scroll-event', this._onScrollEvent.bind(this));
+
+        this.item.connect('scroll-event', () => {
+            this._showVolumeInfo();
+        });
 
 
         let soundSettings = new Settings.Settings(Settings.SOUND_SETTINGS_SCHEMA);
@@ -127,10 +132,6 @@ const StreamSlider = class extends OutputStreamSliderExtension
             return Clutter.EVENT_STOP;
         }
         return this._slider.startDragging(event);
-    }
-
-    _onScrollEvent(/* slider, event */) {
-        this._showVolumeInfo();
     }
 
     refresh() {
