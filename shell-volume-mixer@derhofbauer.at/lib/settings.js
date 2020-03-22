@@ -6,7 +6,7 @@
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported Settings, cleanup, openDialog */
+/* exported Settings, cleanup, hasPreferencesApp, openDialog */
 /* exported POS_MENU, POS_LEFT, POS_CENTER, POS_RIGHT */
 /* exported SOUND_SETTINGS_SCHEMA, ALLOW_AMPLIFIED_VOLUME_KEY */
 
@@ -28,6 +28,8 @@ var ALLOW_AMPLIFIED_VOLUME_KEY = 'allow-volume-above-100-percent';
 
 const SIGNALS = {};
 const GSETTINGS = {};
+
+let PREFS_APP = undefined;
 
 
 var Settings = class
@@ -269,12 +271,32 @@ function cleanup() {
 
 
 /**
+ * Retrieves the preferences app instance for launching.
+ * @private
+ */
+function _getPrefsApp() {
+    if (PREFS_APP === undefined) {
+        PREFS_APP = imports.gi.Shell.AppSystem.get_default().lookup_app('gnome-shell-extension-prefs.desktop');
+    }
+
+    return PREFS_APP;
+}
+
+/**
+ * Checks whether the preferences app can be found.
+ * @returns {boolean}
+ */
+function hasPreferencesApp() {
+    return !!_getPrefsApp();
+}
+
+/**
  * Opens the preferences dialog for this extension.
  */
 function openDialog() {
-    let preferences = imports.gi.Shell.AppSystem.get_default().lookup_app('gnome-shell-extension-prefs.desktop');
+    const preferences = _getPrefsApp();
 
-    if (preferences.get_state() != preferences.SHELL_APP_STATE_RUNNING) {
+    if (preferences && preferences.get_state() != preferences.SHELL_APP_STATE_RUNNING) {
         let info = preferences.get_app_info();
 
         info.launch_uris(
