@@ -1,3 +1,9 @@
+$variant: 'light';
+@import "gnome-shell-sass/_colors";
+@import "gnome-shell-sass/_drawing";
+@import "gnome-shell-sass/_common";
+
+
 /* common */
 
 .svm-slider-details {
@@ -23,10 +29,14 @@
 .svm-master-slider-line .popup-menu-ornament,
 .svm-menu > .events-stream-slider .line-2 {
   // account for icons in submenus with padding
-    &:ltr { /* 12px spacing + 2*4px padding */
-        padding-left: 20px; margin-left: 1.09em; }
-    &:rtl { /* 12px spacing + 2*4px padding */
-        padding-right: 20px; margin-right: 1.09em; }
+  &:ltr {
+    padding-left: $base_padding + $base_margin * 2;
+    margin-left: $base_icon_size;
+  }
+  &:rtl {
+    padding-right: $base_padding + $base_margin * 2;
+    margin-right: $base_icon_size;
+  }
 }
 
 .popup-sub-menu .svm-container-line.line-1 .popup-menu-ornament {
