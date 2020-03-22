@@ -12,7 +12,6 @@ const Clutter = imports.gi.Clutter;
 const GLib = imports.gi.GLib;
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const Main = imports.ui.main;
-const Mainloop = imports.mainloop;
 const PopupMenu = imports.ui.popupMenu;
 const St = imports.gi.St;
 const Volume = imports.ui.status.volume;
@@ -167,7 +166,7 @@ const StreamSlider = class extends OutputStreamSliderExtension
         this._volumeInfo.text = value + '%';
 
         if (this._labelTimeoutId) {
-            Mainloop.source_remove(this._labelTimeoutId);
+            GLib.source_remove(this._labelTimeoutId);
             this._labelTimeoutId = undefined;
         }
 
@@ -187,7 +186,7 @@ const StreamSlider = class extends OutputStreamSliderExtension
             this._volumeInfo.show(x, y);
         }
 
-        this._labelTimeoutId = Mainloop.timeout_add(1000, () => {
+        this._labelTimeoutId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, () => {
             this._infoShowing = false;
             this._labelTimeoutId = undefined;
             this._volumeInfo.hide();
@@ -197,7 +196,7 @@ const StreamSlider = class extends OutputStreamSliderExtension
 
     hideVolumeInfo() {
         if (this._labelTimeoutId) {
-            Mainloop.source_remove(this._labelTimeoutId);
+            GLib.source_remove(this._labelTimeoutId);
             this._labelTimeoutId = undefined;
         }
 
