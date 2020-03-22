@@ -9,38 +9,55 @@
 /* exported Indicator */
 
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
+const { Clutter, GObject, Gio } = imports.gi;
+const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
-const Volume = imports.ui.status.volume;
 
 const { Menu } = Lib.menu.menu;
 
 
-const Utils = Lib.utils.utils;
-
-
-class IndicatorExtension extends PanelMenu.SystemIndicator {}
-Utils.mixin(IndicatorExtension, Volume.Indicator);
-
-
 /**
- * Custom indicator, extension from Volume.Indicator without its constructor.
+ * Custom indicator with dropdown menu.
+ * Copied from status/volume.js
  */
-var Indicator = class extends IndicatorExtension
+var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIndicator
 {
-    constructor(mixer, options) {
+    _init(mixer, options) {
         options = options || {};
 
-        super();
+        super._init();
 
         this._primaryIndicator = this._addIndicator();
+        this._inputIndicator = this._addIndicator();
         this._control = mixer.control;
 
         this._volumeMenu = new Menu(mixer, options);
         this._volumeMenu.connect('icon-changed', this.updateIcon.bind(this));
 
-        this.menu.addMenuItem(this._volumeMenu);
+        this._inputIndicator.set({
+            icon_name: 'audio-input-microphone-symbolic',
+            visible: this._volumeMenu.getInputVisible(),
+        });
+        this._volumeMenu.connect('input-visible-changed', () => {
+            this._inputIndicator.visible = this._volumeMenu.getInputVisible();
+        });
 
-        this.indicators.connect('scroll-event', this._onScrollEvent.bind(this));
+        this.menu.addMenuItem(this._volumeMenu);
+    }
+
+    /**
+     * copy/pasted from volume.js:Indicator
+     */
+    vfunc_scroll_event() {
+        let result = this._volumeMenu.scroll(Clutter.get_current_event());
+        if (result == Clutter.EVENT_PROPAGATE || this.menu.actor.mapped)
+            return result;
+
+        let gicon = new Gio.ThemedIcon({ name: this._volumeMenu.getIcon() });
+        let level = this._volumeMenu.getLevel();
+        let maxLevel = this._volumeMenu.getMaxLevel();
+        Main.osdWindowManager.show(-1, gicon, null, level, maxLevel);
+        return result;
     }
 
     updateIcon() {
@@ -60,4 +77,4 @@ var Indicator = class extends IndicatorExtension
             this.menu = null;
         }
     }
-};
+});
