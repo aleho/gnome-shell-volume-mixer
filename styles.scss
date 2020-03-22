@@ -1,31 +1,32 @@
 /* common */
+
 .svm-slider-details {
   font-size: 0.9em;
   font-weight: 400;
 }
 
+
 .svm-menu-item-container {
   margin-left: 0;
   padding-left: 0;
-}
-.svm-menu-item-container .svm-container-line {
-  margin-left: 0;
-  padding-left: 0;
-  padding-bottom: 0;
+
+  .svm-container-line {
+    margin-left: 0;
+    padding-left: 0;
+    padding-bottom: 0;
+  }
 }
 
+
 /** copy/paste from gnome-shell .aggregate-menu .popup-sub-menu .popup-menu-item > :first-child **/
-.svm-master-slider-line .popup-menu-ornament:ltr,
-.svm-menu > .events-stream-slider .line-2:ltr {
-  /* 12px spacing + 2*4px padding */
-  padding-left: 20px;
-  margin-left: 1.09em;
-}
-.svm-master-slider-line .popup-menu-ornament:rtl,
-.svm-menu > .events-stream-slider .line-2:rtl {
-  /* 12px spacing + 2*4px padding */
-  padding-right: 20px;
-  margin-right: 1.09em;
+
+.svm-master-slider-line .popup-menu-ornament,
+.svm-menu > .events-stream-slider .line-2 {
+  // account for icons in submenus with padding
+    &:ltr { /* 12px spacing + 2*4px padding */
+        padding-left: 20px; margin-left: 1.09em; }
+    &:rtl { /* 12px spacing + 2*4px padding */
+        padding-right: 20px; margin-right: 1.09em; }
 }
 
 .popup-sub-menu .svm-container-line.line-1 .popup-menu-ornament {
@@ -37,7 +38,9 @@
   padding-right: 0;
 }
 
+
 /* stand-alone menu */
+
 .shell-volume-mixer-button {
   /* TODO: this is broken, fix width */
 }
