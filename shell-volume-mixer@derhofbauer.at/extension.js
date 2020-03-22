@@ -66,7 +66,7 @@ function replaceOriginal() {
     let indicators = aggregateMenu._indicators.get_children();
     let indicatorPos = 4;
     for (let i = 0; i < indicators.length; i++) {
-        if (volumeIndicator.indicators == indicators[i]) {
+        if (volumeIndicator == indicators[i]) {
             indicatorPos = i;
             break;
         }
@@ -74,7 +74,7 @@ function replaceOriginal() {
 
     // add our own indicator and menu
     aggregateMenu._volume = gvmIndicator;
-    aggregateMenu._indicators.insert_child_at_index(gvmIndicator.indicators, indicatorPos);
+    aggregateMenu._indicators.insert_child_at_index(gvmIndicator, indicatorPos);
     aggregateMenu.menu.addMenuItem(gvmIndicator.menu, 0);
 
     aggregateMenu.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem(), 1);
@@ -112,7 +112,7 @@ function disable() {
     }
 
     if (gvmIndicator) {
-        aggregateMenu._indicators.remove_actor(gvmIndicator.indicators);
+        aggregateMenu._indicators.remove_actor(gvmIndicator);
         gvmIndicator.destroy();
         gvmIndicator = null;
     }

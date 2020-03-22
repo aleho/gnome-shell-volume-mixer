@@ -47,10 +47,10 @@ var Indicator = class extends IndicatorExtension
         let icon = this._volumeMenu.getIcon();
 
         if (icon !== null) {
-            this.indicators.show();
+            this.show();
             this._primaryIndicator.icon_name = icon;
         } else {
-            this.indicators.hide();
+            this.hide();
         }
     }
 
