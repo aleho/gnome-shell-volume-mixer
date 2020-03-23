@@ -225,9 +225,9 @@ var Mixer = class
      * Reads all pinned profiles from settings.
      */
     _parsePinnedProfiles() {
-        let data = this._settings.get_array('pinned-profiles') || [];
-        let visible = [];
-        let cycled = [];
+        const data = this._settings.get_array('pinned-profiles') || [];
+        const visible = [];
+        const cycled = [];
 
         for (let entry of data) {
             let item = null;
@@ -334,12 +334,18 @@ var Mixer = class
      */
     _streamMatchesProfile(streamName, cardName, profileName) {
         let [, streamAddr, streamIndex, streamProfile] = streamName.split('.');
-        let [, cardAddr, cardIndex] = cardName.split('.');
+        const [, cardAddr, cardIndex] = cardName.split('.');
 
-        profileName = profileName.split(':');
+        // try to fix stream names without index (cardName will not have an index either)
+        if (streamIndex && !streamProfile && isNaN(streamIndex)) {
+            streamProfile = streamIndex;
+            streamIndex = undefined;
+        }
+
+        const profileParts = profileName.split(':');
         // remove direction
-        profileName.shift();
-        let profile = profileName.join(':');
+        profileParts.shift();
+        const profile = profileParts.join(':');
 
         if (streamAddr != cardAddr
                 || streamIndex != cardIndex) {
