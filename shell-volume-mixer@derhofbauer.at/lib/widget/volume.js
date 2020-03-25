@@ -123,7 +123,7 @@ const StreamSlider = class extends OutputStreamSliderExtension
     }
 
     _onKeyPress(actor, event) {
-        return this._slider.onKeyPressEvent(actor, event);
+        return this._slider.vfunc_key_press_event(event);
     }
 
     _onButtonPress(actor, event) {

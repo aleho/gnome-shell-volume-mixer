@@ -100,7 +100,7 @@ var MasterMenuItem = GObject.registerClass(class MasterMenuItem extends PopupMen
         let symbol = event.get_key_symbol();
 
         if (symbol == Clutter.KEY_Right || symbol == Clutter.KEY_Left) {
-            return this._slider.onKeyPressEvent(actor, event);
+            return this._slider.vfunc_key_press_event(event);
         }
 
         return super._onKeyPressEvent(actor, event);
