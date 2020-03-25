@@ -296,7 +296,7 @@ var Mixer = class
             return;
         }
 
-        card.card.change_profile(profileName);
+        card.card.set_profile(profileName);
 
         let cardDescription = card.description;
         let profileDescription = card.profiles[profileName];
