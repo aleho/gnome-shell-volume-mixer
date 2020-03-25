@@ -48,8 +48,8 @@ var Extension = class {
 
     enable() {
         this._settings.connectChanged(() => {
-            this._disable();
-            this._enable();
+            this.disable();
+            this.enable();
         });
 
         this._mixer = new Mixer();
