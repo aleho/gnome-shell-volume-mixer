@@ -8,17 +8,17 @@
 
 /* exported Mixer */
 
-const Gio = imports.gi.Gio;
-const Gvc = imports.gi.Gvc;
+const {Gio, Gvc} = imports.gi;
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const Main = imports.ui.main;
 const Volume = imports.ui.status.volume;
 
-const Hotkeys = Lib.utils.hotkeys;
-const Settings = Lib.settings;
+const { Cards } = Lib.utils.cards;
+const { EventHandlerDelegate } = Lib.utils.eventHandlerDelegate;
+const { Hotkeys } = Lib.utils.hotkeys;
+const { Settings } = Lib.settings;
 const Utils = Lib.utils.utils;
 
-const signals = [];
 const STREAM_NO_MATCH = 0;
 const STREAM_MATCHES = 1;
 const STREAM_CARD_MATCHES = 2;
@@ -31,56 +31,51 @@ const VOL_ICONS = [
 ];
 
 
+/**
+ * @mixes EventHandlerDelegate
+ */
 var Mixer = class
 {
     constructor() {
-        this._settings = new Settings.Settings();
-        this._hotkeys = new Hotkeys.Hotkeys(this._settings);
-
         this._control = Volume.getMixerControl();
-        this._state = this._control.get_state();
+        this.eventHandlerDelegate = this._control;
 
-        this._cardNames = {};
-        this._cards = this._getCardDetails();
-        [this._pinned, this._cycled] = this._parsePinnedProfiles();
+        this._settings = new Settings();
+        this._hotkeys = new Hotkeys(this._settings);
+        this._cards = new Cards(this._control);
+
+        this._state = this._control.get_state();
+        this._cycled = this._parsePinnedProfiles();
 
         this.connect('state-changed', this._onStateChanged.bind(this));
-        this.connect('card-added', this._onCardAdded.bind(this));
-        this.connect('card-removed', this._onCardRemoved.bind(this));
         this.connect('default-sink-changed', this._onDefaultSinkChanged.bind(this));
-
         this._bindProfileHotkey();
 
         this._onStateChanged(this._control, this._state);
     }
 
+    /**
+     * The current Gvc.MixerControl.
+     */
     get control() {
         return this._control;
     }
 
-    connect(signal, callback) {
-        let id = this._control.connect(signal, callback);
-        signals.push(id);
-    }
-
-
     /**
-     * Disconnects all locally used signals.
+     * Cleanup.
      */
-    disconnectAll() {
-        while (signals.length > 0) {
-            this._control.disconnect(signals.pop());
-        }
-
+    destroy() {
+        this.disconnectAll();
         this._hotkeys.unbindAll();
+        this._cards.destroy();
     }
-
 
     /**
      * Binds the hotkey for profile rotation.
+     * @private
      */
     _bindProfileHotkey() {
-        if (!this._pinned.length) {
+        if (!this._cycled.length) {
             return;
         }
 
@@ -88,54 +83,22 @@ var Mixer = class
     }
 
     /**
-     * Adds a card to our array of cards.
-     *
-     * @param card Card to add.
-     */
-    _addCard(card) {
-        let index = card.index;
-
-        if (!this._cards[index] || this._cards[index].fake) {
-            let pacards = Utils.getCards();
-            if (!pacards) {
-                Utils.error('mixer', '_addCard', 'Could not retrieve PA card details');
-            } else {
-                this._cards[index] = pacards[index];
-            }
-        }
-
-        if (!this._cards[index]) {
-            Utils.error('mixer', '_addCard', 'GVC card not found through Python helper');
-
-            // external script couldn't get card info, fake it
-            this._cards[index] = {
-                // card name (human name) won't be useful, we'll set it anyway
-                name: card.name,
-                index: index,
-                profiles: [],
-                fake: true
-            };
-        }
-
-        let pacard = this._cards[index];
-        pacard.card = card;
-        this._cardNames[pacard.name] = index;
-    }
-
-    /**
      * Updates the default sink, trying to mark the currently active card.
+     * @private
      */
     _updateDefaultSink(stream) {
         this._defaultSink = stream;
 
-        if (!stream) {
-            // we might get a sink id without being able to lookup
+        if (!stream || this._pauseDefaultSinkEvent) {
+            delete this._pauseDefaultSinkEvent;
+            // we might get a sink id without being able to lookup or setting the update ourselves
             return;
         }
 
-        let card = this._cards[stream.card_index];
+        const card = this._cards.get(stream.card_index);
 
         if (!card || !card.card) {
+            Utils.error('mixer', '_updateDefaultSink', 'Default sink updated but card not found (' + stream.name + ')');
             return;
         }
 
@@ -152,6 +115,7 @@ var Mixer = class
 
     /**
      * Callback for state changes.
+     * @private
      */
     _onStateChanged(control, state) {
         this._state = state;
@@ -160,75 +124,26 @@ var Mixer = class
             return;
         }
 
-        let cards = this._control.get_cards();
-        for (let card of cards) {
-            this._addCard(card);
-        }
-
         this._updateDefaultSink(this._control.get_default_sink());
     }
 
     /**
      * Callback for default sink changes.
+     * @private
      */
     _onDefaultSinkChanged(control, id) {
         this._updateDefaultSink(control.lookup_stream_id(id));
     }
 
     /**
-     * Signal for added cards.
-     */
-    _onCardAdded(control, index) {
-        // we're actually looking up card.index
-        let card = control.lookup_card_id(index);
-        this._addCard(card);
-    }
-
-    /**
-     * Signal for removed cards.
-     */
-    _onCardRemoved(control, index) {
-        if (index in this._cards) {
-            let card = this._cards[index];
-            if (card.name in this._cardNames) {
-                delete this._cardNames[card.name];
-            }
-            delete this._cards[index];
-        }
-    }
-
-
-    /**
-     * Retrieves a list of all cards available, using our Python helper.
-     */
-    _getCardDetails() {
-        let cards = Utils.getCards();
-        if (!cards) {
-            Utils.error('mixer', '_getCardDetails', 'Could not retrieve PA card details');
-            return {};
-        }
-
-        for (let k in cards) {
-            let card = cards[k];
-            let profiles = {};
-            // normalize profiles
-            for (let profile of card.profiles) {
-                profiles[profile.name] = profile.description;
-            }
-            card.profiles = profiles;
-        }
-
-        return cards;
-    }
-
-    /**
      * Reads all pinned profiles from settings.
+     * @private
      */
     _parsePinnedProfiles() {
         const data = this._settings.get_array('pinned-profiles') || [];
-        const visible = [];
         const cycled = [];
 
+        let count = 0;
         for (let entry of data) {
             let item = null;
             try {
@@ -240,36 +155,26 @@ var Mixer = class
                 continue;
             }
 
-            if (item.show) {
-                visible.push(item);
+            cycled.push(item);
+
+            if (count > 0) {
+                cycled[count - 1].next = item;
             }
-            if (item.switcher) {
-                cycled.push(item);
-            }
+
+            count++;
         }
 
-        // link profiles cycle
-        let len = cycled.length;
-        if (len) {
-            cycled[0].prev = cycled[len - 1];
-            cycled[len - 1].next = cycled[0];
-
-            let prev;
-            for (let profile of cycled) {
-                if (prev) {
-                    profile.prev = prev;
-                    prev.next = profile;
-                }
-                prev = profile;
-            }
+        if (count > 0) {
+            cycled[count - 1].next = cycled[0];
         }
 
-        return [visible, cycled];
+        return cycled;
     }
 
 
     /**
      * Hotkey handler to switch between profiles.
+     * @private
      */
     _switchProfile() {
         if (this._state !== Gvc.MixerControlState.READY) {
@@ -285,28 +190,24 @@ var Mixer = class
         }
 
         // lookup card indirectly via name (indexes aren't UUIDs)
-        let next = this._currentCycle.next;
-        let cardName = next.card;
-        let profileName = next.profile;
-        let index = this._cardNames[cardName];
-        let card = this._cards[index];
+        const next = this._currentCycle.next;
+        const cardName = next.card;
+        const profileName = next.profile;
+        const paCard = this._cards.getByName(cardName);
 
-        if (!card || !card.card) {
+        if (!paCard || !paCard.card) {
             // we don't know this card, we won't be able to set its profile
             return;
         }
 
-        card.card.set_profile(profileName);
-
-        let cardDescription = card.description;
-        let profileDescription = card.profiles[profileName];
-        this._showNotification(cardDescription + '\n' + profileDescription);
-
-        // default sink changes will update current cycle, profile changes won't
         this._currentCycle = next;
 
+        const cardDescription = paCard.description;
+        const profileDescription = paCard.profiles[profileName];
+        this._showNotification(cardDescription + '\n' + profileDescription);
+
         // profile's changed, now get that new sink
-        let sinks = this._control.get_sinks();
+        const sinks = this._control.get_sinks();
         let newSink = null;
 
         for (let sink of sinks) {
@@ -321,16 +222,17 @@ var Mixer = class
             }
         }
 
-        if (!newSink) {
-            // we couldn't retrieve a sink with matching profile name
-            return;
-        }
+        paCard.card.set_profile(profileName);
 
-        this._control.set_default_sink(newSink);
+        if (newSink) {
+            this._pauseDefaultSinkEvent = true;
+            this._control.set_default_sink(newSink);
+        }
     }
 
     /**
      * Tries to find out whether a certain stream matches profile for a card.
+     * @private
      */
     _streamMatchesProfile(streamName, cardName, profileName) {
         let [, streamAddr, streamIndex, streamProfile] = streamName.split('.');
@@ -363,7 +265,8 @@ var Mixer = class
     /**
      * Shows a notification window through Shell's OSD Window Manager.
      *
-     * @param text Text to display
+     * @param {string} text Text to display
+     * @private
      */
     _showNotification(text) {
         let monitor = -1;
@@ -375,9 +278,10 @@ var Mixer = class
      * Shows the current volume on OSD.
      *
      * @see gsd-media-keys-manager.c
+     * @private
      */
     _showVolumeOsd(level, percent) {
-        let monitor = -1;
+        const monitor = -1;
         let label = [];
         let n;
 
@@ -409,3 +313,5 @@ var Mixer = class
         Main.osdWindowManager.show(monitor, icon, label, level);
     }
 };
+
+Utils.mixin(Mixer, EventHandlerDelegate);

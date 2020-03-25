@@ -11,8 +11,7 @@
 /* exported SOUND_SETTINGS_SCHEMA, ALLOW_AMPLIFIED_VOLUME_KEY */
 
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
+const { Gio, GLib } = imports.gi;
 const Lib = Extension.imports.lib;
 
 const Utils = Lib.utils.utils;

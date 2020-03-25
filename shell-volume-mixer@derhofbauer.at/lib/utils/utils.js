@@ -16,6 +16,8 @@ const GLib = imports.gi.GLib;
 const SEP = repeatString('#', 60);
 const LOG_PREAMBLE = 'Shell Volume Mixer';
 
+const PYTHON_HELPER_PATH = 'pautils/cardinfo.py';
+
 
 /**
  * Returns this extension's path, optionally querying a subdirectory or file.
@@ -78,13 +80,13 @@ function versionGreaterOrEqual(string) {
  * Calls the Python helper script to get more details about a card and its
  * profiles.
  *
- * @param card Optional parameter to pass to the script.
- * @returns JSON object of the output
+ * @returns {?Object.<string, paCard>} JSON object of the output
  */
 function getCards() {
-    let pautil = getExtensionPath('pautils/cardinfo.py');
+    const paUtilPath = getExtensionPath(PYTHON_HELPER_PATH);
 
-    if (!pautil) {
+    if (!paUtilPath) {
+        error('utils', 'getCards', 'Could not find PulseAudio utility in extension path ' + PYTHON_HELPER_PATH);
         return null;
     }
 
@@ -93,10 +95,10 @@ function getCards() {
     let pythonError;
 
     try {
-        [success, output] = GLib.spawn_command_line_sync('/usr/bin/env python3 ' + pautil);
+        [success, output] = GLib.spawn_command_line_sync('/usr/bin/env python3 ' + paUtilPath);
     } catch (pythonError) {
         try {
-            [success, output] = GLib.spawn_command_line_sync('/usr/bin/env python ' + pautil);
+            [success, output] = GLib.spawn_command_line_sync('/usr/bin/env python ' + paUtilPath);
         } catch (pythonError) {
             // eslint-disable-no-empty
         }
@@ -118,6 +120,17 @@ function getCards() {
         ret = JSON.parse(output);
     } catch (e) {
         error('utils', 'getCards', e.message);
+        return null;
+    }
+
+    if (!ret || typeof ret !== 'object') {
+        error('utils', 'getCards', 'Invalid response');
+        return null;
+    }
+
+    if ('success' in ret && ret.success === false) {
+        error('utils', 'getCards', 'Error: ' + ret.error);
+        return null;
     }
 
     return ret;
@@ -292,7 +305,7 @@ function repeatString(string, times) {
 
 
 /**
- * Allows a target object to recieve all properties from a source.
+ * Allows a target object to receive all properties from a source.
  */
 function mixin(target, source) {
     const sourceProps = Object.getOwnPropertyDescriptors(source.prototype);

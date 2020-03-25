@@ -20,10 +20,17 @@ const Settings = Lib.settings;
 const DEFAULT_INDICATOR_POS = 4;
 
 
+let instance;
+
+
 var Extension = class {
     constructor() {
         // save the original volume reference in aggregate menu.
         this._orgVolume = this._menu._volume;
+
+        if (!instance) {
+            instance = this;
+        }
     }
 
     /**
@@ -46,6 +53,15 @@ var Extension = class {
         return Main.panel.statusArea.aggregateMenu;
     }
 
+    /**
+     * Just a helper for global disabling
+     */
+    static disable() {
+        if (instance) {
+            instance.disable();
+        }
+    }
+
     enable() {
         this._settings.connectChanged(() => {
             this.disable();
@@ -64,11 +80,13 @@ var Extension = class {
     }
 
     disable() {
+        instance = null;
+
         this._menu._volume = this._orgVolume;
         this._showOriginal();
 
         if (this._mixer) {
-            this._mixer.disconnectAll();
+            this._mixer.destroy();
             this._mixer = null;
         }
 
