@@ -15,7 +15,7 @@ Middle mouse click on a slider mutes the selected stream.
 Requirements
 ------------
 
-- Pulseaudio (for retrieval of card details)
+- PulseAudio (for retrieval of card details)
 - gettext (for building of language files)
 
 
