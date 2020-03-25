@@ -4,16 +4,20 @@ set -e
 
 WINDOW_MODE=1280x800
 X11=0
+NAME=""
 
 
 function print_help() {
     echo "Shell Volume Mixer dev toolkit"
     echo ""
     echo "    test  Runs the extension in a nested session"
-    echo "      --mode     Sets the nested session window size (default: 1280x800)"
-    echo "      --x11      Runs a X11/xorg session (defaulting to wayland)"
+    echo "      --mode  Sets the nested session window size (default: 1280x800)"
+    echo "      --x11   Runs a X11/xorg session (defaulting to wayland)"
     echo ""
     echo "    lg  Toggles Looking Glass via DBus"
+    echo ""
+    echo "    add-sink  Adds a virtual sink via PulseAudio"
+    echo "      --name  Virtual sink name"
 }
 
 ###
@@ -28,7 +32,7 @@ fi
 
 shift
 
-OPTIONS=$(getopt -n $0 -o h --long help,mode:,x11 -- "$@")
+OPTIONS=$(getopt -n $0 -o h --long help,mode:,name:,x11 -- "$@")
 
 if [[ $? -ne 0 ]]; then
     print_help
@@ -41,6 +45,11 @@ while true; do
     case $1 in
         --mode)
             WINDOW_MODE=$2;
+            shift
+            ;;
+
+        --name)
+            NAME=$2;
             shift
             ;;
 
@@ -70,6 +79,15 @@ done
 
 ###
 
+function add_virtual_sink() {
+    local props
+    if [[ -n $NAME ]]; then
+        props="sink_properties=device.description=$NAME"
+    fi
+
+    pacmd load-module module-null-sink sink_name=svm-virtual-sink $props
+}
+
 function toggle_looking_glass() {
     gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval 'Main.createLookingGlass() && Main.lookingGlass.toggle();'
 }
@@ -88,6 +106,10 @@ function run_nested_session() {
 ###
 
 case $COMMAND in
+    add-sink)
+        add_virtual_sink
+        ;;
+
     lg)
         toggle_looking_glass
         ;;
