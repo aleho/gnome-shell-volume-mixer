@@ -26,6 +26,7 @@ const Preferences = class
             tabs: null,
             cmbPosition: null,
             swRemoveOriginal: null,
+            swShowPercentageLabel: null,
             swShowDetailedSliders: null,
             swShowSystemSounds: null,
             swShowVirtualStreams: null,
@@ -77,6 +78,7 @@ const Preferences = class
 
         this._objects.cmbPosition.set_active(this._settings.get_enum('position'));
         this._objects.swRemoveOriginal.set_active(this._settings.get_boolean('remove-original'));
+        this._objects.swShowPercentageLabel.set_active(this._settings.get_boolean('show-percentage-label'));
         this._objects.swShowDetailedSliders.set_active(this._settings.get_boolean('show-detailed-sliders'));
         this._objects.swShowSystemSounds.set_active(this._settings.get_boolean('show-system-sounds'));
         this._objects.swShowVirtualStreams.set_active(this._settings.get_boolean('show-virtual-streams'));
@@ -87,6 +89,7 @@ const Preferences = class
         this._bindSignal('tabs', 'switch-page', this.onSwitchPage);
         this._bindSignal('cmbPosition', 'changed', this.onPositionChanged, 'position');
         this._bindSignal('swRemoveOriginal', 'notify::active', this.onSwitchActivate, 'remove-original');
+        this._bindSignal('swShowPercentageLabel', 'notify::active', this.onSwitchActivate, 'show-percentage-label');
         this._bindSignal('swShowDetailedSliders', 'notify::active', this.onSwitchActivate, 'show-detailed-sliders');
         this._bindSignal('swShowSystemSounds', 'notify::active', this.onSwitchActivate, 'show-system-sounds');
         this._bindSignal('swShowVirtualStreams', 'notify::active', this.onSwitchActivate, 'show-virtual-streams');

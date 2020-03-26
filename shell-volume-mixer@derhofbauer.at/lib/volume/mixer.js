@@ -11,6 +11,7 @@
 const {Gio, Gvc} = imports.gi;
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const Main = imports.ui.main;
+const Signals = imports.signals;
 const Volume = imports.ui.status.volume;
 
 const { Cards } = Lib.utils.cards;
@@ -23,12 +24,9 @@ const STREAM_NO_MATCH = 0;
 const STREAM_MATCHES = 1;
 const STREAM_CARD_MATCHES = 2;
 
-const VOL_ICONS = [
-    'audio-volume-muted-symbolic',
-    'audio-volume-low-symbolic',
-    'audio-volume-medium-symbolic',
-    'audio-volume-high-symbolic'
-];
+
+class EventSource {}
+Signals.addSignalMethods(EventSource.prototype);
 
 
 /**
@@ -40,6 +38,7 @@ var Mixer = class
         this._control = Volume.getMixerControl();
         this.eventHandlerDelegate = this._control;
 
+        this._streamEvents = new EventSource();
         this._settings = new Settings();
         this._hotkeys = new Hotkeys(this._settings);
         this._cards = new Cards(this._control);
@@ -47,8 +46,9 @@ var Mixer = class
         this._state = this._control.get_state();
         this._cycled = this._parsePinnedProfiles();
 
-        this.connect('state-changed', this._onStateChanged.bind(this));
-        this.connect('default-sink-changed', this._onDefaultSinkChanged.bind(this));
+        this._defaultSink = null;
+        this.connect(this._control, 'state-changed', this._onStateChanged.bind(this));
+        this.connect(this._control, 'default-sink-changed', this._onDefaultSinkChanged.bind(this));
         this._bindProfileHotkey();
 
         this._onStateChanged(this._control, this._state);
@@ -59,6 +59,15 @@ var Mixer = class
      */
     get control() {
         return this._control;
+    }
+
+    /**
+     * Connects an event handler to volume changes.
+     *
+     * @param callback
+     */
+    connectVolumeChanges(callback) {
+        this._streamEvents.connect('volume-changed', callback);
     }
 
     /**
@@ -83,15 +92,55 @@ var Mixer = class
     }
 
     /**
+     * Disconnects volume update signals from the default sink.
+     * @private
+     */
+    _disconnectSink() {
+        this.disconnect(this._defaultSink, 'notify::is-muted');
+        this.disconnect(this._defaultSink, 'notify::volume');
+    }
+
+    /**
+     * Connects volume update signals from the default sink for notifications.
+     * @private
+     */
+    _connectSink() {
+        this.connect(this._defaultSink, 'notify::is-muted', this._onVolumeUpdate.bind(this));
+        this.connect(this._defaultSink, 'notify::volume', this._onVolumeUpdate.bind(this));
+    }
+
+    /**
+     * Emits a stream update event if volume changes.
+     * @private
+     */
+    _onVolumeUpdate() {
+        if (!this._defaultSink || this._defaultSink.is_muted) {
+            return;
+        }
+
+        const percent = this._defaultSink.volume / this._control.get_vol_max_norm() * 100;
+
+        this._streamEvents.emit('volume-changed', percent > 99 ? 100 : Math.floor(percent));
+    }
+
+    /**
      * Updates the default sink, trying to mark the currently active card.
      * @private
      */
     _updateDefaultSink(stream) {
-        this._defaultSink = stream;
+        if (this._defaultSink !== stream) {
+            if (this._defaultSink) {
+                this._disconnectSink();
+            }
 
+            this._defaultSink = stream;
+            this._connectSink();
+            this._onVolumeUpdate();
+        }
+
+        // we might get a sink id without being able to lookup or setting the update ourselves
         if (!stream || this._pauseDefaultSinkEvent) {
             delete this._pauseDefaultSinkEvent;
-            // we might get a sink id without being able to lookup or setting the update ourselves
             return;
         }
 
@@ -272,45 +321,6 @@ var Mixer = class
         let monitor = -1;
         let icon = Gio.Icon.new_for_string('audio-speakers-symbolic');
         Main.osdWindowManager.show(monitor, icon, text);
-    }
-
-    /**
-     * Shows the current volume on OSD.
-     *
-     * @see gsd-media-keys-manager.c
-     * @private
-     */
-    _showVolumeOsd(level, percent) {
-        const monitor = -1;
-        let label = [];
-        let n;
-
-        if (level === 0) {
-            n = 0;
-        } else {
-            n = parseInt(3 * percent / 100 + 1);
-            n = Math.max(1, n);
-            n = Math.min(3, n);
-        }
-
-        if (this._defaultSink) {
-            let port = this._defaultSink.get_port();
-            if (port
-                && port.port != 'analog-output-speaker'
-                && port.port != 'analog-output'
-            ) {
-                label.push(port.human_port);
-            }
-        }
-
-        let icon = Gio.Icon.new_for_string(VOL_ICONS[n]);
-
-        label = label.join('\n');
-        if (!label) {
-            label = null;
-        }
-
-        Main.osdWindowManager.show(monitor, icon, label, level);
     }
 };
 

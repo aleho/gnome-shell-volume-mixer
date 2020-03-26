@@ -19,6 +19,11 @@
             <summary>Remove original slider</summary>
             <description>Whether to remove the master volume slider from status menu</description>
         </key>
+        <key name="show-percentage-label" type="b">
+            <default>false</default>
+            <summary>Show percentage of volume</summary>
+            <description>Whether to show percentage of current output right of the icon</description>
+        </key>
         <key name="show-detailed-sliders" type="b">
             <default>false</default>
             <summary>Show detailed sliders</summary>

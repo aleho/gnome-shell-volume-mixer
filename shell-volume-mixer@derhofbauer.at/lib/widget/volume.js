@@ -163,8 +163,8 @@ const StreamSlider = class extends OutputStreamSliderExtension
             return;
         }
 
-        const value = Math.round(this._slider.value * 100);
-        this._volumeInfo.text = value + '%';
+        let percent = this._slider.value * 100;
+        this._volumeInfo.text = ((percent > 99) ? 100 : Math.floor(percent)) + '%';
 
         if (this._labelTimeoutId) {
             GLib.source_remove(this._labelTimeoutId);
@@ -262,13 +262,9 @@ var MasterSlider = class extends StreamSlider
     scroll(event) {
         super.scroll(event);
 
-        // allow icon scrolls with closed menu to be handled as well
-        let position = null;
-        if (event && !Main.panel.statusArea.aggregateMenu.menu.isOpen) {
-            position = event.get_coords();
+        if (Main.panel.statusArea.aggregateMenu.menu.isOpen) {
+            this._showVolumeInfo();
         }
-
-        this._showVolumeInfo(position);
     }
 };
 

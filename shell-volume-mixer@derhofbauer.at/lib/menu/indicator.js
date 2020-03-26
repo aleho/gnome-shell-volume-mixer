@@ -14,6 +14,8 @@ const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 
 const { Menu } = Lib.menu.menu;
+const { PercentageLabel } = Lib.widget.percentageLabel;
+const { Settings } = Lib.settings;
 
 
 /**
@@ -31,8 +33,15 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
         this._inputIndicator = this._addIndicator();
         this._control = mixer.control;
 
+        this._settings = new Settings();
         this._volumeMenu = new Menu(mixer, options);
         this._volumeMenu.connect('icon-changed', this.updateIcon.bind(this));
+
+        if (this._settings.get_boolean('show-percentage-label')) {
+            this._percentageLabel = new PercentageLabel(mixer);
+            this.add(this._percentageLabel);
+            this.add_style_class_name('power-status'); // fake power class for style equal to battery percentage
+        }
 
         this._inputIndicator.set({
             icon_name: 'audio-input-microphone-symbolic',
@@ -75,6 +84,11 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
         if (this.menu) {
             this.menu.destroy();
             this.menu = null;
+        }
+
+        if (this._percentageLabel) {
+            this._percentageLabel.destroy();
+            this._percentageLabel = null;
         }
     }
 });
