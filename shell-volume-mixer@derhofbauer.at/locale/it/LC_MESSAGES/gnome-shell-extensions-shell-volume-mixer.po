@@ -8,22 +8,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
-"PO-Revision-Date: 2020-03-26 18:32\n"
+"PO-Revision-Date: 2020-03-26 22:15\n"
 
-#: shell-volume-mixer@derhofbauer.at/prefs.js:281
+#: shell-volume-mixer@derhofbauer.at/prefs.js:284
 msgid "Error retrieving card details"
 msgstr "Errore nel recuperare le informazioni sulla scheda"
 
-#: shell-volume-mixer@derhofbauer.at/prefs.js:282
+#: shell-volume-mixer@derhofbauer.at/prefs.js:285
 msgid "Helper script did not return valid card data."
 msgstr "Lo script di aiuto non ha restituito dati della scheda validi"
 
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:287
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:289
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:278
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:280
 msgid "Inputs"
 msgstr "Sorgenti"
 
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:426
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:417
 msgid "unknown"
 msgstr "sconosciuto"
 
@@ -87,28 +87,36 @@ msgstr "Mostrare sempre i flussi di input"
 msgid "Shows the slider even if no application is recording"
 msgstr "Mostra il cursore di scorrimento anche se nessuna applicazione sta registrando"
 
-#: shell-volume-mixer@derhofbauer.at/prefs.ui:340
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:322
+msgid "Show percentage"
+msgstr ""
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:346
+msgid "Whether to show percentage of current output right of the icon"
+msgstr ""
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:377
 msgid "Settings"
 msgstr "Impostazioni"
 
-#: shell-volume-mixer@derhofbauer.at/prefs.ui:377
-#: shell-volume-mixer@derhofbauer.at/prefs.ui:544
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:414
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:581
 msgid "Devices"
 msgstr "Dispositivi"
 
-#: shell-volume-mixer@derhofbauer.at/prefs.ui:428
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:465
 msgid "Card"
 msgstr "Scheda"
 
-#: shell-volume-mixer@derhofbauer.at/prefs.ui:442
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:479
 msgid "Profile"
 msgstr "Profilo"
 
-#: shell-volume-mixer@derhofbauer.at/prefs.ui:455
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:492
 msgid "Switch"
 msgstr "Attiva"
 
-#: shell-volume-mixer@derhofbauer.at/prefs.ui:468
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:505
 msgid "Display"
 msgstr "Visualizza"
 
