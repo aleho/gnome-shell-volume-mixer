@@ -120,7 +120,7 @@ var Mixer = class
 
         const percent = this._defaultSink.volume / this._control.get_vol_max_norm() * 100;
 
-        this._streamEvents.emit('volume-changed', percent > 99 ? 100 : Math.floor(percent));
+        this._streamEvents.emit('volume-changed', Math.round(percent));
     }
 
     /**

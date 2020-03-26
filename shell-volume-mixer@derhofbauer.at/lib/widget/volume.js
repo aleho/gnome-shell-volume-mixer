@@ -163,8 +163,7 @@ const StreamSlider = class extends OutputStreamSliderExtension
             return;
         }
 
-        let percent = this._slider.value * 100;
-        this._volumeInfo.text = ((percent > 99) ? 100 : Math.floor(percent)) + '%';
+        this._volumeInfo.text = Math.round(this._slider.value * 100) + '%';
 
         if (this._labelTimeoutId) {
             GLib.source_remove(this._labelTimeoutId);
