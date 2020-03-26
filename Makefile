@@ -7,7 +7,8 @@ PACKAGE = shell-volume-mixer-$(VERSION).zip
 
 FILES = LICENSE README.md
 
-LOCALES_SRC = $(foreach dir,$(SRCDIR)/locale,$(wildcard $(dir)/*/*/*.po))
+LOCALE_DIR = $(SRCDIR)/locale
+LOCALES_SRC = $(foreach dir,$(LOCALE_DIR),$(wildcard $(dir)/*/*/*.po))
 LOCALES = $(patsubst %.po,%.mo,$(LOCALES_SRC))
 
 SOURCES = \
@@ -20,6 +21,11 @@ SOURCES = \
 	$(LOCALES:$(SRCDIR)/%=%) \
 	$(GSCHEMA) $(SCHEMA_COMP)
 
+I18N = \
+	*.js \
+	lib/**/*.js \
+	prefs.ui
+
 SCHEMA_COMP = schemas/gschemas.compiled
 GSCHEMA = schemas/org.gnome.shell.extensions.shell-volume-mixer.gschema.xml
 
@@ -27,9 +33,7 @@ SRCFILES = $(addprefix $(SRCDIR)/, $(SOURCES) $(GSCHEMA) $(GSCHEMA_COMP))
 
 
 dist: clean build check package
-
 build: install-deps
-
 package: $(PACKAGE)
 
 prepare:
@@ -47,7 +51,13 @@ $(PACKAGE): i18n stylesheet.css metadata.json $(SRCFILES) $(FILES)
 	cd $(BUILDDIR) && zip ../$(PACKAGE) *
 
 i18n: $(LOCALES_SRC)
-	@$(foreach file, $(LOCALES_SRC), msgfmt $(file) -o $(subst .po,.mo,$(file));)
+	@xgettext \
+		--keyword --keyword=__ \
+		--omit-header \
+		--default-domain=$(EXTENSION) \
+		--from-code=UTF-8 \
+		--output=$(LOCALE_DIR)/translations.pot \
+		 $(wildcard $(addprefix $(SRCDIR)/, $(I18N)))
 
 metadata.json: prepare
 	cat $(addprefix $(SRCDIR)/, metadata.json) | grep -v '"version":' > $(BUILDDIR)/metadata.json
