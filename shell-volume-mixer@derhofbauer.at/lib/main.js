@@ -15,7 +15,7 @@ const PopupMenu = imports.ui.popupMenu;
 const { Mixer } = Lib.volume.mixer;
 const { Indicator } = Lib.menu.indicator;
 const { PanelButton } = Lib.widget.panelButton;
-const Settings = Lib.settings;
+const { Settings, SETTING, cleanup: settingsCleanup } = Lib.settings;
 
 const DEFAULT_INDICATOR_POS = 4;
 
@@ -39,7 +39,7 @@ var Extension = class {
      */
     get _settings() {
         if (!this._settingsInstance) {
-            this._settingsInstance = new Settings.Settings();
+            this._settingsInstance = new Settings();
         }
 
         return this._settingsInstance;
@@ -70,9 +70,9 @@ var Extension = class {
 
         this._mixer = new Mixer();
 
-        let position = this._settings.get_enum('position');
+        let position = this._settings.get_enum(SETTING.position);
 
-        if (position === Settings.POS_MENU) {
+        if (position === SETTING.position_at.menu) {
             this._replaceOriginal();
         } else {
             this._addPanelButton(position);
@@ -101,7 +101,8 @@ var Extension = class {
             this._panelButton = null;
         }
 
-        Settings.cleanup();
+        this._settingsInstance = null;
+        settingsCleanup();
     }
 
     /**
@@ -171,16 +172,16 @@ var Extension = class {
      * @private
      */
     _addPanelButton(position) {
-        let removeOriginal = this._settings.get_boolean('remove-original');
+        let removeOriginal = this._settings.get_boolean(SETTING.remove_original);
         if (removeOriginal) {
             this._hideOriginal();
         }
 
         this._panelButton = new PanelButton(this._mixer);
 
-        if (position === Settings.POS_LEFT) {
+        if (position === SETTING.position_at.left) {
             Main.panel.addToStatusArea('ShellVolumeMenu', this._panelButton, 999, 'left');
-        } else if (position === Settings.POS_CENTER) {
+        } else if (position === SETTING.position_at.center) {
             Main.panel.addToStatusArea('ShellVolumeMenu', this._panelButton, 999, 'center');
         } else {
             Main.panel.addToStatusArea('ShellVolumeMenu', this._panelButton);

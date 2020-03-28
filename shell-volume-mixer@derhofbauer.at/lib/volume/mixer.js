@@ -17,7 +17,7 @@ const Volume = imports.ui.status.volume;
 const { Cards } = Lib.utils.cards;
 const { EventHandlerDelegate } = Lib.utils.eventHandlerDelegate;
 const { Hotkeys } = Lib.utils.hotkeys;
-const { Settings } = Lib.settings;
+const { Settings, SETTING } = Lib.settings;
 const Utils = Lib.utils.utils;
 
 const STREAM_NO_MATCH = 0;
@@ -88,7 +88,7 @@ var Mixer = class
             return;
         }
 
-        this._hotkeys.bind('profile-switcher-hotkey', this._switchProfile.bind(this));
+        this._hotkeys.bind(SETTING.profile_switcher_hotkey, this._switchProfile.bind(this));
     }
 
     /**
@@ -189,7 +189,7 @@ var Mixer = class
      * @private
      */
     _parsePinnedProfiles() {
-        const data = this._settings.get_array('pinned-profiles') || [];
+        const data = this._settings.get_array(SETTING.pinned_profiles) || [];
         const cycled = [];
 
         let count = 0;

@@ -7,8 +7,7 @@
  */
 
 /* exported Settings, cleanup, hasPreferencesApp, openDialog */
-/* exported POS_MENU, POS_LEFT, POS_CENTER, POS_RIGHT */
-/* exported SOUND_SETTINGS_SCHEMA, ALLOW_AMPLIFIED_VOLUME_KEY */
+/* exported SOUND_SETTINGS_SCHEMA, ALLOW_AMPLIFIED_VOLUME_KEY, SETTING */
 
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const { Gio, GLib } = imports.gi;
@@ -16,14 +15,30 @@ const Lib = Extension.imports.lib;
 
 const Utils = Lib.utils.utils;
 
-var POS_MENU = 0;
-var POS_LEFT = 1;
-var POS_CENTER = 2;
-var POS_RIGHT = 3;
-
 const SETTINGS_SCHEMA = 'org.gnome.shell.extensions.shell-volume-mixer';
 var SOUND_SETTINGS_SCHEMA = 'org.gnome.desktop.sound';
 var ALLOW_AMPLIFIED_VOLUME_KEY = 'allow-volume-above-100-percent';
+
+var SETTING = Object.freeze({
+    position:                  'position',
+    remove_original:           'remove-original',
+    show_percentage_label:     'show-percentage-label',
+    show_detailed_sliders:     'show-detailed-sliders',
+    show_system_sounds:        'show-system-sounds',
+    show_virtual_streams:      'show-virtual-streams',
+    always_show_input_streams: 'always-show-input-streams',
+    use_symbolic_icons:        'use-symbolic-icons',
+    profile_switcher_hotkey:   'profile-switcher-hotkey',
+    pinned_profiles:           'pinned-profiles',
+
+    position_at: {
+        menu:   0,
+        left:   1,
+        center: 2,
+        right:  3,
+    },
+});
+
 
 const SIGNALS = {};
 const GSETTINGS = {};
@@ -33,10 +48,6 @@ let PREFS_APP = undefined;
 
 var Settings = class
 {
-    set settings(value) {
-        // nothing to do here
-    }
-
     get settings() {
         if (!GSETTINGS[this.schema]) {
             this._initSettings();

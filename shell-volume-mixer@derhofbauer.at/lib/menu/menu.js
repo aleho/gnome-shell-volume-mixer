@@ -12,7 +12,7 @@ const Gvc = imports.gi.Gvc;
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const PopupMenu = imports.ui.popupMenu;
 
-const { Settings } = Lib.settings;
+const { Settings, SETTING } = Lib.settings;
 const Volume = Lib.widget.volume;
 const Utils = Lib.utils.utils;
 
@@ -35,11 +35,11 @@ var Menu = class extends VolumeMenuExtension
         this._settings = new Settings();
 
         this.options = {
-            detailed: this._settings.get_boolean('show-detailed-sliders'),
-            systemSounds: this._settings.get_boolean('show-system-sounds'),
-            virtualStreams: this._settings.get_boolean('show-virtual-streams'),
-            symbolicIcons: this._settings.get_boolean('use-symbolic-icons'),
-            alwaysShowInputStreams: this._settings.get_boolean('always-show-input-streams')
+            detailed: this._settings.get_boolean(SETTING.show_detailed_sliders),
+            systemSounds: this._settings.get_boolean(SETTING.show_system_sounds),
+            virtualStreams: this._settings.get_boolean(SETTING.show_virtual_streams),
+            symbolicIcons: this._settings.get_boolean(SETTING.use_symbolic_icons),
+            alwaysShowInputStreams: this._settings.get_boolean(SETTING.always_show_input_streams)
         };
 
         this.actor.add_style_class_name('svm-menu');

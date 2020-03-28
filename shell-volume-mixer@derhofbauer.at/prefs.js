@@ -12,7 +12,7 @@ const Gtk = imports.gi.Gtk;
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 
 const Gettext = Lib.utils.gettext;
-const Settings = Lib.settings;
+const { Settings, SETTING } = Lib.settings;
 const Utils = Lib.utils.utils;
 const __ = Lib.utils.gettext._;
 
@@ -43,7 +43,7 @@ const Preferences = class
 
         // just init gettext here
         Gettext.getLocal();
-        this._settings = new Settings.Settings();
+        this._settings = new Settings();
     }
 
     buildWidget() {
@@ -76,26 +76,26 @@ const Preferences = class
         this._objects.rndQuickswitch.connect('toggled', this.onQuickswitchToggled.bind(this));
         this._objects.rndDisplay.connect('toggled', this.onDisplayToggled.bind(this));
 
-        this._objects.cmbPosition.set_active(this._settings.get_enum('position'));
-        this._objects.swRemoveOriginal.set_active(this._settings.get_boolean('remove-original'));
-        this._objects.swShowPercentageLabel.set_active(this._settings.get_boolean('show-percentage-label'));
-        this._objects.swShowDetailedSliders.set_active(this._settings.get_boolean('show-detailed-sliders'));
-        this._objects.swShowSystemSounds.set_active(this._settings.get_boolean('show-system-sounds'));
-        this._objects.swShowVirtualStreams.set_active(this._settings.get_boolean('show-virtual-streams'));
-        this._objects.swAlwaysShowInputStreams.set_active(this._settings.get_boolean('always-show-input-streams'));
-        this._objects.swUseSymbolicIcons.set_active(this._settings.get_boolean('use-symbolic-icons'));
-        this._objects.txtProfileSwitch.set_text(this._settings.get_array('profile-switcher-hotkey')[0] || '');
+        this._objects.cmbPosition.set_active(this._settings.get_enum(SETTING.position));
+        this._objects.swRemoveOriginal.set_active(this._settings.get_boolean(SETTING.remove_original));
+        this._objects.swShowPercentageLabel.set_active(this._settings.get_boolean(SETTING.show_percentage_label));
+        this._objects.swShowDetailedSliders.set_active(this._settings.get_boolean(SETTING.show_detailed_sliders));
+        this._objects.swShowSystemSounds.set_active(this._settings.get_boolean(SETTING.show_system_sounds));
+        this._objects.swShowVirtualStreams.set_active(this._settings.get_boolean(SETTING.show_virtual_streams));
+        this._objects.swAlwaysShowInputStreams.set_active(this._settings.get_boolean(SETTING.always_show_input_streams));
+        this._objects.swUseSymbolicIcons.set_active(this._settings.get_boolean(SETTING.use_symbolic_icons));
+        this._objects.txtProfileSwitch.set_text(this._settings.get_array(SETTING.profile_switcher_hotkey)[0] || '');
 
         this._bindSignal('tabs', 'switch-page', this.onSwitchPage);
-        this._bindSignal('cmbPosition', 'changed', this.onPositionChanged, 'position');
-        this._bindSignal('swRemoveOriginal', 'notify::active', this.onSwitchActivate, 'remove-original');
-        this._bindSignal('swShowPercentageLabel', 'notify::active', this.onSwitchActivate, 'show-percentage-label');
-        this._bindSignal('swShowDetailedSliders', 'notify::active', this.onSwitchActivate, 'show-detailed-sliders');
-        this._bindSignal('swShowSystemSounds', 'notify::active', this.onSwitchActivate, 'show-system-sounds');
-        this._bindSignal('swShowVirtualStreams', 'notify::active', this.onSwitchActivate, 'show-virtual-streams');
-        this._bindSignal('swAlwaysShowInputStreams', 'notify::active', this.onSwitchActivate, 'always-show-input-streams');
-        this._bindSignal('swUseSymbolicIcons', 'notify::active', this.onSwitchActivate, 'use-symbolic-icons');
-        this._bindSignal('txtProfileSwitch', 'changed', this.onProfileSwitchChanged, 'profile-switcher-hotkey');
+        this._bindSignal('cmbPosition', 'changed', this.onPositionChanged, SETTING.position);
+        this._bindSignal('swRemoveOriginal', 'notify::active', this.onSwitchActivate, SETTING.remove_original);
+        this._bindSignal('swShowPercentageLabel', 'notify::active', this.onSwitchActivate, SETTING.show_percentage_label);
+        this._bindSignal('swShowDetailedSliders', 'notify::active', this.onSwitchActivate, SETTING.show_detailed_sliders);
+        this._bindSignal('swShowSystemSounds', 'notify::active', this.onSwitchActivate, SETTING.show_system_sounds);
+        this._bindSignal('swShowVirtualStreams', 'notify::active', this.onSwitchActivate, SETTING.show_virtual_streams);
+        this._bindSignal('swAlwaysShowInputStreams', 'notify::active', this.onSwitchActivate, SETTING.always_show_input_streams);
+        this._bindSignal('swUseSymbolicIcons', 'notify::active', this.onSwitchActivate, SETTING.use_symbolic_icons);
+        this._bindSignal('txtProfileSwitch', 'changed', this.onProfileSwitchChanged, SETTING.profile_switcher_hotkey);
         this._bindSignal('btnAddDevice', 'clicked', this.onAddDevice);
         this._bindSignal('btnRemoveDevice', 'clicked', this.onRemoveDevice);
 
@@ -170,7 +170,7 @@ const Preferences = class
      * settings key.
      */
     _populatePinned() {
-        let pinned = this._settings.get_array('pinned-profiles');
+        let pinned = this._settings.get_array(SETTING.pinned_profiles);
         this._pinned.clear();
 
         for (let item of pinned) {
@@ -224,7 +224,7 @@ const Preferences = class
             success = this._pinned.iter_next(iter);
         }
 
-        this._settings.set_array('pinned-profiles', values);
+        this._settings.set_array(SETTING.pinned_profiles, values);
     }
 
 
@@ -233,7 +233,6 @@ const Preferences = class
      */
     _showMessage(title, text, type) {
         type = type || 'WARNING';
-        Utils.l(Gtk.MessageType[type]);
 
         let dialog = new Gtk.MessageDialog({
             text: title,
@@ -302,7 +301,7 @@ const Preferences = class
             return;
         }
 
-        if (value === Settings.POS_MENU) {
+        if (value === SETTING.position_at.menu) {
             checkbox.set_sensitive(false);
         } else {
             checkbox.set_sensitive(true);
