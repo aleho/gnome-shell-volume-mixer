@@ -13,8 +13,9 @@ const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const PopupMenu = imports.ui.popupMenu;
 
 const { Settings, SETTING } = Lib.settings;
-const Volume = Lib.widget.volume;
+const Log = Lib.utils.log;
 const Utils = Lib.utils.utils;
+const Volume = Lib.widget.volume;
 
 
 /**
@@ -71,7 +72,7 @@ var Menu = class extends VolumeMenuExtension
             try {
                 mixer.connect(name, signals[name].bind(this));
             } catch (exception) {
-                Utils.info(`Could not connect to signal ${name} -`, exception);
+                Log.info(`Could not connect to signal ${name} -`, exception);
             }
         }
 

@@ -9,7 +9,7 @@
 /* exported EventHandlerDelegate */
 
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
-const Utils = Lib.utils.utils;
+const Log = Lib.utils.log;
 
 
 /**
@@ -50,7 +50,7 @@ var EventHandlerDelegate = class {
         }
 
         if (!target) {
-            Utils.error('EventHandlerDelegate', 'connect', 'Connect called before setting "eventHandlerDelegate" and without passing a target (' + signal + ')');
+            Log.error('EventHandlerDelegate', 'connect', `Connect called before setting "eventHandlerDelegate" and without passing a target (${signal})`);
             return;
         }
 
@@ -79,7 +79,7 @@ var EventHandlerDelegate = class {
             }
         }
 
-        Utils.error('EventHandlerDelegate', 'disconnect', 'Signal ' + signal + ' not found on target');
+        Log.error('EventHandlerDelegate', 'disconnect', `Signal ${signal} not found on target`);
     }
 
     /**

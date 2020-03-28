@@ -55,7 +55,7 @@ var Hotkeys = class
         delete this._bindings[setting];
 
         if (this._proxies[setting]) {
-            this._proxies[setting].disconnect('changed::' + setting);
+            this._proxies[setting].disconnect(`changed::${setting}`);
             delete this._proxies[setting];
         }
 

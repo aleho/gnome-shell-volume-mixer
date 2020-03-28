@@ -13,7 +13,9 @@ const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const { Gio, GLib } = imports.gi;
 const Lib = Extension.imports.lib;
 
+const Log = Lib.utils.log;
 const Utils = Lib.utils.utils;
+
 
 const SETTINGS_SCHEMA = 'org.gnome.shell.extensions.shell-volume-mixer';
 var SOUND_SETTINGS_SCHEMA = 'org.gnome.desktop.sound';
@@ -80,7 +82,7 @@ var Settings = class
             let schemaDir = Utils.getExtensionPath('schemas');
 
             // try to find the app-schema locally
-            if (GLib.file_test(schemaDir + '/gschemas.compiled', GLib.FileTest.EXISTS)) {
+            if (GLib.file_test(`${schemaDir}/gschemas.compiled`, GLib.FileTest.EXISTS)) {
                 let schemaSource = Gio.SettingsSchemaSource.new_from_directory(
                     schemaDir,
                     Gio.SettingsSchemaSource.get_default(),
@@ -130,11 +132,7 @@ var Settings = class
     connect(signal, callback) {
         // already connected
         if (this._signals && this._signals[signal]) {
-            Utils.error(
-                'settings',
-                'connect',
-                'Signal "' + signal + '" already bound for "' + this.schema + '"'
-            );
+            Log.error('settings', 'connect', `Signal "${signal}" already bound for "${this.schema}"`);
             return false;
         }
 

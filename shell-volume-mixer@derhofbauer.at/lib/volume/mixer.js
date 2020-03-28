@@ -18,6 +18,7 @@ const { Cards, STREAM_MATCHING } = Lib.utils.cards;
 const { EventHandlerDelegate } = Lib.utils.eventHandlerDelegate;
 const { Hotkeys } = Lib.utils.hotkeys;
 const { Settings, SETTING } = Lib.settings;
+const Log = Lib.utils.log;
 const Utils = Lib.utils.utils;
 
 
@@ -143,7 +144,7 @@ var Mixer = class
         const card = await this._cards.get(stream.card_index);
 
         if (!card || !card.card) {
-            Utils.error('mixer', '_updateDefaultSink', `Default sink updated but card not found (${stream.card_index}/${stream.name})`);
+            Log.error('mixer', '_updateDefaultSink', `Default sink updated but card not found (${stream.card_index}/${stream.name})`);
             return;
         }
 
@@ -194,7 +195,7 @@ var Mixer = class
             try {
                 item = JSON.parse(entry);
             } catch (e) {
-                Utils.error('mixer', '_parsePinnedProfiles', e.message);
+                Log.error('mixer', '_parsePinnedProfiles', e.message);
             }
             if (!item) {
                 continue;

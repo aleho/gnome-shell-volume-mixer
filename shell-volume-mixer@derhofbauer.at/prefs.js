@@ -13,6 +13,8 @@ const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 
 const Gettext = Lib.utils.gettext;
 const { Settings, SETTING } = Lib.settings;
+const Log = Lib.utils.log;
+const PaHelper = Lib.utils.paHelper;
 const Utils = Lib.utils.utils;
 const __ = Lib.utils.gettext._;
 
@@ -111,7 +113,7 @@ const Preferences = class
      */
     async _initCards() {
         this._cards = {};
-        let cards = await Utils.getCards();
+        let cards = await PaHelper.getCards();
 
         let details = this._objects.swShowDetailedSliders.active;
 
@@ -145,7 +147,7 @@ const Preferences = class
 
                 let profiletext = profile.description;
                 if (details) {
-                    profiletext += '\n' + profile.name;
+                    profiletext += `\n${profile.name}`;
                 }
 
                 this._devices.set(this._devices.append(row), [0, 1, 2],
@@ -184,7 +186,7 @@ const Preferences = class
             try {
                 entry = JSON.parse(item);
             } catch (e) {
-                Utils.error('prefs', '_populatePinned', e.message);
+                Log.error('prefs', '_populatePinned', e.message);
             }
             if (!entry || !entry.card || !entry.profile) {
                 continue;
@@ -234,9 +236,7 @@ const Preferences = class
     /**
      * Shows a message dialog bound to the parent window.
      */
-    _showMessage(title, text, type) {
-        type = type || 'WARNING';
-
+    _showMessage(title, text, type = 'WARNING') {
         let dialog = new Gtk.MessageDialog({
             text: title,
             secondary_text: text,

@@ -14,7 +14,9 @@ const { Gvc, GLib } = imports.gi;
 
 const __ = Lib.utils.gettext._;
 const { EventHandlerDelegate } = Lib.utils.eventHandlerDelegate;
+const Log = Lib.utils.log;
 const Utils = Lib.utils.utils;
+const PaHelper = Lib.utils.paHelper;
 
 
 var STREAM_MATCHING = Object.freeze({
@@ -76,7 +78,7 @@ var Cards = class {
             this._initialized();
 
         } catch (e) {
-            Utils.error('cards', '_initCards', e);
+            Log.error('cards', '_initCards', e);
             Main.notifyError('Volume Mixer', __('Querying PulseAudio sound cards failed, disabling extension'));
             Lib.main.Extension.disable();
             return;
@@ -118,7 +120,7 @@ var Cards = class {
      * @private
      */
     async _getCardDetails() {
-        const paCards = await Utils.getCards();
+        const paCards = await PaHelper.getCards();
 
         if (!paCards) {
             return null;
@@ -171,7 +173,7 @@ var Cards = class {
         const paCard = this.get(index);
 
         if (!paCard || paCard.fake) {
-            Utils.error('cards', '_addCard', 'GVC card not found through Python helper');
+            Log.error('cards', '_addCard', 'GVC card not found through Python helper');
 
             // external script couldn't get card info, fake it
             this._paCards[index] = {

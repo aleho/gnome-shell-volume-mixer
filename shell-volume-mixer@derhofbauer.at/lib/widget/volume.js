@@ -46,10 +46,10 @@ Utils.mixin(OutputStreamSliderExtension, Volume.OutputStreamSlider);
  */
 const StreamSlider = class extends OutputStreamSliderExtension
 {
-    constructor(control, options) {
+    constructor(control, options = {}) {
         super();
 
-        this.options = options || {};
+        this.options = options;
         this._control = control;
         this._mixer = options.mixer;
 
@@ -112,7 +112,7 @@ const StreamSlider = class extends OutputStreamSliderExtension
 
         let soundSettings = new Settings.Settings(Settings.SOUND_SETTINGS_SCHEMA);
         this._soundSettings = soundSettings.settings;
-        this._soundSettings.connect('changed::' + Settings.ALLOW_AMPLIFIED_VOLUME_KEY, this._amplifySettingsChanged.bind(this));
+        this._soundSettings.connect(`changed::${Settings.ALLOW_AMPLIFIED_VOLUME_KEY}`, this._amplifySettingsChanged.bind(this));
         this._amplifySettingsChanged();
 
         this._sliderChangedId = this._slider.connect('notify::value', this._sliderChanged.bind(this));
@@ -356,7 +356,7 @@ var OutputSlider = class extends StreamSlider
                 }
                 // the last segment of the path is the most interesting one
                 description = parts.pop();
-                description += ' | ' + parts.join('.');
+                description += ` | ${parts.join('.')}`;
             }
 
             this._details.text = description;
@@ -407,13 +407,13 @@ var InputSlider = class extends StreamSlider
 
         if (description && text != description) {
             if (text) {
-                text = description + ' | ' + text;
+                text = `${description} | ${text}`;
             } else {
                 text = description;
             }
         }
 
-        this._label.text = text || '[' + __('unknown') + ']';
+        this._label.text = text || `[${__('unknown')}]`;
     }
 };
 
