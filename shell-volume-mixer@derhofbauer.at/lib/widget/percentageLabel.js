@@ -21,8 +21,10 @@ var PercentageLabel = GObject.registerClass(class Indicator extends St.Label {
             y_align: Clutter.ActorAlign.CENTER,
         });
 
+        this.add_style_class_name('percentage-label');
+
         mixer.connectVolumeChanges((event, volume) => {
-            this.text = volume + '%';
+            this.clutter_text.set_markup(`<span size="smaller">${volume}%</span>`);
         });
     }
 });

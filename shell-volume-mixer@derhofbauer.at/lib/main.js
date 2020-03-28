@@ -131,7 +131,8 @@ var Extension = class {
      */
     _replaceOriginal() {
         this._indicator = new Indicator(this._mixer, {
-            separator: false
+            separator: false,
+            showPercentageLabel: this._settings.get_boolean(SETTING.show_percentage_label),
         });
 
         // get current indicator position
@@ -172,12 +173,13 @@ var Extension = class {
      * @private
      */
     _addPanelButton(position) {
-        let removeOriginal = this._settings.get_boolean(SETTING.remove_original);
-        if (removeOriginal) {
+        if (this._settings.get_boolean(SETTING.remove_original)) {
             this._hideOriginal();
         }
 
-        this._panelButton = new PanelButton(this._mixer);
+        this._panelButton = new PanelButton(this._mixer, {
+            showPercentageLabel: this._settings.get_boolean(SETTING.show_percentage_label),
+        });
 
         if (position === SETTING.position_at.left) {
             Main.panel.addToStatusArea('ShellVolumeMenu', this._panelButton, 999, 'left');

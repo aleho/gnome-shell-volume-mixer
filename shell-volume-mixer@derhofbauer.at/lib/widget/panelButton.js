@@ -14,6 +14,7 @@ const PanelMenu = imports.ui.panelMenu;
 const St = imports.gi.St;
 
 const { Menu } = Lib.menu.menu;
+const { PercentageLabel } = Lib.widget.percentageLabel;
 
 
 /**
@@ -21,7 +22,7 @@ const { Menu } = Lib.menu.menu;
  */
 var PanelButton = GObject.registerClass(class PanelButton extends PanelMenu.Button
 {
-    _init(mixer) {
+    _init(mixer, options = {}) {
         super._init(0.0, 'ShellVolumeMixer');
 
         this._mixerMenu = new Menu(mixer, {
@@ -38,6 +39,11 @@ var PanelButton = GObject.registerClass(class PanelButton extends PanelMenu.Butt
         this.add_actor(this._box);
 
         this._iconChangedId = this._mixerMenu.connect('icon-changed', this._onIconChanged.bind(this));
+
+        if (options.showPercentageLabel) {
+            this._percentageLabel = new PercentageLabel(mixer);
+            this._box.add(this._percentageLabel);
+        }
 
         this.menu.actor.add_style_class_name('shell-volume-mixer-standalone-menu');
         this.menu.addMenuItem(this._mixerMenu);

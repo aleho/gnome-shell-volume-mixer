@@ -15,7 +15,6 @@ const Volume = imports.ui.status.volume;
 
 const { Menu } = Lib.menu.menu;
 const { PercentageLabel } = Lib.widget.percentageLabel;
-const { Settings, SETTING } = Lib.settings;
 
 
 /**
@@ -24,23 +23,19 @@ const { Settings, SETTING } = Lib.settings;
  */
 var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIndicator
 {
-    _init(mixer, options) {
-        options = options || {};
-
+    _init(mixer, options = {}) {
         super._init();
 
         this._primaryIndicator = this._addIndicator();
         this._inputIndicator = this._addIndicator();
         this._control = mixer.control;
 
-        this._settings = new Settings();
         this._volumeMenu = new Menu(mixer, options);
         this._volumeMenu.connect('icon-changed', this.updateIcon.bind(this));
 
-        if (this._settings.get_boolean(SETTING.show_percentage_label)) {
+        if (options.showPercentageLabel) {
             this._percentageLabel = new PercentageLabel(mixer);
             this.add(this._percentageLabel);
-            this.add_style_class_name('power-status'); // fake power class for style equal to battery percentage
         }
 
         this._inputIndicator.set({
