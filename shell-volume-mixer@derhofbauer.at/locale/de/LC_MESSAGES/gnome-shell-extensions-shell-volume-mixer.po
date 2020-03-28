@@ -8,26 +8,26 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
-"PO-Revision-Date: 2020-03-26 22:15\n"
+"PO-Revision-Date: 2020-03-28 17:41\n"
 
-#: shell-volume-mixer@derhofbauer.at/prefs.js:284
+#: shell-volume-mixer@derhofbauer.at/prefs.js:286
 msgid "Error retrieving card details"
 msgstr "Fehler beim Abfragen der Karten"
 
-#: shell-volume-mixer@derhofbauer.at/prefs.js:285
+#: shell-volume-mixer@derhofbauer.at/prefs.js:287
 msgid "Helper script did not return valid card data."
 msgstr "Hilfsprogramm gab keine gültigen Daten zurück."
 
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:278
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:280
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:277
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:279
 msgid "Inputs"
 msgstr "Eingänge"
 
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:417
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:416
 msgid "unknown"
 msgstr "unbekannt"
 
-#: shell-volume-mixer@derhofbauer.at/lib/utils/cards.js:87
+#: shell-volume-mixer@derhofbauer.at/lib/utils/cards.js:82
 msgid "Querying PulseAudio sound cards failed, disabling extension"
 msgstr ""
 
