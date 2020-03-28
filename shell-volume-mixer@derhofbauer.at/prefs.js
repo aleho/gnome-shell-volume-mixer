@@ -54,8 +54,11 @@ const Preferences = class
         this._pinned = this.builder.get_object('storePinned');
 
         this._connectAndInitUi();
-        this._initCards();
-        this._populatePinned();
+
+        (async () => {
+            await this._initCards();
+            this._populatePinned();
+        })();
 
         this._widget = this._objects.tabs;
         return this._widget;
@@ -106,9 +109,9 @@ const Preferences = class
     /**
      * Initializes the content of the cards / profiles selection tree.
      */
-    _initCards() {
+    async _initCards() {
         this._cards = {};
-        let cards = Utils.getCards();
+        let cards = await Utils.getCards();
 
         let details = this._objects.swShowDetailedSliders.active;
 

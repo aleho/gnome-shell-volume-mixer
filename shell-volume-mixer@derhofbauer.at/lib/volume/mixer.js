@@ -14,15 +14,11 @@ const Main = imports.ui.main;
 const Signals = imports.signals;
 const Volume = imports.ui.status.volume;
 
-const { Cards } = Lib.utils.cards;
+const { Cards, STREAM_MATCHING } = Lib.utils.cards;
 const { EventHandlerDelegate } = Lib.utils.eventHandlerDelegate;
 const { Hotkeys } = Lib.utils.hotkeys;
 const { Settings, SETTING } = Lib.settings;
 const Utils = Lib.utils.utils;
-
-const STREAM_NO_MATCH = 0;
-const STREAM_MATCHES = 1;
-const STREAM_CARD_MATCHES = 2;
 
 
 class EventSource {}
@@ -127,7 +123,7 @@ var Mixer = class
      * Updates the default sink, trying to mark the currently active card.
      * @private
      */
-    _updateDefaultSink(stream) {
+    async _updateDefaultSink(stream) {
         if (this._defaultSink !== stream) {
             if (this._defaultSink) {
                 this._disconnectSink();
@@ -144,10 +140,10 @@ var Mixer = class
             return;
         }
 
-        const card = this._cards.get(stream.card_index);
+        const card = await this._cards.get(stream.card_index);
 
         if (!card || !card.card) {
-            Utils.error('mixer', '_updateDefaultSink', 'Default sink updated but card not found (' + stream.name + ')');
+            Utils.error('mixer', '_updateDefaultSink', `Default sink updated but card not found (${stream.card_index}/${stream.name})`);
             return;
         }
 
@@ -225,7 +221,7 @@ var Mixer = class
      * Hotkey handler to switch between profiles.
      * @private
      */
-    _switchProfile() {
+    async _switchProfile() {
         if (this._state !== Gvc.MixerControlState.READY) {
             return;
         }
@@ -242,7 +238,8 @@ var Mixer = class
         const next = this._currentCycle.next;
         const cardName = next.card;
         const profileName = next.profile;
-        const paCard = this._cards.getByName(cardName);
+
+        const paCard = await this._cards.getByName(cardName);
 
         if (!paCard || !paCard.card) {
             // we don't know this card, we won't be able to set its profile
@@ -251,21 +248,19 @@ var Mixer = class
 
         this._currentCycle = next;
 
-        const cardDescription = paCard.description;
-        const profileDescription = paCard.profiles[profileName];
-        this._showNotification(cardDescription + '\n' + profileDescription);
-
         // profile's changed, now get that new sink
         const sinks = this._control.get_sinks();
         let newSink = null;
 
         for (let sink of sinks) {
-            let result = this._streamMatchesProfile(sink.name, cardName, profileName);
-            if (result === STREAM_MATCHES) {
+            let result = this._cards.streamMatchesPaCard(sink, paCard, profileName);
+
+            if (result === STREAM_MATCHING.stream) {
                 newSink = sink;
                 break;
             }
-            if (result === STREAM_CARD_MATCHES || !newSink) {
+
+            if (result === STREAM_MATCHING.card || !newSink) {
                 // maybe we can use this stream later, but we'll keep searching
                 newSink = sink;
             }
@@ -277,38 +272,10 @@ var Mixer = class
             this._pauseDefaultSinkEvent = true;
             this._control.set_default_sink(newSink);
         }
-    }
 
-    /**
-     * Tries to find out whether a certain stream matches profile for a card.
-     * @private
-     */
-    _streamMatchesProfile(streamName, cardName, profileName) {
-        let [, streamAddr, streamIndex, streamProfile] = streamName.split('.');
-        const [, cardAddr, cardIndex] = cardName.split('.');
-
-        // try to fix stream names without index (cardName will not have an index either)
-        if (streamIndex && !streamProfile && isNaN(streamIndex)) {
-            streamProfile = streamIndex;
-            streamIndex = undefined;
-        }
-
-        const profileParts = profileName.split(':');
-        // remove direction
-        profileParts.shift();
-        const profile = profileParts.join(':');
-
-        if (streamAddr != cardAddr
-                || streamIndex != cardIndex) {
-            // cards don't match, certainly no hit
-            return STREAM_NO_MATCH;
-        }
-
-        if (streamProfile != profile) {
-            return STREAM_CARD_MATCHES;
-        }
-
-        return STREAM_MATCHES;
+        const cardDescription = paCard.description;
+        const profileDescription = paCard.profiles[profileName];
+        this._showNotification(`${cardDescription}\n${profileDescription}`);
     }
 
     /**

@@ -11,9 +11,8 @@
 const ByteArray = imports.byteArray;
 const Config = imports.misc.config;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
-const GLib = imports.gi.GLib;
+const { Gio } = imports.gi;
 
-const SEP = repeatString('#', 60);
 const LOG_PREAMBLE = 'Shell Volume Mixer';
 
 const PYTHON_HELPER_PATH = 'pautils/cardinfo.py';
@@ -76,13 +75,47 @@ function versionGreaterOrEqual(string) {
     return true;
 }
 
+
+/**
+ * Executes an async command.
+ *
+ * @param {Array} command
+ * @return {Promise<[int, string, string]>}
+ */
+async function execAsync(command) {
+    const process = new Gio.Subprocess({
+        argv:  command,
+        flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
+    });
+
+    process.init(null);
+
+    return new Promise((resolve, reject) => {
+        process.communicate_utf8_async(null, null, (process, result) => {
+            try {
+                const [success, stdout, stderr] = process.communicate_utf8_finish(result);
+                const ret = process.get_exit_status();
+
+                if (!success) {
+                    reject(Error('Error spawning subprocess'));
+                } else {
+                    resolve([ret, stdout, stderr]);
+                }
+
+            } catch (e) {
+                reject(e);
+            }
+        });
+    });
+}
+
 /**
  * Calls the Python helper script to get more details about a card and its
  * profiles.
  *
- * @returns {?Object.<string, paCard>} JSON object of the output
+ * @return {Promise<?Object.<string, paCard>>} JSON object of the output
  */
-function getCards() {
+async function getCards() {
     const paUtilPath = getExtensionPath(PYTHON_HELPER_PATH);
 
     if (!paUtilPath) {
@@ -90,15 +123,14 @@ function getCards() {
         return null;
     }
 
-    let success;
     let output;
     let pythonError;
 
     try {
-        [success, output] = GLib.spawn_command_line_sync('/usr/bin/env python3 ' + paUtilPath);
+        output = await execAsync(['/usr/bin/env', 'python3', paUtilPath]);
     } catch (pythonError) {
         try {
-            [success, output] = GLib.spawn_command_line_sync('/usr/bin/env python ' + paUtilPath);
+            output = await execAsync(['/usr/bin/env', 'python', paUtilPath]);
         } catch (pythonError) {
             // eslint-disable-no-empty
         }
@@ -108,7 +140,7 @@ function getCards() {
         }
     }
 
-    if (success !== true || !output) {
+    if (!output) {
         return null;
     }
 
@@ -143,15 +175,11 @@ function getCards() {
  * @param {...string}
  */
 function l() {
-    log(LOG_PREAMBLE + '\n'
-        + SEP
-        + '\n\n' + Array.prototype.slice.call(arguments).join(' ')
-        + '\n\n' + SEP);
+    log(Array.prototype.slice.call(arguments).join(' '));
 }
 
 function info() {
-    log(LOG_PREAMBLE + ' | '
-        + Array.prototype.slice.call(arguments).join(' '));
+    log(`${LOG_PREAMBLE} | ${Array.prototype.slice.call(arguments).join(' ')}`);
 }
 
 /**
@@ -182,7 +210,7 @@ function error(module, context, message) {
         message = context;
         context = undefined;
     }
-    let output = 'ERROR | ';
+    let output = `${LOG_PREAMBLE} | ERROR | `;
     if (module) {
         output += module + '.js | ';
     }

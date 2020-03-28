@@ -6,7 +6,7 @@
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported Cards */
+/* exported Cards, STREAM_MATCHING */
 
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const Main = imports.ui.main;
@@ -17,13 +17,19 @@ const { EventHandlerDelegate } = Lib.utils.eventHandlerDelegate;
 const Utils = Lib.utils.utils;
 
 
-/** @typedef {
+var STREAM_MATCHING = Object.freeze({
+    stream: 1,
+    card:   2,
+});
+
+
+/** @typedef {{
  *   name: String,
  *   index: Number,
  *   profiles: String[],
  *   fake: Boolean,
  *   card: Object<Gvc.MixerCard>
- * } paCard
+ * }} paCard
  */
 
 /**
@@ -33,128 +39,142 @@ var Cards = class {
     constructor(control) {
         this._control = control;
         this.eventHandlerDelegate = control;
-        this._initCards();
+
+        this._initDone = new Promise(resolve => {
+            this._initialized = resolve;
+        });
 
         this.connect('state-changed', this._onStateChanged.bind(this));
+    }
+
+    /**
+     * @return {boolean}
+     * @private
+     */
+    _controlIsReady() {
+        return (this._control.get_state() === Gvc.MixerControlState.READY);
+    }
+
+    /**
+     * Callback for state changes.
+     */
+    _onStateChanged(/* control, state */) {
+        if (!this._controlIsReady()) {
+            return;
+        }
+
+        this._init();
+    }
+
+    /**
+     * @return {Promise<void>}
+     * @private
+     */
+    async _init() {
+        try {
+            await this._initCards();
+            this._initialized();
+
+        } catch (e) {
+            Utils.error('cards', '_initCards', e);
+            Main.notifyError('Volume Mixer', __('Querying PulseAudio sound cards failed, disabling extension'));
+            Lib.main.Extension.disable();
+            return;
+        }
+
         this.connect('card-added', this._onCardAdded.bind(this));
         this.connect('card-removed', this._onCardRemoved.bind(this));
     }
 
     /**
-     * Returns a card by name.
-     *
-     * @param {Number} index
-     * @return {?paCard}
-     */
-    get(index) {
-        return (index in this._cards) ? this._cards[index] : null;
-    }
-
-    /**
-     * Returns a card by name
-     * @param {String} name
-     * @return {?paCard}
-     */
-    getByName(name) {
-        const index = this._cardNames[name];
-
-        if (!isNaN(index) && index >= 0) {
-            return this.get(index);
-        }
-
-        return null;
-    }
-
-    /**
      * Retrieves a list of all cards available, using our Python helper.
      * Tries to be error-resistant in case the helper cannot deliver.
+     *
+     * @return {Promise<void>}
      */
-    _initCards() {
-        this._cards = {};
+    async _initCards() {
+        this._paCards = {};
         this._cardNames = {};
 
-        const cards = this._getCardDetails();
+        let cards;
 
-        if (cards && Object.keys(cards).length) {
-            this._cards = cards;
-            return;
+        let retries = 3;
+        do {
+            cards = await this._getCardDetails();
+        } while (!cards
+            && (--retries) > 0
+            && await new Promise(resolve => GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 2, () => resolve(true)))
+        );
+
+        if (!cards) {
+            throw Error('Could not retrieve PA card details with Python helper script');
         }
 
-        this._cardsRetries = (this._cardsRetries || 4) - 1;
-
-        if (this._cardsRetries <= 0) {
-            Utils.error('cards', '_initCards', 'Could not retrieve PA card details with Python helper script');
-            Main.notifyError('Volume Mixer', __('Querying PulseAudio sound cards failed, disabling extension'));
-            Lib.main.Extension.disable();
-
-            return;
-        }
-
-        this._cardsRetryId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 2, () => {
-            this._cardsRetryId = 0;
-            this._initCards();
-
-            return GLib.SOURCE_REMOVE;
-        });
+        this._paCards = cards;
     }
 
     /**
      * @return {?Object.<string, paCard>}
      * @private
      */
-    _getCardDetails() {
-        let cards = Utils.getCards();
+    async _getCardDetails() {
+        const paCards = await Utils.getCards();
 
-        if (!cards) {
+        if (!paCards) {
             return null;
         }
 
-        for (let k in cards) {
-            let card = cards[k];
+        for (let k in paCards) {
+            let paCard = paCards[k];
 
-            if (!card) {
+            if (!paCard) {
                 continue;
             }
 
-            if (!card.profiles || !card.profiles.length) {
-                card.profiles = {};
+            if (!paCard.profiles || !paCard.profiles.length) {
+                paCard.profiles = {};
                 continue;
             }
 
             let profiles = {};
 
-            for (let profile of card.profiles) {
+            for (let profile of paCard.profiles) {
                 profiles[profile.name] = profile.description;
             }
-            card.profiles = profiles;
+
+            paCard.profiles = profiles;
         }
 
-        return cards;
+        if (!paCards || !Object.keys(paCards).length) {
+            return null;
+        }
+
+        if (this._controlIsReady()) {
+            for (let card of this._control.get_cards()) {
+                if (card.index in paCards) {
+                    this._addGvcCard(paCards[card.index], card);
+                }
+            }
+        }
+
+        return paCards;
     }
 
     /**
      * Adds a card to our array of cards.
      *
-     * @param {Object} card Card to add.
+     * @param {Object<Gvc.MixerCard>} card Card to add.
      */
     _addCard(card) {
         let index = card.index;
 
-        if (!this._cards[index] || this._cards[index].fake) {
-            let paCards = Utils.getCards();
+        const paCard = this.get(index);
 
-            if (!paCards) {
-                Utils.error('cards', '_addCard', 'Could not retrieve PA card details');
-            } else {
-                this._cards[index] = paCards[index];
-            }
-        }
-
-        if (!this._cards[index]) {
+        if (!paCard || paCard.fake) {
             Utils.error('cards', '_addCard', 'GVC card not found through Python helper');
 
             // external script couldn't get card info, fake it
-            this._cards[index] = {
+            this._paCards[index] = {
                 // card name (human name) won't be useful, we'll set it anyway
                 name: card.name,
                 index: index,
@@ -163,10 +183,17 @@ var Cards = class {
             };
         }
 
-        let paCard = this._cards[index];
-        paCard.card = card;
+        this._addGvcCard(paCard, card);
+    }
 
-        this._cardNames[paCard.name] = index;
+    /**
+     * @param {paCard} paCard
+     * @param {Object<Gvc.MixerCard>} card
+     * @private
+     */
+    _addGvcCard(paCard, card) {
+        paCard.card = card;
+        this._cardNames[paCard.name] = card.index;
     }
 
     /**
@@ -182,35 +209,86 @@ var Cards = class {
      * Signal for removed cards.
      */
     _onCardRemoved(control, index) {
-        if (index in this._cards) {
-            delete this._cardNames[this._cards[index].name];
-            delete this._cards[index];
+        if (index in this._paCards) {
+            delete this._cardNames[this._paCards[index].name];
+            delete this._paCards[index];
         }
     }
 
+
     /**
-     * Callback for state changes.
+     * Finds a card by card index.
+     *
+     * @param {Number} index
+     * @return {Promise<?paCard>}
      */
-    _onStateChanged(control, state) {
-        if (state !== Gvc.MixerControlState.READY) {
-            return;
+    async get(index) {
+        await this._initDone;
+
+        return (index in this._paCards) ? this._paCards[index] : null;
+    }
+
+    /**
+     * Finds a card by name.
+     *
+     * @param {String} name
+     * @return {Promise<?paCard>}
+     */
+    async getByName(name) {
+        await this._initDone;
+
+        const index = this._cardNames[name];
+        if (!isNaN(index) && index >= 0) {
+            return this.get(index);
         }
 
-        let cards = this._control.get_cards();
-        for (let card of cards) {
-            this._addCard(card);
+        return null;
+    }
+
+    /**
+     * Tries to find out whether a certain stream matches profile for a card.
+     *
+     * @param {Object<Gvc.MixerStream>} stream
+     * @param {paCard} paCard
+     * @param {string} profileName
+     * @private
+     */
+    streamMatchesPaCard(stream, paCard, profileName) {
+        const streamName = stream.name;
+        const cardName = paCard.name;
+
+        let [, streamAddr, streamIndex, streamProfile] = streamName.split('.');
+        const [, cardAddr, cardIndex] = cardName.split('.');
+
+        // try to fix stream names without index (cardName will not have an index either)
+        if (streamIndex && !streamProfile && isNaN(streamIndex)) {
+            streamProfile = streamIndex;
+            streamIndex = undefined;
         }
+
+        const profileParts = profileName.split(':');
+        // remove direction
+        profileParts.shift();
+        const profile = profileParts.join(':');
+
+        if (streamAddr != cardAddr
+            || streamIndex != cardIndex
+        ) {
+            // cards don't match, certainly no hit
+            return false;
+        }
+
+        if (streamProfile != profile) {
+            return STREAM_MATCHING.card;
+        }
+
+        return STREAM_MATCHING.stream;
     }
 
     /**
      * Cleanup.
      */
     destroy() {
-        if (this._cardsRetryId) {
-            GLib.source_remove(this._cardsRetryId);
-            this._cardsRetryId = 0;
-        }
-
         this.disconnectAll();
     }
 };
