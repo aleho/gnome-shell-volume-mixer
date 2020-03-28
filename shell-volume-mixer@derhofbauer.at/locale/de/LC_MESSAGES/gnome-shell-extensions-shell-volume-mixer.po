@@ -8,7 +8,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
-"PO-Revision-Date: 2020-03-28 17:41\n"
+"PO-Revision-Date: 2020-03-28 18:24\n"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.js:286
 msgid "Error retrieving card details"
@@ -29,7 +29,7 @@ msgstr "unbekannt"
 
 #: shell-volume-mixer@derhofbauer.at/lib/utils/cards.js:82
 msgid "Querying PulseAudio sound cards failed, disabling extension"
-msgstr ""
+msgstr "Abfrage der PulseAudio-Soundkarten fehlgeschlagen, Erweiterung deaktiviert"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:50
 msgid "Position of volume mixer"
@@ -89,11 +89,11 @@ msgstr "Zeigt Aufnahmeströme (Mikrofone) immer an, auch wenn keine Applikation 
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:322
 msgid "Show percentage"
-msgstr ""
+msgstr "Prozent anzeigen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:346
 msgid "Whether to show percentage of current output right of the icon"
-msgstr ""
+msgstr "Lautstärke des aktuellen Ausgangs in Prozent neben dem Icon anzeigen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:377
 msgid "Settings"
