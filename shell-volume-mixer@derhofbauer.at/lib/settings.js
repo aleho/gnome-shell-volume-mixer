@@ -109,7 +109,7 @@ var Settings = class
     /**
      * Returns a Gio.Settings object for a schema.
      *
-     * @param schema Name of the schema to initialize.
+     * @param {string} schema Name of the schema to initialize.
      * @returns {Gio.Settings}
      */
     _getSettings(schema) {
@@ -126,8 +126,8 @@ var Settings = class
     /**
      * Registers a listener for a signal.
      *
-     * @param signal
-     * @param callback
+     * @param {string} signal
+     * @param {function()} callback
      */
     connect(signal, callback) {
         // already connected
@@ -144,7 +144,7 @@ var Settings = class
     /**
      * Registers a listener to changed events.
      *
-     * @param callback
+     * @param {function()} callback
      */
     connectChanged(callback) {
         this.connect('changed', callback);

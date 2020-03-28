@@ -20,7 +20,7 @@ const PYTHON_HELPER_PATH = 'pautils/cardinfo.py';
  * Calls the Python helper script to get more details about a card and its
  * profiles.
  *
- * @return {Promise<?Object.<string, paCard>>} JSON object of the output
+ * @returns {Promise<?Object.<string, paCard>>} JSON object of the output
  */
 async function getCards() {
     const paUtilPath = Utils.getExtensionPath(PYTHON_HELPER_PATH);

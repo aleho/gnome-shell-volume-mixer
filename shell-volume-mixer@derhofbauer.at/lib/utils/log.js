@@ -31,8 +31,8 @@ function info() {
 /**
  * Helper to debug any variable with pretty output.
  *
- * @param object
- * @param maxDepth
+ * @param {*} object
+ * @param {number} maxDepth
  */
 function d(object, maxDepth = 1) {
     l(_dumpObject(object, maxDepth));
@@ -41,9 +41,9 @@ function d(object, maxDepth = 1) {
 /**
  * Logs an error message.
  *
- * @param module Module the error occurred in.
- * @param context Optional.
- * @param message Error message.
+ * @param {string} module Module the error occurred in.
+ * @param {string} context Optional.
+ * @param {string} message Error message.
  */
 function error(module, context, message) {
     if (module && !context && !message) {
@@ -69,10 +69,10 @@ function error(module, context, message) {
 /**
  * Dumps any variable into a string that can be output through log().
  *
- * @param object
- * @param maxDepth
- * @param currDepth
- * @returns
+ * @param {*} object
+ * @param {number} maxDepth
+ * @param {number} currDepth
+ * @returns {string}
  */
 function _dumpObject(object, maxDepth = 8, currDepth = 0) {
     if (currDepth > maxDepth) {

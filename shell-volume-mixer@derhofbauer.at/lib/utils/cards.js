@@ -26,10 +26,10 @@ var STREAM_MATCHING = Object.freeze({
 
 
 /** @typedef {{
- *   name: String,
- *   index: Number,
- *   profiles: String[],
- *   fake: Boolean,
+ *   name: string,
+ *   index: number,
+ *   profiles: string[],
+ *   fake: boolean,
  *   card: Object<Gvc.MixerCard>
  * }} paCard
  */
@@ -50,7 +50,7 @@ var Cards = class {
     }
 
     /**
-     * @return {boolean}
+     * @returns {boolean}
      * @private
      */
     _controlIsReady() {
@@ -69,7 +69,7 @@ var Cards = class {
     }
 
     /**
-     * @return {Promise<void>}
+     * @returns {Promise<void>}
      * @private
      */
     async _init() {
@@ -92,7 +92,7 @@ var Cards = class {
      * Retrieves a list of all cards available, using our Python helper.
      * Tries to be error-resistant in case the helper cannot deliver.
      *
-     * @return {Promise<void>}
+     * @returns {Promise<void>}
      */
     async _initCards() {
         this._paCards = {};
@@ -116,7 +116,7 @@ var Cards = class {
     }
 
     /**
-     * @return {?Object.<string, paCard>}
+     * @returns {?Object.<string, paCard>}
      * @private
      */
     async _getCardDetails() {
@@ -221,8 +221,8 @@ var Cards = class {
     /**
      * Finds a card by card index.
      *
-     * @param {Number} index
-     * @return {Promise<?paCard>}
+     * @param {number} index
+     * @returns {Promise<?paCard>}
      */
     async get(index) {
         await this._initDone;
@@ -233,8 +233,8 @@ var Cards = class {
     /**
      * Finds a card by name.
      *
-     * @param {String} name
-     * @return {Promise<?paCard>}
+     * @param {string} name
+     * @returns {Promise<?paCard>}
      */
     async getByName(name) {
         await this._initDone;

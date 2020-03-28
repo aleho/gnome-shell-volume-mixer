@@ -14,7 +14,7 @@ const Extension = imports.misc.extensionUtils.getCurrentExtension();
 /**
  * Returns this extension's path, optionally querying a subdirectory or file.
  *
- * @param subpath Optional. Subdirectory or -path to get.
+ * @param {string} [subpath] Subdirectory or -path to get.
  */
 function getExtensionPath(subpath) {
     let dir = Extension.dir;

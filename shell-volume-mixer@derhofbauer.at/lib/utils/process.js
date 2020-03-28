@@ -14,7 +14,7 @@ const { Gio } = imports.gi;
  * Executes an async command.
  *
  * @param {Array} command
- * @return {Promise<[int, string, string]>|Promise<Error>}
+ * @returns {Promise<[int, string, string]>|Promise<Error>}
  */
 async function execAsync(command) {
     const process = new Gio.Subprocess({

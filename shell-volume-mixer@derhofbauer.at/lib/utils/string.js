@@ -12,8 +12,8 @@
 /**
  * Parses a version string and returns an array.
  *
- * @param string
- * @returns array
+ * @param {string} string
+ * @returns {number[]}
  */
 function parseVersionString(string) {
     let version = string.split('.', 3);
@@ -32,7 +32,7 @@ function parseVersionString(string) {
 /**
  * Returns true if the current shell version is greater than the version string passed.
  *
- * @param version
+ * @param {string} version
  */
 function versionGreaterOrEqual(string) {
     let current = parseVersionString(imports.misc.config.PACKAGE_VERSION);
@@ -51,9 +51,9 @@ function versionGreaterOrEqual(string) {
 /**
  * Helper to repeat a given string.
  *
- * @param string
- * @param times
- * @returns string
+ * @param {string} string
+ * @param {number} times
+ * @returns {string}
  */
 function repeat(string, times) {
     return new Array(times + 1).join(string);

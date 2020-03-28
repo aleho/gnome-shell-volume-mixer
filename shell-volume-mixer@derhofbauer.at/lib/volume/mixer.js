@@ -61,7 +61,7 @@ var Mixer = class
     /**
      * Connects an event handler to volume changes.
      *
-     * @param callback
+     * @param {function()} callback
      */
     connectVolumeChanges(callback) {
         this._streamEvents.connect('volume-changed', callback);

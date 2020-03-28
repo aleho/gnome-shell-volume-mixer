@@ -17,7 +17,7 @@ const Log = Lib.utils.log;
  */
 var EventHandlerDelegate = class {
     /**
-     * @return {String[]}
+     * @returns {string[]}
      * @private
      */
     get _signals() {
@@ -40,7 +40,7 @@ var EventHandlerDelegate = class {
      *
      * @param {Object} target
      * @param {string} signal
-     * @param {function} callback
+     * @param {function()} callback
      */
     connect(target, signal, callback) {
         if (typeof target === 'string') {

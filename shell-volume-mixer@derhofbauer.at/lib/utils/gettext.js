@@ -43,8 +43,8 @@ function getLocal() {
 /**
  * Proxies a call to a gettext implementation.
  *
- * @param type Gettext function to use
- * @param args Original gettext call arguments
+ * @param {string} type Gettext function to use
+ * @param {Array} args Original gettext call arguments
  */
 function proxy(type, args) {
     const local = getLocal()[type];

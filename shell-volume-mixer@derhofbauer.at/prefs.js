@@ -257,10 +257,10 @@ const Preferences = class
      * Binds a signal to an object, passing the object and additionally the
      * settings key to the callback.
      *
-     * @param id Object, identified by id.
-     * @param signal
-     * @param callback
-     * @param setting Key in settings, passed to the callback.
+     * @param {number} id Object, identified by id.
+     * @param {string} signal
+     * @param {function} callback
+     * @param {string} setting Key in settings, passed to the callback.
      */
     _bindSignal(id, signal, callback, setting) {
         this._objects[id].connect(signal, widget => {
