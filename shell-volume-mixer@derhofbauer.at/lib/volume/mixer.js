@@ -17,6 +17,7 @@ const Volume = imports.ui.status.volume;
 const { Cards, STREAM_MATCHING } = Lib.utils.cards;
 const { EventHandlerDelegate } = Lib.utils.eventHandlerDelegate;
 const { Hotkeys } = Lib.utils.hotkeys;
+const { Profiles } = Lib.volume.profiles;
 const { Settings, SETTING } = Lib.settings;
 const Log = Lib.utils.log;
 const Utils = Lib.utils.utils;
@@ -38,10 +39,10 @@ var Mixer = class
         this._streamEvents = new EventSource();
         this._settings = new Settings();
         this._hotkeys = new Hotkeys(this._settings);
+        this._profiles = new Profiles(this._settings);
         this._cards = new Cards(this._control);
 
         this._state = this._control.get_state();
-        this._cycled = this._parsePinnedProfiles();
 
         this._defaultSink = null;
         this.connect(this._control, 'state-changed', this._onStateChanged.bind(this));
@@ -81,7 +82,7 @@ var Mixer = class
      * @private
      */
     _bindProfileHotkey() {
-        if (!this._cycled.length) {
+        if (!this._profiles.count()) {
             return;
         }
 
@@ -141,22 +142,14 @@ var Mixer = class
             return;
         }
 
-        const card = await this._cards.get(stream.card_index);
+        const paCard = await this._cards.get(stream.card_index);
 
-        if (!card || !card.card) {
-            Log.error('mixer', '_updateDefaultSink', `Default sink updated but card not found (${stream.card_index}/${stream.name})`);
+        if (!paCard || !paCard.card) {
+            Log.error('mixer', '_updateDefaultSink', `Default sink updated but PA/GVC card not found (${stream.card_index}/${stream.name})`);
             return;
         }
 
-        let profile = card.card.profile;
-        this._currentCycle = null;
-
-        for (let entry of this._cycled) {
-            if (entry.card == card.name && entry.profile == profile) {
-                this._currentCycle = entry;
-                break;
-            }
-        }
+        this._profiles.setCurrent(paCard);
     }
 
     /**
@@ -181,41 +174,7 @@ var Mixer = class
         this._updateDefaultSink(control.lookup_stream_id(id));
     }
 
-    /**
-     * Reads all pinned profiles from settings.
-     * @private
-     */
-    _parsePinnedProfiles() {
-        const data = this._settings.get_array(SETTING.pinned_profiles) || [];
-        const cycled = [];
 
-        let count = 0;
-        for (let entry of data) {
-            let item = null;
-            try {
-                item = JSON.parse(entry);
-            } catch (e) {
-                Log.error('mixer', '_parsePinnedProfiles', e.message);
-            }
-            if (!item) {
-                continue;
-            }
-
-            cycled.push(item);
-
-            if (count > 0) {
-                cycled[count - 1].next = item;
-            }
-
-            count++;
-        }
-
-        if (count > 0) {
-            cycled[count - 1].next = cycled[0];
-        }
-
-        return cycled;
-    }
 
 
     /**
@@ -227,34 +186,26 @@ var Mixer = class
             return;
         }
 
-        if (this._cycled.length === 0) {
+        const next = this._profiles.next();
+
+        if (!next) {
             return;
         }
 
-        if (!this._currentCycle) {
-            this._currentCycle = this._cycled[0];
-        }
-
         // lookup card indirectly via name (indexes aren't UUIDs)
-        const next = this._currentCycle.next;
-        const cardName = next.card;
-        const profileName = next.profile;
-
-        const paCard = await this._cards.getByName(cardName);
+        const paCard = await this._cards.getByName(next.card);
 
         if (!paCard || !paCard.card) {
             // we don't know this card, we won't be able to set its profile
             return;
         }
 
-        this._currentCycle = next;
-
         // profile's changed, now get that new sink
         const sinks = this._control.get_sinks();
         let newSink = null;
 
         for (let sink of sinks) {
-            let result = this._cards.streamMatchesPaCard(sink, paCard, profileName);
+            let result = this._cards.streamMatchesPaCard(sink, paCard, next.profile);
 
             if (result === STREAM_MATCHING.stream) {
                 newSink = sink;
@@ -267,7 +218,7 @@ var Mixer = class
             }
         }
 
-        paCard.card.set_profile(profileName);
+        paCard.card.set_profile(next.profile);
 
         if (newSink) {
             this._pauseDefaultSinkEvent = true;
@@ -275,7 +226,7 @@ var Mixer = class
         }
 
         const cardDescription = paCard.description;
-        const profileDescription = paCard.profiles[profileName];
+        const profileDescription = paCard.profiles[next.profile];
         this._showNotification(`${cardDescription}\n${profileDescription}`);
     }
 
