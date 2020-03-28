@@ -9,9 +9,9 @@
 /* exported Indicator */
 
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
-const { Clutter, GObject, Gio } = imports.gi;
-const Main = imports.ui.main;
+const { GObject } = imports.gi;
 const PanelMenu = imports.ui.panelMenu;
+const Volume = imports.ui.status.volume;
 
 const { Menu } = Lib.menu.menu;
 const { PercentageLabel } = Lib.widget.percentageLabel;
@@ -55,18 +55,10 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
     }
 
     /**
-     * copy/pasted from volume.js:Indicator
+     * We can mimic the original Indicator's handling of scroll events.
      */
     vfunc_scroll_event() {
-        let result = this._volumeMenu.scroll(Clutter.get_current_event());
-        if (result == Clutter.EVENT_PROPAGATE || this.menu.actor.mapped)
-            return result;
-
-        let gicon = new Gio.ThemedIcon({ name: this._volumeMenu.getIcon() });
-        let level = this._volumeMenu.getLevel();
-        let maxLevel = this._volumeMenu.getMaxLevel();
-        Main.osdWindowManager.show(-1, gicon, null, level, maxLevel);
-        return result;
+        return Volume.Indicator.prototype.vfunc_scroll_event.apply(this, arguments);
     }
 
     updateIcon() {
