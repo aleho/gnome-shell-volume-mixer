@@ -51,11 +51,15 @@ $variant: 'light';
 
 /* stand-alone menu */
 
-.shell-volume-mixer-button {
-  /* TODO: this is broken, fix width */
-}
+.shell-volume-mixer-standalone-menu {
+    width: 30em;
 
-.shell-volume-mixer-button .svm-master-slider .svm-master-label,
-.shell-volume-mixer-button .svm-master-slider .slider {
-  /* TODO: this is broken, fix width */
+    .svm-menu-item-container {
+        .svm-container-line {
+            .popup-menu-ornament {
+                padding-left: 0;
+                margin-left: 0;
+            }
+        }
+    }
 }
