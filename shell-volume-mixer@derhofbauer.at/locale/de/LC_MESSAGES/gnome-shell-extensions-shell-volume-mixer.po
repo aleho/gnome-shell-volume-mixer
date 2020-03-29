@@ -8,7 +8,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
-"PO-Revision-Date: 2020-03-28 18:24\n"
+"PO-Revision-Date: 2020-03-29 21:41\n"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.js:286
 msgid "Error retrieving card details"
@@ -18,12 +18,12 @@ msgstr "Fehler beim Abfragen der Karten"
 msgid "Helper script did not return valid card data."
 msgstr "Hilfsprogramm gab keine gültigen Daten zurück."
 
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:277
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:279
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:297
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:299
 msgid "Inputs"
 msgstr "Eingänge"
 
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:416
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:436
 msgid "unknown"
 msgstr "unbekannt"
 
