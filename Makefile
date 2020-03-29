@@ -41,6 +41,7 @@ prepare:
 
 install-deps:
 	npm install
+	git submodule update --init
 
 $(SRCDIR)/$(SCHEMA_COMP): $(SRCDIR)/$(GSCHEMA)
 	glib-compile-schemas --targetdir=$(SRCDIR)/schemas $(SRCDIR)/schemas
