@@ -6,7 +6,7 @@
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported Settings, cleanup, hasPreferencesApp, openDialog */
+/* exported Settings, cleanup */
 /* exported SOUND_SETTINGS_SCHEMA, ALLOW_AMPLIFIED_VOLUME_KEY, SETTING */
 
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
@@ -45,7 +45,6 @@ var SETTING = Object.freeze({
 const SIGNALS = {};
 const GSETTINGS = {};
 
-let PREFS_APP = undefined;
 
 
 var Settings = class
@@ -274,42 +273,5 @@ function cleanup() {
             GSETTINGS[schema].disconnect(SIGNALS[schema][signal]);
             delete SIGNALS[schema][signal];
         }
-    }
-}
-
-
-/**
- * Retrieves the preferences app instance for launching.
- * @private
- */
-function _getPrefsApp() {
-    if (PREFS_APP === undefined) {
-        PREFS_APP = imports.gi.Shell.AppSystem.get_default().lookup_app('gnome-shell-extension-prefs.desktop');
-    }
-
-    return PREFS_APP;
-}
-
-/**
- * Checks whether the preferences app can be found.
- * @returns {boolean}
- */
-function hasPreferencesApp() {
-    return !!_getPrefsApp();
-}
-
-/**
- * Opens the preferences dialog for this extension.
- */
-function openDialog() {
-    const preferences = _getPrefsApp();
-
-    if (preferences && preferences.get_state() != preferences.SHELL_APP_STATE_RUNNING) {
-        let info = preferences.get_app_info();
-
-        info.launch_uris(
-            [Extension.metadata.uuid],
-            global.create_app_launch_context(global.display.get_current_time_roundtrip(), -1)
-        );
     }
 }

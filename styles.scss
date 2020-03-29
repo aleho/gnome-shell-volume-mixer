@@ -7,20 +7,48 @@ $variant: 'light';
 /* common */
 
 .svm-slider-details {
-  font-size: 0.9em;
-  font-weight: 400;
+    font-size: 0.9em;
+    font-weight: 400;
 }
 
 
 .svm-menu-item-container {
-  margin-left: 0;
-  padding-left: 0;
-
-  .svm-container-line {
     margin-left: 0;
     padding-left: 0;
-    padding-bottom: 0;
-  }
+
+    .svm-container-line {
+        margin-left: 0;
+        padding-left: 0;
+        padding-bottom: 0;
+    }
+}
+
+.double-action-item {
+    margin: 0;
+    spacing: 0;
+
+    &:ltr {
+        padding-left: 0;
+    }
+
+    &:rtl {
+        padding-right: 0;
+    }
+
+    .double-action-button {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .double-action-label {
+        &, &:ltr, &:rtl {
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: 0;
+            margin-right: 0;
+            text-align: center;
+        }
+    }
 }
 
 
@@ -28,24 +56,25 @@ $variant: 'light';
 
 .svm-master-slider-line .popup-menu-ornament,
 .svm-menu > .events-stream-slider .line-2 {
-  // account for icons in submenus with padding
-  &:ltr {
-    padding-left: $base_padding + $base_margin * 2;
-    margin-left: $base_icon_size;
-  }
-  &:rtl {
-    padding-right: $base_padding + $base_margin * 2;
-    margin-right: $base_icon_size;
-  }
+    // account for icons in submenus with padding
+    &:ltr {
+        padding-left: $base_padding + $base_margin * 2;
+        margin-left: $base_icon_size;
+    }
+
+    &:rtl {
+        padding-right: $base_padding + $base_margin * 2;
+        margin-right: $base_icon_size;
+    }
 }
 
 .popup-sub-menu .svm-container-line.line-1 .popup-menu-ornament {
-  padding-left: 0;
-  margin-left: 0;
+    padding-left: 0;
+    margin-left: 0;
 }
 
 .popup-menu-item .svm-container-line {
-  padding-right: 0;
+    padding-right: 0;
 }
 
 

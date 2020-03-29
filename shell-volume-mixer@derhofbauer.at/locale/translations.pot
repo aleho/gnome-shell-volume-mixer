@@ -6,12 +6,12 @@ msgstr ""
 msgid "Helper script did not return valid card data."
 msgstr ""
 
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:277
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:279
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:297
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:299
 msgid "Inputs"
 msgstr ""
 
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:416
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:436
 msgid "unknown"
 msgstr ""
 

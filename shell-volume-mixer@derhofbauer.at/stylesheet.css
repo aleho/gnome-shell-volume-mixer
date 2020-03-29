@@ -40,6 +40,28 @@ stage {
   padding-bottom: 0;
 }
 
+.double-action-item {
+  margin: 0;
+  spacing: 0;
+}
+.double-action-item:ltr {
+  padding-left: 0;
+}
+.double-action-item:rtl {
+  padding-right: 0;
+}
+.double-action-item .double-action-button {
+  padding-left: 0;
+  padding-right: 0;
+}
+.double-action-item .double-action-label, .double-action-item .double-action-label:ltr, .double-action-item .double-action-label:rtl {
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 0;
+  margin-right: 0;
+  text-align: center;
+}
+
 /** copy/paste from gnome-shell .aggregate-menu .popup-sub-menu .popup-menu-item > :first-child **/
 .svm-master-slider-line .popup-menu-ornament:ltr,
 .svm-menu > .events-stream-slider .line-2:ltr {

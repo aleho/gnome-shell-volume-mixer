@@ -8,17 +8,16 @@
 
 /* exported MasterSlider, AggregatedInput, OutputSlider, EventsSlider, InputSlider, InputStreamSlider, VolumeMenu */
 
-const Clutter = imports.gi.Clutter;
-const GLib = imports.gi.GLib;
+const { Clutter, GLib, St } = imports.gi;
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
-const St = imports.gi.St;
 const Volume = imports.ui.status.volume;
 
 const __ = Lib.utils.gettext._;
 const { FloatingLabel } = Lib.widget.floatingLabel;
 const MenuItem = Lib.widget.menuItem;
+const Preferences = Lib.utils.preferences;
 const Settings = Lib.settings;
 const Slider = Lib.widget.slider;
 const Utils = Lib.utils.utils;
@@ -229,13 +228,34 @@ var MasterSlider = class extends StreamSlider
 
         this._slider.accessible_name = _('Volume');
 
-        if (Settings.hasPreferencesApp()) {
-            this.item.menu.addAction(_('Settings'), () => {
-                Settings.openDialog();
-            });
+        super._init(options);
+        this._addSettingsItem();
+    }
+
+    /**
+     * Add settings shortcuts to the menu.
+     *
+     * @private
+     */
+    _addSettingsItem() {
+        const apps = [];
+
+        if (Preferences.has(Preferences.APPS.control_center)) {
+            apps.push([_('Audio'), () => Preferences.open(Preferences.APPS.control_center)]);
         }
 
-        super._init(options);
+        if (Preferences.has(Preferences.APPS.extension)) {
+            apps.push([_('Settings'), () => Preferences.open(Preferences.APPS.extension)]);
+        }
+
+        if (apps.length > 1) {
+            const menuItem = new MenuItem.DoubleActionItem(apps);
+            menuItem.addToMenu(this.item.menu);
+
+        } else if (apps.length > 0) {
+            const [label, callback] = apps[0];
+            this.item.menu.addAction(label, callback);
+        }
     }
 
     addSliderItem(item) {

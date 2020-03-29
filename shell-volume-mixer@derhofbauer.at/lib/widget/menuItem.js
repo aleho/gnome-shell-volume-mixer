@@ -6,7 +6,7 @@
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported MasterMenuItem, SubMenuItem */
+/* exported MasterMenuItem, SubMenuItem, DoubleActionItem */
 
 const Clutter = imports.gi.Clutter;
 const GObject = imports.gi.GObject;
@@ -130,5 +130,63 @@ var SubMenuItem = GObject.registerClass(class SubMenuItem extends PopupMenu.Popu
     setSelected(selected) {
         this.active = selected;
         this.setOrnament(selected === true ? PopupMenu.Ornament.DOT : PopupMenu.Ornament.NONE);
+    }
+});
+
+
+/**
+ * Implements a menu item featuring two action buttons instead of the default one.
+ */
+var DoubleActionItem = GObject.registerClass(class DoubleActionItem extends PopupMenu.PopupBaseMenuItem {
+    _init(actions) {
+        super._init({
+            hover: false,
+        });
+
+        this._buttons = [];
+        this._activatable = false;
+        this.add_style_class_name('popup-inactive-menu-item');
+
+        this.add_style_class_name('double-action-item');
+
+        for (const [label, callback] of actions) {
+            this._addButton(label, callback);
+        }
+
+    }
+
+    /**
+     * Adds a button with callback.
+     *
+     * @param {string} text
+     * @param {function()} callback
+     * @private
+     */
+    _addButton(text, callback) {
+        const button = new PopupMenu.PopupMenuItem(text);
+
+        button.add_style_class_name('double-action-button');
+        button.remove_child(button._ornamentLabel);
+
+        button.label.add_style_class_name('double-action-label');
+        button.label.set_x_expand(true);
+
+        this.add(button, { x_expand: true, fill: true });
+
+        button.connect('activate', (actor, event) => callback(actor, event));
+
+        this._buttons.push(button);
+    }
+
+    /**
+     * @param {PopupSubMenu} menu
+     */
+    addToMenu(menu) {
+        menu.addMenuItem(this);
+
+        this._buttons.map(button => {
+            button._setParent(menu);
+            menu._connectItemSignals(button);
+        });
     }
 });
