@@ -19,7 +19,7 @@ var APPS = Object.freeze({
 
 const DEFINITIONS = {
     [APPS.extension]:      {
-        desktop: ['gnome-shell-extension-prefs.desktop', 'org.gnome.Extensions.desktop'],
+        desktop: ['org.gnome.Extensions.desktop', 'gnome-shell-extension-prefs.desktop'],
         params:  [Extension.metadata.uuid]
     },
     [APPS.control_center]: {
@@ -79,11 +79,6 @@ function open(app) {
     }
 
     const instance = definition.instance;
-
-    if (instance.get_state() == instance.SHELL_APP_STATE_RUNNING) {
-        return;
-    }
-
     const context = global.create_app_launch_context(global.display.get_current_time_roundtrip(), -1);
 
     instance.get_app_info().launch_uris(
