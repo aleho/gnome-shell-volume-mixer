@@ -69,6 +69,23 @@ var Mixer = class
     }
 
     /**
+     * Returns the current volume in percent.
+     *
+     * @returns {?number}
+     */
+    getVolume() {
+        if (!this._defaultSink) {
+            return null;
+        }
+
+        if (this._defaultSink.is_muted) {
+            return 0;
+        }
+
+        return Math.round(this._defaultSink.volume / this._control.get_vol_max_norm() * 100);
+    }
+
+    /**
      * Cleanup.
      */
     destroy() {
@@ -112,13 +129,11 @@ var Mixer = class
      * @private
      */
     _onVolumeUpdate() {
-        if (!this._defaultSink || this._defaultSink.is_muted) {
-            return;
+        const percent = this.getVolume();
+
+        if (percent !== null) {
+            this._streamEvents.emit('volume-changed', percent);
         }
-
-        const percent = this._defaultSink.volume / this._control.get_vol_max_norm() * 100;
-
-        this._streamEvents.emit('volume-changed', Math.round(percent));
     }
 
     /**
@@ -173,8 +188,6 @@ var Mixer = class
     _onDefaultSinkChanged(control, id) {
         this._updateDefaultSink(control.lookup_stream_id(id));
     }
-
-
 
 
     /**
