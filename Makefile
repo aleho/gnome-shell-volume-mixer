@@ -64,7 +64,9 @@ metadata.json: prepare
 	cat $(addprefix $(SRCDIR)/, metadata.json) | grep -v '"version":' > $(BUILDDIR)/metadata.json
 
 stylesheet.css:
-	node_modules/.bin/sass --no-source-map styles.scss shell-volume-mixer@derhofbauer.at/stylesheet.css
+	node_modules/.bin/sass --no-source-map styles.scss $(SRCDIR)/stylesheet.css
+	# remove harmful content produced by gnome-shell-sass
+	sed -i '/\/\*\sGlobal\sValues\s\*\//,/\/\*\sCommon\sStylings\s\*/d' $(SRCDIR)/stylesheet.css
 
 check:
 	node_modules/.bin/eslint $(SRCDIR)

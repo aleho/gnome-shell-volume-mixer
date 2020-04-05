@@ -17,13 +17,6 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* Global Values */
-stage {
-  font-size: 11pt;
-  color: #2e3436;
-}
-
-/* Common Stylings */
 /* common */
 .svm-slider-details {
   font-size: 0.9em;
