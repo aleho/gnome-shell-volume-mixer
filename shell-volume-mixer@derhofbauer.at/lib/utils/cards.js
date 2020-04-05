@@ -194,6 +194,11 @@ var Cards = class {
      * @private
      */
     _addGvcCard(paCard, card) {
+        if (!paCard || !paCard.name) {
+            Log.error('Invalid paCard data');
+            return;
+        }
+
         paCard.card = card;
         this._cardNames[paCard.name] = card.index;
     }
