@@ -41,9 +41,11 @@ var EventHandlerDelegate = class {
      * @param {Object} target
      * @param {string} signal
      * @param {function()} callback
+     * @param {?function()} initial Function returning the initial value
      */
-    connect(target, signal, callback) {
+    connect(target, signal, callback, initial) {
         if (typeof target === 'string') {
+            initial = callback;
             callback = signal;
             signal = target;
             target = ('__delegate' in this) ? this.__delegate : null;
@@ -56,6 +58,10 @@ var EventHandlerDelegate = class {
 
         let id = target.connect(signal, callback);
         this._signals.push([target, id, signal]);
+
+        if (typeof initial === 'function') {
+            callback.apply(callback, initial());
+        }
     }
 
     /**

@@ -42,14 +42,16 @@ var Mixer = class
         this._profiles = new Profiles(this._settings);
         this._cards = new Cards(this._control);
 
-        this._state = this._control.get_state();
-
+        this._state = null;
         this._defaultSink = null;
-        this.connect(this._control, 'state-changed', this._onStateChanged.bind(this));
-        this.connect(this._control, 'default-sink-changed', this._onDefaultSinkChanged.bind(this));
-        this._bindProfileHotkey();
 
-        this._onStateChanged(this._control, this._state);
+        this.connect(this._control, 'state-changed', this._onStateChanged.bind(this), () => {
+            return [this._control, this._control.get_state()];
+        });
+
+        this.connect(this._control, 'default-sink-changed', this._onDefaultSinkChanged.bind(this));
+
+        this._bindProfileHotkey();
     }
 
     /**

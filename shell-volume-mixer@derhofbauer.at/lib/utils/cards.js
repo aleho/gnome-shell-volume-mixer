@@ -46,7 +46,9 @@ var Cards = class {
             this._initialized = resolve;
         });
 
-        this.connect('state-changed', this._onStateChanged.bind(this));
+        this.connect('state-changed', this._onStateChanged.bind(this), () => {
+            return [this._control, this._control.get_state()];
+        });
     }
 
     /**
@@ -54,7 +56,7 @@ var Cards = class {
      * @private
      */
     _controlIsReady() {
-        return (this._control.get_state() === Gvc.MixerControlState.READY);
+        return (this._control && this._control.get_state() === Gvc.MixerControlState.READY);
     }
 
     /**
