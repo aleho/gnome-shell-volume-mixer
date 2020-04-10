@@ -8,9 +8,11 @@
 
 /* exported Hotkeys  */
 
+const { Meta, Shell } = imports.gi;
+const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const Main = imports.ui.main;
-const Meta = imports.gi.Meta;
-const Shell = imports.gi.Shell;
+
+const Log = Lib.utils.log;
 
 const BINDINGS = {};
 
@@ -19,72 +21,52 @@ var Hotkeys = class
     constructor(settings) {
         this._settings = settings;
         this._bindings = BINDINGS;
-        this._proxies = {};
     }
 
     /**
      * Binds a hotkey using the local settings instance.
+     *
+     * @param {string} setting Settings key
+     * @param {function()} callback
      */
     bind(setting, callback) {
         if (this._bindings[setting]) {
+            Log.info(`Not binding hotkey for ${setting}, already bound`);
             return false;
         }
 
-        let mode = Shell.ActionMode ? Shell.ActionMode.ALL : Shell.KeyBindingMode.ALL;
-        let flags = Meta.KeyBindingFlags.NONE;
+        const mode = Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW;
+        const flags = Meta.KeyBindingFlags.IGNORE_AUTOREPEAT;
+        const action = Main.wm.addKeybinding(setting, this._settings.settings, flags, mode, callback);
 
-        let action = Main.wm.addKeybinding(setting, this._settings.settings, flags, mode, callback);
-
-        if (action != Meta.KeyBindingAction.NONE) {
+        if (action === Meta.KeyBindingAction.NONE) {
+            Log.info(`Could not bind hotkey for ${setting}`);
+        } else {
+            Log.info(`Bound hotkey for ${setting}`);
             this._bindings[setting] = action;
-            return true;
         }
-
-        return false;
     }
 
     /**
      * Unbinds a hotkey.
+     *
+     * @param {string} setting Settings key
      */
     unbind(setting) {
-        if (!this._bindings[setting]) {
-            return false;
+        if (this._bindings[setting]) {
+            Main.wm.removeKeybinding(setting);
+            delete this._bindings[setting];
+            Log.info(`Unbound hotkey for ${setting}`);
         }
-
-        Main.wm.removeKeybinding(setting);
-        delete this._bindings[setting];
-
-        if (this._proxies[setting]) {
-            this._proxies[setting].disconnect(`changed::${setting}`);
-            delete this._proxies[setting];
-        }
-
-        return true;
     }
 
     /**
      * Unbinds all hotkeys.
      */
     unbindAll() {
+        Log.info('Unbinding all hotkeys');
         for (let setting in this._bindings) {
             this.unbind(setting);
         }
-    }
-
-
-    /**
-     * Helper to use Shell's keybindings (which expects an array) with string
-     * keybindings.
-     */
-    _proxyStringSettingChange(gsettings, key) {
-        let value = gsettings.get_string(key) || '';
-        let proxy = this._settings.get_array(key);
-
-        // don't trigger a change event
-        if (proxy.length == 1 && proxy[0] == value) {
-            return;
-        }
-
-        this._settings.set_array(key, [value]);
     }
 };
