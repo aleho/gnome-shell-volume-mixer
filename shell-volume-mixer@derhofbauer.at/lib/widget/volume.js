@@ -9,6 +9,7 @@
 /* exported MasterSlider, AggregatedInput, OutputSlider, EventsSlider, InputSlider, InputStreamSlider, VolumeMenu */
 
 const { Clutter, GLib, St } = imports.gi;
+const ExtensionUtils = imports.misc.extensionUtils;
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
@@ -16,8 +17,8 @@ const Volume = imports.ui.status.volume;
 
 const __ = Lib.utils.gettext._;
 const { FloatingLabel } = Lib.widget.floatingLabel;
+const Apps = Lib.utils.apps;
 const MenuItem = Lib.widget.menuItem;
-const Preferences = Lib.utils.preferences;
 const Settings = Lib.settings;
 const Slider = Lib.widget.slider;
 const Utils = Lib.utils.utils;
@@ -240,13 +241,11 @@ var MasterSlider = class extends StreamSlider
     _addSettingsItem() {
         const apps = [];
 
-        if (Preferences.has(Preferences.APPS.control_center)) {
-            apps.push([_('Audio'), () => Preferences.open(Preferences.APPS.control_center)]);
+        if (Apps.has(Apps.APPS.control_center)) {
+            apps.push([_('Audio'), () => Apps.open(Apps.APPS.control_center)]);
         }
 
-        if (Preferences.has(Preferences.APPS.extension)) {
-            apps.push([_('Settings'), () => Preferences.open(Preferences.APPS.extension)]);
-        }
+        apps.push([_('Settings'), () => ExtensionUtils.openPrefs()]);
 
         if (apps.length > 1) {
             const menuItem = new MenuItem.DoubleActionItem(apps);
