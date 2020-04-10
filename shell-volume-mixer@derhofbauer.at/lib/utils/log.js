@@ -8,11 +8,11 @@
 
 /* exported l, d, info, error */
 
-const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
+const Extension = imports.misc.extensionUtils.getCurrentExtension();
+const Lib = Extension.imports.lib;
 const StringUtils = Lib.utils.string;
 
-const LOG_PREAMBLE = 'Shell Volume Mixer';
-
+const LOG_PREAMBLE = Extension.metadata.uuid || 'Shell Volume Mixer';
 
 
 /**
