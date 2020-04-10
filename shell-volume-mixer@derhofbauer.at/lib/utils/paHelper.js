@@ -26,7 +26,7 @@ async function getCards() {
     const paUtilPath = Utils.getExtensionPath(PYTHON_HELPER_PATH);
 
     if (!paUtilPath) {
-        Log.error('utils', 'getCards', `Could not find PulseAudio utility in extension path ${PYTHON_HELPER_PATH}`);
+        Log.error('paHelper', 'getCards', `Could not find PulseAudio utility in extension path ${PYTHON_HELPER_PATH}`);
         return null;
     }
 
@@ -44,7 +44,7 @@ async function getCards() {
     }
 
     if (pythonError) {
-        Log.error('utils', 'getCards', `(${ret}, ${stderr}) ${pythonError.message}`);
+        Log.error('paHelper', 'getCards', `(${ret}, ${stderr}) ${pythonError.message}`);
     }
 
     if (!stdout) {
@@ -55,17 +55,17 @@ async function getCards() {
     try {
         data = JSON.parse(stdout);
     } catch (e) {
-        Log.error('utils', 'getCards', e.message);
+        Log.error('paHelper', 'getCards', e.message);
         return null;
     }
 
     if (!data || typeof data !== 'object') {
-        Log.error('utils', 'getCards', 'Invalid response');
+        Log.error('paHelper', 'getCards', 'Invalid response');
         return null;
     }
 
     if ('success' in data && data.success === false) {
-        Log.error('utils', 'getCards', `Error: ${data.error}`);
+        Log.error('paHelper', 'getCards', `Error: ${data.error}`);
         return null;
     }
 

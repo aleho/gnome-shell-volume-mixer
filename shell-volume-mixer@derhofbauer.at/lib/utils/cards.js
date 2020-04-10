@@ -78,7 +78,7 @@ var Cards = class {
             this._initialized();
 
         } catch (e) {
-            Log.error('cards', '_initCards', e);
+            Log.error('Cards', '_init', e);
             Main.notifyError('Volume Mixer', __('Querying PulseAudio sound cards failed, disabling extension'));
             Lib.main.Extension.disable();
             return;
@@ -173,7 +173,7 @@ var Cards = class {
         const paCard = this.get(index);
 
         if (!paCard || paCard.fake) {
-            Log.error('cards', '_addCard', 'GVC card not found through Python helper');
+            Log.error('Cards', '_addCard', 'GVC card not found through Python helper');
 
             // external script couldn't get card info, fake it
             this._paCards[index] = {
@@ -194,8 +194,13 @@ var Cards = class {
      * @private
      */
     _addGvcCard(paCard, card) {
-        if (!paCard || !paCard.name) {
-            Log.error('Invalid paCard data');
+        if (!paCard) {
+            Log.error('Cards', '_addGvcCard', 'No paCard passed');
+            return;
+        }
+
+        if (!paCard.name) {
+            Log.error('Cards', '_addGvcCard', 'Invalid paCard data, name missing');
             return;
         }
 

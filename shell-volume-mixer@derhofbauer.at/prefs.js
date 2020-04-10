@@ -186,7 +186,7 @@ const Preferences = class
             try {
                 entry = JSON.parse(item);
             } catch (e) {
-                Log.error('prefs', '_populatePinned', e.message);
+                Log.error('Preferences', '_populatePinned', e);
             }
             if (!entry || !entry.card || !entry.profile) {
                 continue;

@@ -88,7 +88,7 @@ var Profiles = class {
             try {
                 item = JSON.parse(entry);
             } catch (e) {
-                Log.error('mixer', '_parsePinnedProfiles', e.message);
+                Log.error('Profiles', '_parseProfilesSetting', e);
             }
             if (!item) {
                 continue;

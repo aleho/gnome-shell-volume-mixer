@@ -100,9 +100,11 @@ var Mixer = class
      */
     _bindProfileHotkey() {
         if (!this._profiles.count()) {
+            Log.info('No profiles found, not enabling profile switching hotkey');
             return;
         }
 
+        Log.info('Profiles found, enabling profile switching hotkey');
         this._hotkeys.bind(SETTING.profile_switcher_hotkey, this._switchProfile.bind(this));
     }
 
@@ -160,7 +162,7 @@ var Mixer = class
         const paCard = await this._cards.get(stream.card_index);
 
         if (!paCard || !paCard.card) {
-            Log.error('mixer', '_updateDefaultSink', `Default sink updated but PA/GVC card not found (${stream.card_index}/${stream.name})`);
+            Log.error('Mixer', '_updateDefaultSink', `Default sink updated but PA/GVC card not found (${stream.card_index}/${stream.name})`);
             return;
         }
 

@@ -131,10 +131,11 @@ var Settings = class
     connect(signal, callback) {
         // already connected
         if (this._signals && this._signals[signal]) {
-            Log.error('settings', 'connect', `Signal "${signal}" already bound for "${this.schema}"`);
+            Log.error('Settings', 'connect', `Signal "${signal}" already bound for "${this.schema}"`);
             return false;
         }
 
+        Log.info(`Connecting to settings change signal`);
         let id = this.settings.connect(signal, callback);
         this._signals[signal] = id;
         return id;

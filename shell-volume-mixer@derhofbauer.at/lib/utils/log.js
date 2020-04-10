@@ -43,27 +43,32 @@ function d(object, maxDepth = 1) {
  *
  * @param {string} module Module the error occurred in.
  * @param {string} context Optional.
- * @param {string} message Error message.
+ * @param {string|Error} error Error or error message (to construct Error from).
  */
-function error(module, context, message) {
-    if (module && !context && !message) {
-        message = module;
+function error(module, context, error) {
+    if (module && !context && !error) {
+        error = module;
         module = undefined;
         context = undefined;
     }
-    if (context && !message) {
-        message = context;
+    if (context && !error) {
+        error = context;
         context = undefined;
     }
-    let output = `${LOG_PREAMBLE} | ERROR | `;
+
+    let output = LOG_PREAMBLE;
     if (module) {
-        output += `${module}.js | `;
+        output += ` | ${module}.js`;
     }
     if (context) {
-        output += `${context}() | `;
+        output += ` | ${context}()`;
     }
 
-    logError(output + message);
+    if (!(error instanceof Error)) {
+        error = Error(error);
+    }
+
+    logError(error, output);
 }
 
 /**
