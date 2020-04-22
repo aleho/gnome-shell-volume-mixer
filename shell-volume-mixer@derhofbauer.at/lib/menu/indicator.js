@@ -9,7 +9,7 @@
 /* exported Indicator */
 
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
-const { GObject } = imports.gi;
+const { Clutter, GObject } = imports.gi;
 const PanelMenu = imports.ui.panelMenu;
 const Volume = imports.ui.status.volume;
 
@@ -53,7 +53,10 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
      * We can mimic the original Indicator's handling of scroll events.
      */
     vfunc_scroll_event() {
-        return Volume.Indicator.prototype.vfunc_scroll_event.apply(this, arguments);
+        Volume.Indicator.prototype.vfunc_scroll_event.apply(this, arguments);
+
+        // tell all upstream consumers we handled this event
+        return Clutter.EVENT_STOP;
     }
 
     updateIcon() {
