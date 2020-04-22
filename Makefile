@@ -33,7 +33,7 @@ SRCFILES = $(addprefix $(SRCDIR)/, $(SOURCES) $(GSCHEMA) $(GSCHEMA_COMP))
 
 
 dist: clean build check package
-build: install-deps
+build: install-deps i18n stylesheet.css
 package: $(PACKAGE)
 
 prepare:
@@ -46,7 +46,7 @@ install-deps:
 $(SRCDIR)/$(SCHEMA_COMP): $(SRCDIR)/$(GSCHEMA)
 	glib-compile-schemas --targetdir=$(SRCDIR)/schemas $(SRCDIR)/schemas
 
-$(PACKAGE): i18n stylesheet.css metadata.json $(SRCFILES) $(FILES)
+$(PACKAGE): metadata.json $(SRCFILES) $(FILES)
 	cd $(SRCDIR) && zip -r ../$(PACKAGE) $(SOURCES)
 	zip $(PACKAGE) $(FILES)
 	cd $(BUILDDIR) && zip ../$(PACKAGE) *
