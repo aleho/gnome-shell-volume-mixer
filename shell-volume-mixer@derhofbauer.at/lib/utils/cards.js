@@ -135,18 +135,7 @@ var Cards = class {
                 continue;
             }
 
-            if (!paCard.profiles || !paCard.profiles.length) {
-                paCard.profiles = {};
-                continue;
-            }
-
-            let profiles = {};
-
-            for (let profile of paCard.profiles) {
-                profiles[profile.name] = profile.description;
-            }
-
-            paCard.profiles = profiles;
+            this._fixProfiles(paCard);
         }
 
         if (!paCards || !Object.keys(paCards).length) {
@@ -165,29 +154,24 @@ var Cards = class {
     }
 
     /**
-     * Adds a card to our array of cards.
-     *
-     * @param {Object<Gvc.MixerCard>} card Card to add.
+     * TODO this is ugly and should be consolidated. Maybe even moved to Python helper.
+     * @param {paCard} paCard
+     * @private
      */
-    _addCard(card) {
-        let index = card.index;
+    _fixProfiles(paCard) {
+        if (!paCard.profiles || !paCard.profiles.length) {
+            paCard.profiles = {};
 
-        const paCard = this.get(index);
-
-        if (!paCard || paCard.fake) {
-            Log.error('Cards', '_addCard', 'GVC card not found through Python helper');
-
-            // external script couldn't get card info, fake it
-            this._paCards[index] = {
-                // card name (human name) won't be useful, we'll set it anyway
-                name: card.name,
-                index: index,
-                profiles: [],
-                fake: true
-            };
+            return;
         }
 
-        this._addGvcCard(paCard, card);
+        let profiles = {};
+
+        for (let profile of paCard.profiles) {
+            profiles[profile.name] = profile.description;
+        }
+
+        paCard.profiles = profiles;
     }
 
     /**
@@ -206,6 +190,8 @@ var Cards = class {
             return;
         }
 
+        Log.info('Card added', card.index, paCard.name);
+
         paCard.card = card;
         this._cardNames[paCard.name] = card.index;
     }
@@ -213,10 +199,32 @@ var Cards = class {
     /**
      * Signal for added cards.
      */
-    _onCardAdded(control, index) {
+    async _onCardAdded(control, index) {
         // we're actually looking up card.index
         let card = control.lookup_card_id(index);
-        this._addCard(card);
+        let paCard = await this.get(index);
+
+        if (!paCard || paCard.fake) {
+            paCard = await PaHelper.getCardByIndex(index);
+
+            if (!paCard) {
+                Log.error('Cards', '_addCard', 'GVC card not found through Python helper');
+
+                // external script couldn't get card info, fake it
+                paCard = {
+                    // card name (human name) won't be useful, we'll set it anyway
+                    name:     card.name,
+                    index:    index,
+                    profiles: [],
+                    fake:     true
+                };
+            }
+
+            this._paCards[index] = paCard;
+            this._fixProfiles(paCard);
+        }
+
+        this._addGvcCard(paCard, card);
     }
 
     /**
@@ -224,8 +232,13 @@ var Cards = class {
      */
     _onCardRemoved(control, index) {
         if (index in this._paCards) {
-            delete this._cardNames[this._paCards[index].name];
+            const name = this._paCards[index].name;
+            delete this._cardNames[name];
             delete this._paCards[index];
+            Log.info('Card removed', index, name);
+
+        } else {
+            Log.info('Untracked card not removed', index);
         }
     }
 

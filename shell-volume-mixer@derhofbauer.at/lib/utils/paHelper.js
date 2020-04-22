@@ -6,7 +6,7 @@
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported getCards */
+/* exported getCards, getCardByIndex */
 
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const Log = Lib.utils.log;
@@ -17,12 +17,10 @@ const PYTHON_HELPER_PATH = 'pautils/cardinfo.py';
 
 
 /**
- * Calls the Python helper script to get more details about a card and its
- * profiles.
- *
+ * @param {?number} [index=undefined]
  * @returns {Promise<?Object.<string, paCard>>} JSON object of the output
  */
-async function getCards() {
+async function execHelper(index = undefined) {
     const paUtilPath = Utils.getExtensionPath(PYTHON_HELPER_PATH);
 
     if (!paUtilPath) {
@@ -36,15 +34,24 @@ async function getCards() {
     let pythonError;
 
     for (let python of ['python3', 'python']) {
+        const args = ['/usr/bin/env', python, paUtilPath];
+
+        if (!isNaN(index)) {
+            args.push(index);
+        }
+
         try {
-            [ret, stdout, stderr] = await Process.execAsync(['/usr/bin/env', python, paUtilPath]);
+            [ret, stdout, stderr] = await Process.execAsync(args);
         } catch (e) {
             pythonError = e;
         }
     }
 
     if (pythonError) {
-        Log.error('paHelper', 'getCards', `(${ret}, ${stderr}) ${pythonError.message}`);
+        Log.error('paHelper', 'getCards', pythonError);
+        if (stderr) {
+            Log.error('paHelper', 'getCards', `(${ret}) ${stderr}`);
+        }
     }
 
     if (!stdout) {
@@ -55,7 +62,7 @@ async function getCards() {
     try {
         data = JSON.parse(stdout);
     } catch (e) {
-        Log.error('paHelper', 'getCards', e.message);
+        Log.error('paHelper', 'getCards', e);
         return null;
     }
 
@@ -70,4 +77,29 @@ async function getCards() {
     }
 
     return data;
+}
+
+/**
+ * Calls the Python helper script to get details about all available cards and their profiles.
+ *
+ * @returns {Promise<?Object.<string, paCard>>} JSON object of the output
+ */
+async function getCards() {
+    return await execHelper();
+}
+
+/**
+ * Calls the Python helper script to get more details about a card and its profiles.
+ *
+ * @param {number} index
+ * @returns {Promise<?paCard>} JSON object of the output
+ */
+async function getCardByIndex(index) {
+    const data = await execHelper(index);
+
+    if (data && data[index]) {
+        return data[index];
+    }
+
+    return null;
 }

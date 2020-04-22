@@ -18,7 +18,7 @@ const { Gio } = imports.gi;
  */
 async function execAsync(command) {
     const process = new Gio.Subprocess({
-        argv:  command,
+        argv:  command.map(arg => arg.toString()),
         flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
     });
 

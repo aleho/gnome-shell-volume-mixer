@@ -180,5 +180,4 @@ if len(sys.argv) > 1:
 
 with PulseAudio() as pulse:
     info = pulse.get_card_info(index = index, name = name)
-#    print(json.dumps(info, indent = 4, separators = (',', ': ')))
     print(json.dumps(info))
