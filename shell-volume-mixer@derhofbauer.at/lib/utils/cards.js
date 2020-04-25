@@ -205,10 +205,14 @@ var Cards = class {
         let paCard = await this.get(index);
 
         if (!paCard || paCard.fake) {
-            paCard = await PaHelper.getCardByIndex(index);
+            try {
+                paCard = await PaHelper.getCardByIndex(index);
+            } catch (e) {
+                Log.error('Cards', '_onCardAdded', 'Calling Python helper failed');
+            }
 
             if (!paCard) {
-                Log.error('Cards', '_addCard', 'GVC card not found through Python helper');
+                Log.error('Cards', '_onCardAdded', 'GVC card not found through Python helper');
 
                 // external script couldn't get card info, fake it
                 paCard = {
