@@ -228,6 +228,7 @@ var MasterSlider = class extends StreamSlider
 {
     _init(options) {
         this.item = new MenuItem.MasterMenuItem();
+        this.item.menu.actor.add_style_class_name('svm-master-slider-menu');
 
         this._hasHeadphones = false;
         this._slider = this.item._slider;
@@ -399,6 +400,7 @@ var EventsSlider = class extends StreamSlider
         super._init(options);
 
         this.item.add_style_class_name('events-stream-slider');
+        this.item.secondLine.add_style_class_name('svm-events-slider-line');
     }
 
     _updateLabel() {

@@ -28,6 +28,7 @@ var PanelButton = GObject.registerClass(class PanelButton extends PanelMenu.Butt
         this._mixerMenu = new Menu(mixer, {
             separator: true
         });
+        this._mixerMenu.actor.add_style_class_name('svm-standalone-menu');
 
         this._box = new St.BoxLayout();
 
@@ -45,7 +46,6 @@ var PanelButton = GObject.registerClass(class PanelButton extends PanelMenu.Butt
             this._box.add(this._percentageLabel);
         }
 
-        this.menu.actor.add_style_class_name('shell-volume-mixer-standalone-menu');
         this.menu.addMenuItem(this._mixerMenu);
 
         this._onIconChanged();

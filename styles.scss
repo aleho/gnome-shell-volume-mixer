@@ -4,63 +4,140 @@ $variant: 'light';
 @import "gnome-shell-sass/_common";
 
 
-/* common */
+.svm-menu {
+    $shell_margin: $base_padding + $base_margin * 2;
 
-.svm-slider-details {
-    font-size: 0.9em;
-    font-weight: 400;
-}
-
-
-.svm-menu-item-container {
-    margin-left: 0;
-    padding-left: 0;
-
-    .svm-container-line {
-        margin-left: 0;
+    @mixin no-spacing {
         padding-left: 0;
-        padding-bottom: 0;
-    }
-}
-
-
-/** copy/paste from gnome-shell .aggregate-menu .popup-sub-menu .popup-menu-item > :first-child **/
-
-.svm-master-slider-line .popup-menu-ornament,
-.svm-menu > .events-stream-slider .line-2 {
-    // account for icons in submenus with padding
-    &:ltr {
-        padding-left: $base_padding + $base_margin * 2;
-        margin-left: $base_icon_size;
+        padding-right: 0;
+        margin-left: 0;
+        margin-right: 0;
     }
 
-    &:rtl {
-        padding-right: $base_padding + $base_margin * 2;
-        margin-right: $base_icon_size;
+    @mixin default-padding {
+        /** copy/paste from gnome-shell .aggregate-menu .popup-sub-menu .popup-menu-item > :first-child **/
+        &:ltr {
+            padding-left: $shell_margin;
+            margin-left: $base_icon_size;
+        }
+
+        &:rtl {
+            padding-right: $shell_margin;
+            margin-right: $base_icon_size;
+        }
     }
-}
 
-.popup-sub-menu .svm-container-line.line-1 .popup-menu-ornament {
-    padding-left: 0;
-    margin-left: 0;
-}
+    @mixin submenu-padding {
+        &:ltr {
+            padding-right: $shell_margin;
+        }
 
-.popup-menu-item .svm-container-line {
-    padding-right: 0;
-}
+        &:rtl {
+            padding-left: $shell_margin;
+        }
+    }
+
+    @mixin no-ornament-margin {
+        // fix padding of ornament (selection) in submenu
+        &:ltr {
+            margin-left: 0;
+            padding-left: 0;
+        }
+
+        &:rtl {
+            margin-right: 0;
+            padding-right: 0;
+        }
+    }
 
 
-/* stand-alone menu */
+    /**
+     * Common
+     */
+    .svm-slider-details {
+        font-size: 0.9em;
+        font-weight: 400;
+    }
 
-.shell-volume-mixer-standalone-menu {
-    width: 30em;
+    .popup-menu-item {
+        @include no-ornament-margin;
+    }
 
-    .svm-menu-item-container {
-        .svm-container-line {
-            .popup-menu-ornament {
-                padding-left: 0;
-                margin-left: 0;
+    // sub menu items (of top level menu items)
+    .popup-sub-menu {
+        .popup-menu-item {
+            @include submenu-padding;
+
+            > .svm-menu-item-container {
+                @include no-spacing;
+
+                > .svm-container-line {
+                    /* somewhere along all these paddings there's too much added
+                     * here, offsetting sliders in submenus by a few pixels
+                     */
+                    &:ltr {
+                        padding-right: $shell_margin - 2px;
+                    }
+
+                    &:rtl {
+                        padding-left: $shell_margin - 2px;
+                    }
+                }
             }
         }
+    }
+
+    // top-level menu items
+    > .popup-menu-item {
+        > .svm-menu-item-container {
+            @include no-spacing;
+
+            > .svm-container-line {
+                @include no-spacing;
+            }
+        }
+    }
+
+
+    /**
+     * SVM integrated in status menu dropdown
+     */
+    &.svm-integrated-menu {
+        // only sub menu items (of top level items)
+        .popup-sub-menu {
+            .popup-menu-item {
+                > .svm-menu-item-container {
+                    > .svm-container-line {
+                        &.line-1 {
+                            // align ornament to parent items
+                            .popup-menu-ornament {
+                                @include no-ornament-margin;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // top-level menu items
+        > .popup-menu-item {
+            > .svm-menu-item-container {
+                // offset top level items to align with label instead of ornament icon
+                .svm-master-slider-line,
+                .svm-events-slider-line {
+                    .popup-menu-ornament {
+                        @include default-padding;
+                    }
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Stand-alone menu via extra-button
+     */
+    &.svm-standalone-menu {
+        width: 30em;
     }
 }
