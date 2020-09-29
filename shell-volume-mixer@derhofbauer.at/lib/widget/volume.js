@@ -17,7 +17,6 @@ const Volume = imports.ui.status.volume;
 
 const __ = Lib.utils.gettext._;
 const { FloatingLabel } = Lib.widget.floatingLabel;
-const Apps = Lib.utils.apps;
 const MenuItem = Lib.widget.menuItem;
 const Settings = Lib.settings;
 const Slider = Lib.widget.slider;
@@ -239,22 +238,7 @@ var MasterSlider = class extends StreamSlider
      * @private
      */
     _addSettingsItem() {
-        const apps = [];
-
-        if (Apps.has(Apps.APPS.control_center)) {
-            apps.push([_('Audio'), () => Apps.open(Apps.APPS.control_center)]);
-        }
-
-        apps.push([_('Settings'), () => ExtensionUtils.openPrefs()]);
-
-        if (apps.length > 1) {
-            const menuItem = new MenuItem.DoubleActionItem(apps);
-            menuItem.addToMenu(this.item.menu);
-
-        } else if (apps.length > 0) {
-            const [label, callback] = apps[0];
-            this.item.menu.addAction(label, callback);
-        }
+        this.item.menu.addAction(_('Settings'), () => ExtensionUtils.openPrefs());
     }
 
     addSliderItem(item) {

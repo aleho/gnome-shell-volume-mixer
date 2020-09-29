@@ -23,34 +23,6 @@ $variant: 'light';
     }
 }
 
-.double-action-item {
-    margin: 0;
-    spacing: 0;
-
-    &:ltr {
-        padding-left: 0;
-    }
-
-    &:rtl {
-        padding-right: 0;
-    }
-
-    .double-action-button {
-        padding-left: 0;
-        padding-right: 0;
-    }
-
-    .double-action-label {
-        &, &:ltr, &:rtl {
-            padding-left: 0;
-            padding-right: 0;
-            margin-left: 0;
-            margin-right: 0;
-            text-align: center;
-        }
-    }
-}
-
 
 /** copy/paste from gnome-shell .aggregate-menu .popup-sub-menu .popup-menu-item > :first-child **/
 
