@@ -426,7 +426,7 @@ var InputSlider = class extends StreamSlider
             }
         }
 
-        this._label.text = text || `[${__('unknown')}]`;
+        this._label.text = text || '[%s]'.format(__('unknown'));
     }
 };
 
