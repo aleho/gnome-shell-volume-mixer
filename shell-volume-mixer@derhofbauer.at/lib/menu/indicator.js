@@ -31,19 +31,23 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
         this._control = mixer.control;
 
         this._volumeMenu = new Menu(mixer, options);
-        this._volumeMenu.connect('icon-changed', this.updateIcon.bind(this));
+        this._volumeMenu.connect('output-icon-changed', this.updateOutputIcon.bind(this));
 
         if (options.showPercentageLabel) {
             this._percentageLabel = new PercentageLabel(mixer);
             this.add(this._percentageLabel);
         }
 
-        this._inputIndicator.set({
-            icon_name: 'audio-input-microphone-symbolic',
-            visible: this._volumeMenu.getInputVisible(),
-        });
+        // copy paste code here
+        this._inputIndicator.visible = this._volumeMenu.getInputVisible();
         this._volumeMenu.connect('input-visible-changed', () => {
             this._inputIndicator.visible = this._volumeMenu.getInputVisible();
+        });
+        this._volumeMenu.connect('input-icon-changed', () => {
+            let icon = this._volumeMenu.getInputIcon();
+
+            if (icon !== null)
+                this._inputIndicator.icon_name = icon;
         });
 
         this.menu.addMenuItem(this._volumeMenu);
@@ -59,14 +63,16 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
         return Clutter.EVENT_STOP;
     }
 
-    updateIcon() {
-        let icon = this._volumeMenu.getIcon();
+    updateOutputIcon() {
+        let icon = this._volumeMenu.getOutputIcon();
 
-        if (icon !== null) {
+        if (icon) {
             this.show();
             this._primaryIndicator.icon_name = icon;
+            this._primaryIndicator.visible = true;
         } else {
             this.hide();
+            this._primaryIndicator.visible = false;
         }
     }
 

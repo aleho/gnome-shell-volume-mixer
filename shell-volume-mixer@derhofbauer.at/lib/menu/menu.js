@@ -83,7 +83,7 @@ var Menu = class extends VolumeMenuExtension
         });
 
         this._output.connect('stream-updated', () => {
-            this.emit('icon-changed');
+            this.emit('output-icon-changed');
         });
 
 

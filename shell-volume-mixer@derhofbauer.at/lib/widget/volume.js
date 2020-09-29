@@ -119,6 +119,14 @@ const StreamSlider = class extends OutputStreamSliderExtension
 
         this.stream = options.stream || null;
         this._volumeCancellable = null;
+
+        this._icons = [
+            'audio-volume-muted-symbolic',
+            'audio-volume-low-symbolic',
+            'audio-volume-medium-symbolic',
+            'audio-volume-high-symbolic',
+            'audio-volume-overamplified-symbolic',
+        ];
     }
 
     _onKeyPress(actor, event) {
@@ -434,6 +442,13 @@ var InputStreamSlider = class extends StreamSlider
         this._slider.accessible_name = _('Microphone');
         this._streamAddedId = this._control.connect('stream-added', this._maybeShowInput.bind(this));
         this._streamRemovedId = this._control.connect('stream-removed', this._maybeShowInput.bind(this));
+
+        this._icons = [
+            'microphone-sensitivity-muted-symbolic',
+            'microphone-sensitivity-low-symbolic',
+            'microphone-sensitivity-medium-symbolic',
+            'microphone-sensitivity-high-symbolic',
+        ];
     }
 
     _connectStream(stream) {

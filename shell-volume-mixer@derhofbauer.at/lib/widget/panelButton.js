@@ -38,7 +38,7 @@ var PanelButton = GObject.registerClass(class PanelButton extends PanelMenu.Butt
 
         this.add_actor(this._box);
 
-        this._iconChangedId = this._mixerMenu.connect('icon-changed', this._onIconChanged.bind(this));
+        this._iconChangedId = this._mixerMenu.connect('output-icon-changed', this._onIconChanged.bind(this));
 
         if (options.showPercentageLabel) {
             this._percentageLabel = new PercentageLabel(mixer);
@@ -55,7 +55,7 @@ var PanelButton = GObject.registerClass(class PanelButton extends PanelMenu.Butt
         if (this._mixerMenu.outputHasHeadphones()) {
             this.setIcon('audio-headphones-symbolic');
         } else {
-            this.setIcon(this._mixerMenu.getIcon());
+            this.setIcon(this._mixerMenu.getOutputIcon());
         }
     }
 

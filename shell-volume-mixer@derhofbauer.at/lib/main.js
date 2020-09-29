@@ -147,7 +147,7 @@ var Extension = class {
         this._menu.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem(), 1);
 
         // on disable/enable we won't get a stream-changed event, so trigger it here to be safe
-        this._indicator.updateIcon();
+        this._indicator.updateOutputIcon();
     }
 
     /**
