@@ -1,0 +1,124 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: gnome-shell-volume-mixer\n"
+"X-Crowdin-Project-ID: 294009\n"
+"X-Crowdin-Language: pt-BR\n"
+"X-Crowdin-File: /master/shell-volume-mixer@derhofbauer.at/locale/translations.pot\n"
+"X-Crowdin-File-ID: 4\n"
+"Project-Id-Version: gnome-shell-volume-mixer\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language-Team: Portuguese, Brazilian\n"
+"Language: pt_BR\n"
+"PO-Revision-Date: 2020-10-04 11:52\n"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.js:286
+msgid "Error retrieving card details"
+msgstr "Erro ao recuperar detalhes da placa"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.js:287
+msgid "Helper script did not return valid card data."
+msgstr "O script ajudante não retornou dados de placa válidos."
+
+#: shell-volume-mixer@derhofbauer.at/lib/utils/cards.js:84
+msgid "Querying PulseAudio sound cards failed, disabling extension"
+msgstr ""
+
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:289
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:291
+msgid "Inputs"
+msgstr "Entradas"
+
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:429
+msgid "unknown"
+msgstr "desconhecido"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:50
+msgid "Position of volume mixer"
+msgstr "Posição do mixador de volume"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:64
+msgid "Status Menu"
+msgstr "Menu de Status"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:65
+msgid "Left"
+msgstr "Esquerda"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:66
+msgid "Center"
+msgstr "Centro"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:67
+msgid "Right"
+msgstr "Direita"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:82
+msgid "Remove original slider"
+msgstr "Remover controle deslizante"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:95
+msgid "Show detailed sliders"
+msgstr "Exibir controles deslizantes detalhados"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:135
+msgid "Hotkey for profile switcher"
+msgstr "Tecla de atalho para seletor de perfil"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:158
+msgid "(e.g. \"<Super>p\")"
+msgstr "(ex. \"<Super>p\")"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:171
+msgid "Show system sounds"
+msgstr "Exibir sons do sistema"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:184
+msgid "Use symbolic icons"
+msgstr "Usar ícones simbólicos"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:221
+msgid "Show virtual streams"
+msgstr "Exibir fluxos virtuais"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:246
+msgid "Always show input streams"
+msgstr "Sempre exibir fluxos de entrada"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:270
+msgid "Shows the slider even if no application is recording"
+msgstr "Exibe o controle deslizante mesmo se nenhum aplicativo estiver gravando"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:322
+msgid "Show percentage"
+msgstr ""
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:346
+msgid "Whether to show percentage of current output right of the icon"
+msgstr ""
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:377
+msgid "Settings"
+msgstr "Configurações"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:414
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:581
+msgid "Devices"
+msgstr "Dispositivos"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:465
+msgid "Card"
+msgstr "Placa"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:479
+msgid "Profile"
+msgstr "Perfil"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:492
+msgid "Switch"
+msgstr "Ativar"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:505
+msgid "Display"
+msgstr "Mostrar"
+
