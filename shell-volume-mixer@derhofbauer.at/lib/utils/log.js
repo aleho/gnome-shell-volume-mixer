@@ -35,7 +35,11 @@ function info() {
  * @param {number} maxDepth
  */
 function d(object, maxDepth = 1) {
-    l(_dumpObject(object, maxDepth));
+    try {
+        l(_dumpObject(object, maxDepth));
+    } catch (e) {
+        l(object);
+    }
 }
 
 /**
@@ -112,9 +116,8 @@ function _dumpObject(object, maxDepth = 8, currDepth = 0) {
     let isFirst = true;
 
     for (let key in object) {
-        let item = object[key];
-        let isArray = Array.isArray(item);
-        let type = typeof item;
+        const item = object[key];
+        const type = typeof item;
         let typeInfo = type;
 
         if (stringMode) {
@@ -136,10 +139,12 @@ function _dumpObject(object, maxDepth = 8, currDepth = 0) {
             dump += ' null';
 
         } else if (type == 'object' || type == 'function') {
+            const isArray = Array.isArray(item);
+
             if (isArray) {
                 dump += ' [';
             } else if (type == 'function') {
-                dump += ' {';
+                dump += ' (';
             } else {
                 // we're assuming toString() yields sane values
                 let itemString = item.toString();
@@ -149,13 +154,24 @@ function _dumpObject(object, maxDepth = 8, currDepth = 0) {
                 dump += ' {';
             }
 
-            let objDump = _dumpObject(item, maxDepth, currDepth + 1);
+            let objDump = '';
+            try {
+                objDump = _dumpObject(item, maxDepth, currDepth + 1);
+            } catch (e) {
+                // object cannot be dumped, probably a non-null pointer
+            }
 
             if (objDump.trim() !== '') {
                 dump += `\n${objDump}\n${indent}`;
             }
 
-            dump += (isArray) ? ']' : '}';
+            if (isArray) {
+                dump += ']';
+            } else if (type == 'function') {
+                dump += ')';
+            } else {
+                dump += '}';
+            }
 
         } else {
             dump += ` ${item}`;
