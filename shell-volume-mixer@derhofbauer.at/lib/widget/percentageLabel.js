@@ -11,9 +11,6 @@
 const { Clutter, GObject, St } = imports.gi;
 
 
-/**
- * @mixes EventHandlerDelegate
- */
 var PercentageLabel = GObject.registerClass(class Indicator extends St.Label {
     _init(mixer) {
         super._init({

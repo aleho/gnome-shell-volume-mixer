@@ -35,6 +35,10 @@ var EventHandlerDelegate = class {
         this.__delegate = delegate;
     }
 
+    get eventHandlerDelegate() {
+        return ('__delegate' in this) ? this.__delegate : null;
+    }
+
     /**
      * Connects to a signal.
      *
@@ -48,7 +52,7 @@ var EventHandlerDelegate = class {
             initial = callback;
             callback = signal;
             signal = target;
-            target = ('__delegate' in this) ? this.__delegate : null;
+            target = this.eventHandlerDelegate;
         }
 
         if (!target) {
@@ -73,7 +77,7 @@ var EventHandlerDelegate = class {
     disconnect(target, signal) {
         if (typeof target === 'string') {
             signal = target;
-            target = this.__delegate;
+            target = this.eventHandlerDelegate;
         }
 
         for (let index in this._signals) {
@@ -92,10 +96,6 @@ var EventHandlerDelegate = class {
      * Disconnects all locally used signals.
      */
     disconnectAll() {
-        if (!this.__delegate) {
-            return;
-        }
-
         while (this._signals.length > 0) {
             const [target, id] = this._signals.pop();
             target.disconnect(id);

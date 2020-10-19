@@ -35,7 +35,8 @@ var STREAM_MATCHING = Object.freeze({
  */
 
 /**
- * @property {Object.<string, paCard>} _cards
+ * @property {Object.<string, paCard>} _paCards
+ * @mixes EventHandlerDelegate
  */
 var Cards = class {
     constructor(control) {
