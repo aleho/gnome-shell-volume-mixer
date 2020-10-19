@@ -44,6 +44,7 @@ var Mixer = class
 
         this._state = null;
         this._defaultSink = null;
+        this._pauseDefaultSinkEvent = false;
 
         this.connect(this._control, 'state-changed', this._onStateChanged.bind(this), () => {
             return [this._control, this._control.get_state()];
@@ -151,13 +152,21 @@ var Mixer = class
             }
 
             this._defaultSink = stream;
-            this._connectSink();
-            this._onVolumeUpdate();
+
+            if (stream) {
+                Log.info('Updating default sink');
+
+                this._connectSink();
+                this._onVolumeUpdate();
+
+            } else {
+                Log.info('Default sink updated to null, cannot update');
+            }
         }
 
-        // we might get a sink id without being able to lookup or setting the update ourselves
+        // we might get a sink id without being able to lookup or code causing the event handles the update
         if (!stream || this._pauseDefaultSinkEvent) {
-            delete this._pauseDefaultSinkEvent;
+            this._pauseDefaultSinkEvent = false;
             return;
         }
 
@@ -182,6 +191,7 @@ var Mixer = class
             return;
         }
 
+        // noinspection JSIgnoredPromiseFromCall
         this._updateDefaultSink(this._control.get_default_sink());
     }
 
@@ -190,6 +200,7 @@ var Mixer = class
      * @private
      */
     _onDefaultSinkChanged(control, id) {
+        // noinspection JSIgnoredPromiseFromCall
         this._updateDefaultSink(control.lookup_stream_id(id));
     }
 
