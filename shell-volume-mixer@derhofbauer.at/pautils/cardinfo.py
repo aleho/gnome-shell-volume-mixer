@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Usage: cardinfo.py [card_index] [card_name]
+# Usage: cardinfo.py [card_index or card_name, omit for all cards]
 #
 # Output is either a card object or an array of all cards available, depending
 # on whether a card index / name was passed or no parameters at all.
@@ -28,7 +28,7 @@ import pa
 
 
 class PulseAudio():
-    _name = 'ShellVolumeMixer'
+    _name = b'ShellVolumeMixer'
     _cards = None
     _error = {
         'success': False,
@@ -42,7 +42,7 @@ class PulseAudio():
         self.pa_mainloop = pa.mainloop_new()
         self.pa_mainloop_api = pa.mainloop_get_api(self.pa_mainloop)
 
-        self._context = pa.context_new(self.pa_mainloop_api, b'self._name')
+        self._context = pa.context_new(self.pa_mainloop_api, self._name)
         self._context_notify_cb = pa.context_notify_cb_t(self.context_notify_cb)
 
         pa.context_set_state_callback(self._context, self._context_notify_cb, None)
@@ -82,19 +82,19 @@ class PulseAudio():
                 break
 
             if self._pa_state == pa.CONTEXT_READY and not operation:
-                self._pa_card_info_cb = pa.card_info_cb_t(self.pa_card_info_cb)
+                pa_card_info_cb = pa.card_info_cb_t(self.pa_card_info_cb)
 
                 if name:
                     operation = pa.context_get_card_info_by_name(self._context,
-                            name, self._pa_card_info_cb, None)
+                            name.encode('utf8'), pa_card_info_cb, None)
 
                 elif index and index >= 0:
                     operation = pa.context_get_card_info_by_index(self._context,
-                            index, self._pa_card_info_cb, None)
+                            index, pa_card_info_cb, None)
 
                 else:
                     operation = pa.context_get_card_info_list(self._context,
-                            self._pa_card_info_cb, None)
+                            pa_card_info_cb, None)
 
 
             pa.mainloop_iterate(self.pa_mainloop, 0, None)
@@ -138,8 +138,10 @@ class PulseAudio():
             'name': cardName,
             'description': description,
             'active_profile': None,
-            'profiles': [
-            ],
+            'profiles': {
+            },
+            'ports': {
+            },
         }
 
         if pacard.active_profile and pacard.active_profile[0]:
@@ -149,12 +151,29 @@ class PulseAudio():
         for index in range(0, pacard.n_profiles):
             if not pacard.profiles2[index] or not pacard.profiles2[index][0]:
                 continue
+
             profile = pacard.profiles2[index][0]
-            card['profiles'].append({
-                'name': profile.name.decode('utf8'),
+            name = profile.name.decode('utf8')
+
+            card['profiles'][name] = {
+                'name': name,
                 'description': profile.description.decode('utf8'),
                 'available': bool(profile.available),
-            })
+            }
+
+        for index in range(0, pacard.n_ports):
+            if not pacard.ports[index] or not pacard.ports[index][0]:
+                continue
+
+            port = pacard.ports[index][0]
+            name = port.name.decode('utf8')
+
+            card['ports'][name] = {
+                'name': name,
+                'description': port.description.decode('utf8'),
+                'available': bool(port.available),
+            }
+
 
         self._cards[card['index']] = card
         self._card_op_done = True
@@ -172,10 +191,11 @@ class PulseAudio():
 index = name = None
 
 if len(sys.argv) > 1:
-    if sys.argv[1].isdigit():
-        index = int(sys.argv[1])
+    filter = sys.argv[1]
+    if filter.isdigit():
+        index = int(filter)
     else:
-        name = sys.argv[1]
+        name = filter
 
 
 with PulseAudio() as pulse:

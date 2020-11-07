@@ -39,6 +39,9 @@ var STREAM_MATCHING = Object.freeze({
  * @mixes EventHandlerDelegate
  */
 var Cards = class {
+    /**
+     * @param {Object<Gvc.MixerControl>} control
+     */
     constructor(control) {
         this._control = control;
         this.eventHandlerDelegate = control;
@@ -125,20 +128,6 @@ var Cards = class {
     async _getCardDetails() {
         const paCards = await PaHelper.getCards();
 
-        if (!paCards) {
-            return null;
-        }
-
-        for (let k in paCards) {
-            let paCard = paCards[k];
-
-            if (!paCard) {
-                continue;
-            }
-
-            this._fixProfiles(paCard);
-        }
-
         if (!paCards || !Object.keys(paCards).length) {
             return null;
         }
@@ -152,27 +141,6 @@ var Cards = class {
         }
 
         return paCards;
-    }
-
-    /**
-     * TODO this is ugly and should be consolidated. Maybe even moved to Python helper.
-     * @param {paCard} paCard
-     * @private
-     */
-    _fixProfiles(paCard) {
-        if (!paCard.profiles || !paCard.profiles.length) {
-            paCard.profiles = {};
-
-            return;
-        }
-
-        let profiles = {};
-
-        for (let profile of paCard.profiles) {
-            profiles[profile.name] = profile.description;
-        }
-
-        paCard.profiles = profiles;
     }
 
     /**
@@ -226,7 +194,6 @@ var Cards = class {
             }
 
             this._paCards[index] = paCard;
-            this._fixProfiles(paCard);
         }
 
         this._addGvcCard(paCard, card);
