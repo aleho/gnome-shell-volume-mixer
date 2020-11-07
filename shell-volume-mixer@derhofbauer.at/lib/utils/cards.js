@@ -13,6 +13,7 @@ const Main = imports.ui.main;
 const { Gvc, GLib } = imports.gi;
 
 const __ = Lib.utils.gettext._;
+const { EventBroker } = Lib.utils.eventBroker;
 const { EventHandlerDelegate } = Lib.utils.eventHandlerDelegate;
 const Log = Lib.utils.log;
 const Utils = Lib.utils.utils;
@@ -43,6 +44,7 @@ var Cards = class {
      * @param {Object<Gvc.MixerControl>} control
      */
     constructor(control) {
+        this._events = new EventBroker();
         this._control = control;
         this.eventHandlerDelegate = control;
 
@@ -52,6 +54,10 @@ var Cards = class {
 
         this.connect('state-changed', this._onStateChanged.bind(this), () => {
             return [this._control, this._control.get_state()];
+        });
+
+        this._events.connect('debug-cards', (event, callback) => {
+            callback(Log.dump(this._paCards));
         });
     }
 
@@ -71,6 +77,7 @@ var Cards = class {
             return;
         }
 
+        // noinspection JSIgnoredPromiseFromCall
         this._init();
     }
 
@@ -86,7 +93,8 @@ var Cards = class {
         } catch (e) {
             Log.error('Cards', '_init', e);
             Main.notifyError('Volume Mixer', __('Querying PulseAudio sound cards failed, disabling extension'));
-            Lib.main.Extension.disable();
+            this._events.emit('extension-disable');
+
             return;
         }
 

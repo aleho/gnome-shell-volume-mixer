@@ -250,10 +250,11 @@ var MasterSlider = class extends StreamSlider
         this.item.menu.addAction(_('Settings'), () => ExtensionUtils.openPrefs());
     }
 
-    addSliderItem(item) {
-        let pos = (this.item.menu._getMenuItems().length || 0) - 1;
-
-        this.item.menu.addMenuItem(item, pos < 0 ? 0 : pos);
+    /**
+     * @param {OutputSlider} slider
+     */
+    addOutputSlider(slider) {
+        this.item.addMenuItem(slider.item);
     }
 
     /**

@@ -32,6 +32,7 @@ var SETTING = Object.freeze({
     use_symbolic_icons:        'use-symbolic-icons',
     profile_switcher_hotkey:   'profile-switcher-hotkey',
     pinned_profiles:           'pinned-profiles',
+    debug:                     'debug',
 
     position_at: {
         menu:   0,

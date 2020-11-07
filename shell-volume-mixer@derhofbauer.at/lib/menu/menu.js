@@ -12,6 +12,7 @@ const Gvc = imports.gi.Gvc;
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const PopupMenu = imports.ui.popupMenu;
 
+const { EventBroker } = Lib.utils.eventBroker;
 const { Settings, SETTING } = Lib.settings;
 const Log = Lib.utils.log;
 const Utils = Lib.utils.utils;
@@ -30,9 +31,14 @@ Utils.mixin(VolumeMenuExtension, Volume.VolumeMenu);
  */
 var Menu = class extends VolumeMenuExtension
 {
-    constructor(mixer, options) {
+    /**
+     * @param {Mixer} mixer
+     * @param {Object} options
+     */
+    constructor(mixer, options = {}) {
         super();
 
+        this._events = new EventBroker();
         this._settings = new Settings();
 
         this.options = {
@@ -56,6 +62,10 @@ var Menu = class extends VolumeMenuExtension
         this._control = mixer.control;
 
         this._init(mixer, options);
+
+        this._events.connect('debug-streams', (event, callback) => {
+            this._debugStreams(callback);
+        });
     }
 
     _init(mixer, options) {
@@ -150,13 +160,22 @@ var Menu = class extends VolumeMenuExtension
     }
 
     _addStream(control, stream) {
-        if (stream.id in this._items
-                || stream.id in this._outputs
-                || stream.id in this._inputs
-                || stream.is_event_stream
-                || (stream.is_virtual && !this.options.virtualStreams)
-                || (stream instanceof Gvc.MixerEventRole
-                        && !this.options.systemSounds)) {
+        const isSystemSound = stream instanceof Gvc.MixerEventRole;
+        const isInputStream = stream instanceof Gvc.MixerSinkInput;
+        const isOutputStream = stream instanceof Gvc.MixerSink;
+
+        if (stream.is_event_stream) {
+            Log.info(`Skipping event stream (${stream.id})`);
+            return;
+        }
+
+        if (stream.is_virtual && !this.options.virtualStreams) {
+            Log.info(`Skipping virtual stream (${stream.id})`);
+            return;
+        }
+
+        if (isSystemSound && !this.options.systemSounds) {
+            Log.info(`Skipping system sound stream (${stream.id})`);
             return;
         }
 
@@ -167,31 +186,58 @@ var Menu = class extends VolumeMenuExtension
             stream: stream
         };
 
-        // system sounds
-        if (stream instanceof Gvc.MixerEventRole) {
-            let slider = new Volume.EventsSlider(control, options);
+        if (isSystemSound) {
+            this._addSliderStream(stream, control, options);
 
-            this._items[stream.id] = slider;
-            this.addMenuItem(slider.item, 1);
-
-        // input stream (add to multi-input menu)
-        } else if (stream instanceof Gvc.MixerSinkInput) {
+        } else if (isInputStream) {
             this._addInputStream(stream, control, options);
 
-        // output stream (add to master-menu)
-        } else if (stream instanceof Gvc.MixerSink) {
+        } else if (isOutputStream) {
             this._addOutputStream(stream, control, options);
+
+        } else {
+            Log.info(`Unhandled stream ${stream.id} (${stream.name})`);
         }
     }
 
+    /**
+     * Adds a stream to the multi-input menu.
+     *
+     * @param stream
+     * @param control
+     * @param options
+     * @private
+     */
     _addInputStream(stream, control, options) {
+        if (stream.id in this._inputs) {
+            Log.info(`Not adding already known input stream ${stream.id}:${stream.name}`);
+            return;
+        }
+
+        Log.info(`Adding input stream ${stream.id}:${stream.name}`);
+
         let slider = new Volume.InputSlider(control, options);
 
         this._inputs[stream.id] = slider;
         this._inputMenu.addSlider(slider);
     }
 
+    /**
+     * Adds a stream to the master slider menu.
+     *
+     * @param stream
+     * @param control
+     * @param options
+     * @private
+     */
     _addOutputStream(stream, control, options) {
+        if (stream.id in this._outputs) {
+            Log.info(`Not adding already known output stream ${stream.id}:${stream.name}`);
+            return;
+        }
+
+        Log.info(`Adding output stream ${stream.id}:${stream.name}`);
+
         let slider = new Volume.OutputSlider(control, options);
 
         let isSelected = this._output.stream
@@ -199,9 +245,30 @@ var Menu = class extends VolumeMenuExtension
         slider.setSelected(isSelected);
 
         this._outputs[stream.id] = slider;
-        this._output.addSliderItem(slider.item);
+        this._output.addOutputSlider(slider);
     }
 
+    /**
+     * Adds an additional slider below master and input slider.
+     *
+     * @param stream
+     * @param control
+     * @param options
+     * @private
+     */
+    _addSliderStream(stream, control, options) {
+        if (stream.id in this._items) {
+            Log.info(`Not adding already known stream ${stream.id}:${stream.name}`);
+            return;
+        }
+
+        Log.info(`Adding stream ${stream.id}:${stream.name}`);
+
+        let slider = new Volume.EventsSlider(control, options);
+
+        this._items[stream.id] = slider;
+        this.addMenuItem(slider.item, 1);
+    }
 
     _streamAdded(control, id) {
         let stream = control.lookup_stream_id(id);
@@ -268,5 +335,29 @@ var Menu = class extends VolumeMenuExtension
         }
 
         super._readInput();
+    }
+
+    _debugStreams(callback) {
+        let dump = '';
+
+        if (this._outputs.length) {
+            dump += 'Output Streams:\n';
+        }
+
+        for (let id in this._outputs) {
+            const stream = this._outputs[id].stream;
+            dump += `  ${stream.id} (${stream.name})`;
+        }
+
+        if (this._inputs.length) {
+            dump += 'Input Streams:\n';
+        }
+
+        for (let id in this._inputs) {
+            const stream = this._inputs[id].stream;
+            dump += `  ${stream.id} (${stream.name})`;
+        }
+
+        callback(dump);
     }
 };

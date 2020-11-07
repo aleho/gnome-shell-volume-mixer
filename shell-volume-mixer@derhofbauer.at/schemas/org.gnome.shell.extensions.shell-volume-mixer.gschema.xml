@@ -59,5 +59,10 @@
             <summary>Pinned profiles</summary>
             <description>Profiles to always show in the list of devices, even if they're not retrieved through Gvc.MixerControl</description>
         </key>
+        <key name="debug" type="b">
+            <default>false</default>
+            <summary>Enable debug mode</summary>
+            <description>Enables debugging output and the D-Bus interface</description>
+        </key>
     </schema>
 </schemalist>

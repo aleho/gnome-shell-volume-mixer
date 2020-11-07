@@ -6,13 +6,16 @@
  * @author Alexander Hofbauer <alex@derhofbauer.at>
  */
 
-/* exported l, d, info, error */
+/* exported l, d, info, error, dump, verbose */
 
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Lib = Extension.imports.lib;
 const StringUtils = Lib.utils.string;
 
 const LOG_PREAMBLE = Extension.metadata.uuid || 'Shell Volume Mixer';
+
+
+var verbose = false;
 
 
 /**
@@ -24,8 +27,15 @@ function l() {
     log(Array.prototype.slice.call(arguments).join(' '));
 }
 
+/**
+ * Logs verbose messages, if enabled.
+ *
+ * @param {...string}
+ */
 function info() {
-    log(`${LOG_PREAMBLE} | ${Array.prototype.slice.call(arguments).join(' ')}`);
+    if (verbose) {
+        log(`${LOG_PREAMBLE} | ${Array.prototype.slice.call(arguments).join(' ')}`);
+    }
 }
 
 /**
@@ -74,6 +84,21 @@ function error(module, context, error) {
 
     logError(error, output);
 }
+
+/**
+ * Helper to dump any variable to a string.
+ *
+ * @param {*} object
+ * @param {number} maxDepth
+ */
+function dump(object, maxDepth) {
+    try {
+        return _dumpObject(object, maxDepth);
+    } catch (e) {
+        return `Error dumping object: ${e}`;
+    }
+}
+
 
 /**
  * Dumps any variable into a string that can be output through log().

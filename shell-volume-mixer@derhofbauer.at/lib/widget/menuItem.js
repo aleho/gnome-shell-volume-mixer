@@ -105,6 +105,12 @@ var MasterMenuItem = GObject.registerClass(class MasterMenuItem extends PopupMen
 
         return super._onKeyPressEvent(actor, event);
     }
+
+    addMenuItem(item) {
+        let pos = (this.menu._getMenuItems().length || 0) - 1;
+
+        this.menu.addMenuItem(item, pos < 0 ? 0 : pos);
+    }
 });
 
 

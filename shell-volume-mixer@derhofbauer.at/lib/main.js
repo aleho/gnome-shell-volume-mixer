@@ -12,25 +12,30 @@ const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
 
+const { Dbus } = Lib.dbus.dbus;
+const { EventBroker } = Lib.utils.eventBroker;
 const { Mixer } = Lib.volume.mixer;
 const { Indicator } = Lib.menu.indicator;
 const { PanelButton } = Lib.widget.panelButton;
 const { Settings, SETTING, cleanup: settingsCleanup } = Lib.settings;
+
+const Log = Lib.utils.log;
 
 const DEFAULT_INDICATOR_POS = 4;
 
 
 let instance;
 
-
 var Extension = class {
     constructor() {
+        if (instance) {
+            return instance;
+        }
+
+        instance = this;
+
         // save the original volume reference in aggregate menu.
         this._orgVolume = this._menu._volume;
-
-        if (!instance) {
-            instance = this;
-        }
     }
 
     /**
@@ -53,19 +58,20 @@ var Extension = class {
         return Main.panel.statusArea.aggregateMenu;
     }
 
-    /**
-     * Just a helper for global disabling
-     */
-    static disable() {
-        if (instance) {
-            instance.disable();
-        }
-    }
-
     enable() {
-        this._settings.connectChanged(() => {
+        this._events = new EventBroker();
+        this._events.connect('extension-disable', () => {
             this.disable();
+        });
+        this._events.connect('extension-enable', () => {
             this.enable();
+        });
+        this._events.connect('extension-reload', () => {
+            this._reloadExtension();
+        });
+
+        this._settings.connectChanged(() => {
+            this._reloadExtension();
         });
 
         this._mixer = new Mixer();
@@ -77,10 +83,15 @@ var Extension = class {
         } else {
             this._addPanelButton(position);
         }
+
+        if (this._settings.get_boolean(SETTING.debug) === true) {
+            this._enableDebugging();
+        }
     }
 
     disable() {
         instance = null;
+        this._events = null;
 
         this._menu._volume = this._orgVolume;
         this._showOriginal();
@@ -99,6 +110,11 @@ var Extension = class {
         if (this._panelButton) {
             this._panelButton.destroy();
             this._panelButton = null;
+        }
+
+        if (this._dbus) {
+            this._dbus.destroy();
+            this._dbus = null;
         }
 
         this._settingsInstance = null;
@@ -188,5 +204,47 @@ var Extension = class {
         } else {
             Main.panel.addToStatusArea('ShellVolumeMenu', this._panelButton);
         }
+    }
+
+    /**
+     * Reloads the extension be disabling / enabling it.
+     * @private
+     */
+    _reloadExtension() {
+        this.disable();
+        this.enable();
+    }
+
+    /**
+     * Enables the debugging and messages.
+     *
+     * @private
+     */
+    _enableDebugging() {
+        Log.verbose = true;
+
+        this._dbus = new Dbus({
+            debugCards: () => {
+                this._events.emit('debug-cards', (result) => {
+                    Log.info(result);
+                });
+
+                return 'OK';
+            },
+
+            debugStreams: () => {
+                this._events.emit('debug-streams', (result) => {
+                    Log.info(result);
+                });
+
+                return 'OK';
+            },
+
+            reloadExtension: () => {
+                this._reloadExtension();
+            },
+        });
+
+        this._dbus.init();
     }
 };

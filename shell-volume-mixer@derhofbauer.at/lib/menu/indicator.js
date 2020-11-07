@@ -23,6 +23,11 @@ const { PercentageLabel } = Lib.widget.percentageLabel;
  */
 var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIndicator
 {
+    /**
+     * @param {Mixer} mixer
+     * @param {Object} options
+     * @private
+     */
     _init(mixer, options = {}) {
         super._init();
 

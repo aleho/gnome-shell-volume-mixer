@@ -9,10 +9,15 @@
 /* exported PercentageLabel */
 
 const { Clutter, GObject, St } = imports.gi;
+const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
+
+const { EventBroker } = Lib.utils.eventBroker;
 
 
 var PercentageLabel = GObject.registerClass(class Indicator extends St.Label {
     _init(mixer) {
+        this._events = new EventBroker();
+
         super._init({
             y_expand: true,
             y_align: Clutter.ActorAlign.CENTER,
@@ -20,7 +25,7 @@ var PercentageLabel = GObject.registerClass(class Indicator extends St.Label {
 
         this.add_style_class_name('percentage-label');
 
-        mixer.connectVolumeChanges((event, volume) => {
+        this._events.connect('volume-changed', (event, volume) => {
             this._setText(volume);
         });
 

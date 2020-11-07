@@ -11,10 +11,10 @@
 const {Gio, Gvc} = imports.gi;
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const Main = imports.ui.main;
-const Signals = imports.signals;
 const Volume = imports.ui.status.volume;
 
 const { Cards, STREAM_MATCHING } = Lib.utils.cards;
+const { EventBroker } = Lib.utils.eventBroker;
 const { EventHandlerDelegate } = Lib.utils.eventHandlerDelegate;
 const { Hotkeys } = Lib.utils.hotkeys;
 const { Profiles } = Lib.volume.profiles;
@@ -23,20 +23,16 @@ const Log = Lib.utils.log;
 const Utils = Lib.utils.utils;
 
 
-class EventSource {}
-Signals.addSignalMethods(EventSource.prototype);
-
-
 /**
  * @mixes EventHandlerDelegate
  */
 var Mixer = class
 {
     constructor() {
+        this._events = new EventBroker();
         this._control = Volume.getMixerControl();
         this.eventHandlerDelegate = this._control;
 
-        this._streamEvents = new EventSource();
         this._settings = new Settings();
         this._hotkeys = new Hotkeys(this._settings);
         this._profiles = new Profiles(this._settings);
@@ -57,18 +53,10 @@ var Mixer = class
 
     /**
      * The current Gvc.MixerControl.
+     * @returns {Object<Gvc.MixerControl>}
      */
     get control() {
         return this._control;
-    }
-
-    /**
-     * Connects an event handler to volume changes.
-     *
-     * @param {function()} callback
-     */
-    connectVolumeChanges(callback) {
-        this._streamEvents.connect('volume-changed', callback);
     }
 
     /**
@@ -137,7 +125,7 @@ var Mixer = class
         const percent = this.getVolume();
 
         if (percent !== null) {
-            this._streamEvents.emit('volume-changed', percent);
+            this._events.emit('volume-changed', percent);
         }
     }
 

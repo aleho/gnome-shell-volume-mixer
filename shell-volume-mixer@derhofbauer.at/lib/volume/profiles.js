@@ -32,7 +32,7 @@ var Profiles = class {
     }
 
     /**
-     * @return {number}
+     * @returns {number}
      */
     count() {
         return this._profiles.length;

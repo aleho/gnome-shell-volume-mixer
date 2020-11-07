@@ -22,12 +22,18 @@ const { PercentageLabel } = Lib.widget.percentageLabel;
  */
 var PanelButton = GObject.registerClass(class PanelButton extends PanelMenu.Button
 {
+    /**
+     * @param {Mixer} mixer
+     * @param {Object} options
+     * @private
+     */
     _init(mixer, options = {}) {
         super._init(0.0, 'ShellVolumeMixer');
 
         this._mixerMenu = new Menu(mixer, {
             separator: true
         });
+
         this._mixerMenu.actor.add_style_class_name('svm-standalone-menu');
 
         this._box = new St.BoxLayout();
