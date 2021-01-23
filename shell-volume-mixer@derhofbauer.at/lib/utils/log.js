@@ -10,7 +10,6 @@
 
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Lib = Extension.imports.lib;
-const StringUtils = Lib.utils.string;
 
 const LOG_PREAMBLE = Extension.metadata.uuid || 'Shell Volume Mixer';
 
@@ -127,11 +126,11 @@ function _dumpObject(object, maxDepth = 8, currDepth = 0) {
 
 
     if (currDepth > 0) {
-        indent = StringUtils.repeat('\u00A0', currDepth * 4);
+        indent = '\u00A0'.repeat(currDepth * 4);
 
     } else {
         let objectString = object.toString();
-        dump += `${objectString}\n${StringUtils.repeat('-', objectString.length)}\n\n`;
+        dump += `${objectString}\n${'-'.repeat(objectString.length)}\n\n`;
 
         if (typeof object == 'string') {
             stringMode = true;

@@ -46,15 +46,3 @@ function versionGreaterOrEqual(string) {
 
     return true;
 }
-
-
-/**
- * Helper to repeat a given string.
- *
- * @param {string} string
- * @param {number} times
- * @returns {string}
- */
-function repeat(string, times) {
-    return new Array(times + 1).join(string);
-}
