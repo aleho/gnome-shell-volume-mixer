@@ -124,8 +124,10 @@ const Preferences = class
 
             let profiles = {};
 
-            for (let profile of card.profiles) {
-                if (profile.name == 'off' || profile.available === false) {
+            for (let p in card.profiles) {
+                let profile = card.profiles[p];
+
+                if (profile.name === 'off' || profile.available === false) {
                     continue;
                 }
 
