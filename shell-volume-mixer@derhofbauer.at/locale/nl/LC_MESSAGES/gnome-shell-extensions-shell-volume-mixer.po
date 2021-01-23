@@ -10,115 +10,115 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Dutch\n"
 "Language: nl_NL\n"
-"PO-Revision-Date: 2021-01-23 18:53\n"
+"PO-Revision-Date: 2021-01-23 19:01\n"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.js:286
 msgid "Error retrieving card details"
-msgstr ""
+msgstr "Fout tijdens ophalen van kaartinformatie"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.js:287
 msgid "Helper script did not return valid card data."
-msgstr ""
+msgstr "Het hulpscript koppelde geen geldige kaartinformatie terug."
 
 #: shell-volume-mixer@derhofbauer.at/lib/utils/cards.js:95
 msgid "Querying PulseAudio sound cards failed, disabling extension"
-msgstr ""
+msgstr "Het opvragen van PulseAudio-geluidskaarten is mislukt - de uitbreiding wordt uitgeschakeld"
 
 #: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:290
 #: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:292
 msgid "Inputs"
-msgstr ""
+msgstr "Invoerbronnen"
 
 #: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:430
 msgid "unknown"
-msgstr ""
+msgstr "onbekend"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:50
 msgid "Position of volume mixer"
-msgstr ""
+msgstr "Positie van volumemixer"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:64
 msgid "Status Menu"
-msgstr ""
+msgstr "Statusmenu"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:65
 msgid "Left"
-msgstr ""
+msgstr "Links"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:66
 msgid "Center"
-msgstr ""
+msgstr "Midden"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:67
 msgid "Right"
-msgstr ""
+msgstr "Rechts"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:82
 msgid "Remove original slider"
-msgstr ""
+msgstr "GNOME's schuifbalk verbergen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:95
 msgid "Show detailed sliders"
-msgstr ""
+msgstr "Uitgebreide schuifbalken tonen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:135
 msgid "Hotkey for profile switcher"
-msgstr ""
+msgstr "Sneltoets om te wisselen van profiel"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:158
 msgid "(e.g. \"<Super>p\")"
-msgstr ""
+msgstr "(bijv. '<Super>p')"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:171
 msgid "Show system sounds"
-msgstr ""
+msgstr "Systeemgeluiden tonen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:184
 msgid "Use symbolic icons"
-msgstr ""
+msgstr "Symbolische pictogrammen gebruiken"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:221
 msgid "Show virtual streams"
-msgstr ""
+msgstr "Virtuele streams tonen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:246
 msgid "Always show input streams"
-msgstr ""
+msgstr "Altijd invoerstreams tonen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:270
 msgid "Shows the slider even if no application is recording"
-msgstr ""
+msgstr "Toon de schuifbalk ook als er geen opnames plaatsvinden"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:322
 msgid "Show percentage"
-msgstr ""
+msgstr "Percentage tonen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:346
 msgid "Whether to show percentage of current output right of the icon"
-msgstr ""
+msgstr "Toon het volumepercentage van de huidige uitvoerbron op het pictogram"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:377
 msgid "Settings"
-msgstr ""
+msgstr "Instellingen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:414
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:581
 msgid "Devices"
-msgstr ""
+msgstr "Apparaten"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:465
 msgid "Card"
-msgstr ""
+msgstr "Kaart"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:479
 msgid "Profile"
-msgstr ""
+msgstr "Profiel"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:492
 msgid "Switch"
-msgstr ""
+msgstr "Wisselen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:505
 msgid "Display"
-msgstr ""
+msgstr "Weergave"
 
