@@ -1,120 +1,124 @@
-# Polish translation for GNOME Shell Volume Mixer.
-# Copyright (C) 2017
-# This file is distributed under the same license as the GNOME Shell Volume Mixer.
-# Piotr Komur, pkomur@gmail.com, 2017.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: GNOME Shell Volume Mixer\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-07 23:12+0100\n"
-"PO-Revision-Date: 2017-11-08 18:36+0100\n"
-"Last-Translator: Alexander Hofbauer <alex@derhofbauer.at>\n"
-"Language-Team: \n"
-"Language: pl_PL\n"
-"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"X-Crowdin-Project: gnome-shell-volume-mixer\n"
+"X-Crowdin-Project-ID: 294009\n"
+"X-Crowdin-Language: pl\n"
+"X-Crowdin-File: /master/shell-volume-mixer@derhofbauer.at/locale/translations.pot\n"
+"X-Crowdin-File-ID: 4\n"
+"Project-Id-Version: gnome-shell-volume-mixer\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.4\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2);\n"
-"X-Poedit-Basepath: .\n"
-"X-Poedit-KeywordsList: _;title;label\n"
+"Language-Team: Polish\n"
+"Language: pl_PL\n"
+"PO-Revision-Date: 2021-01-23 18:53\n"
 
-#: prefs.js:288
+#: shell-volume-mixer@derhofbauer.at/prefs.js:286
 msgid "Error retrieving card details"
 msgstr "Błąd podczas pobierania danych karty"
 
-#: prefs.js:289
+#: shell-volume-mixer@derhofbauer.at/prefs.js:287
 msgid "Helper script did not return valid card data."
 msgstr "Narzędzie nie zwróciło prawidłowych danych."
 
-#: widget/volume.js:255 widget/volume.js:257
+#: shell-volume-mixer@derhofbauer.at/lib/utils/cards.js:95
+msgid "Querying PulseAudio sound cards failed, disabling extension"
+msgstr ""
+
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:290
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:292
 msgid "Inputs"
 msgstr "Wejścia"
 
-#: widget/volume.js:394
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:430
 msgid "unknown"
 msgstr "nieznany"
 
-#: prefs.ui:56
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:50
 msgid "Position of volume mixer"
 msgstr "Położenie miksera"
 
-#: prefs.ui:70
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:64
 msgid "Status Menu"
 msgstr "Menu systemowe"
 
-#: prefs.ui:71
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:65
 msgid "Left"
 msgstr "Z lewej"
 
-#: prefs.ui:72
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:66
 msgid "Center"
 msgstr "Po środku"
 
-#: prefs.ui:73
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:67
 msgid "Right"
 msgstr "Z prawej"
 
-#: prefs.ui:88
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:82
 msgid "Remove original slider"
 msgstr "Ukryj systemowy regulator"
 
-#: prefs.ui:101
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:95
 msgid "Show detailed sliders"
 msgstr "Pokaż szczegóły urządzenia"
 
-#: prefs.ui:141
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:135
 msgid "Hotkey for profile switcher"
 msgstr "Skrót klawiszowy przełączania profilów"
 
-#: prefs.ui:164
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:158
 msgid "(e.g. \"<Super>p\")"
 msgstr "(np. \"<Super>p\")"
 
-#: prefs.ui:260
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:171
 msgid "Show system sounds"
 msgstr "Pokaż dźwięki systemowe"
 
-#: prefs.ui:273
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:184
 msgid "Use symbolic icons"
 msgstr "Pokaż ikony symboliczne"
 
-#: prefs.ui:310
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:221
 msgid "Show virtual streams"
 msgstr "Pokaż strumienie wirtualne"
 
-#: prefs.ui:335
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:246
 msgid "Always show input streams"
 msgstr "Pokaż strumienie wejściowe"
 
-#: prefs.ui:359
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:270
 msgid "Shows the slider even if no application is recording"
-msgstr ""
-"(Pokazuje regulatory, nawet przy braku aktywnych programów nagrywających)"
+msgstr "Pokazuje regulatory, nawet przy braku aktywnych programów nagrywających"
 
-#: prefs.ui:445
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:322
+msgid "Show percentage"
+msgstr ""
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:346
+msgid "Whether to show percentage of current output right of the icon"
+msgstr ""
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:377
 msgid "Settings"
 msgstr "Ustawienia"
 
-#: prefs.ui:482 prefs.ui:649
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:414
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:581
 msgid "Devices"
 msgstr "Urządzenia"
 
-#: prefs.ui:533
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:465
 msgid "Card"
 msgstr "Karta"
 
-#: prefs.ui:547
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:479
 msgid "Profile"
 msgstr "Profil"
 
-#: prefs.ui:560
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:492
 msgid "Switch"
 msgstr "Przełącznik"
 
-#: prefs.ui:573
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:505
 msgid "Display"
 msgstr "Wyświetlacz"
+
