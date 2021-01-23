@@ -1,24 +1,16 @@
-# German translation for GNOME Shell Volume Mixer.
-# Copyright (C) 2014
-# This file is distributed under the same license as the GNOME Shell Volume Mixer.
-# Jonatan Zedler <jonatan_zedler@gmx.de>, 2014.
-# Alexander Hofbauer <alex@derhofbauer.at>, 2014.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: GNOME Shell Volume Mixer\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-03-28 18:33+0100\n"
-"Last-Translator: Alexander Hofbauer <alex@derhofbauer.at>\n"
-"Language-Team: German\n"
-"Language: de\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
-"X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: gnome-shell-volume-mixer\n"
+"X-Crowdin-Project-ID: 294009\n"
+"X-Crowdin-Language: de\n"
+"X-Crowdin-File: /master/shell-volume-mixer@derhofbauer.at/locale/translations.pot\n"
+"X-Crowdin-File-ID: 4\n"
+"Project-Id-Version: gnome-shell-volume-mixer\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language-Team: German\n"
+"Language: de_DE\n"
+"PO-Revision-Date: 2021-01-23 18:53\n"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.js:286
 msgid "Error retrieving card details"
@@ -28,20 +20,18 @@ msgstr "Fehler beim Abfragen der Karten"
 msgid "Helper script did not return valid card data."
 msgstr "Hilfsprogramm gab keine gültigen Daten zurück."
 
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:277
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:279
+#: shell-volume-mixer@derhofbauer.at/lib/utils/cards.js:95
+msgid "Querying PulseAudio sound cards failed, disabling extension"
+msgstr "Abfrage der PulseAudio-Soundkarten fehlgeschlagen, Erweiterung deaktiviert"
+
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:290
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:292
 msgid "Inputs"
 msgstr "Eingänge"
 
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:416
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:430
 msgid "unknown"
 msgstr "unbekannt"
-
-#: shell-volume-mixer@derhofbauer.at/lib/utils/cards.js:82
-msgid "Querying PulseAudio sound cards failed, disabling extension"
-msgstr ""
-"Abfrage der PulseAudio-Soundkarten fehlgeschlagen, Erweiterung "
-"deaktiviert"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:50
 msgid "Position of volume mixer"
@@ -97,9 +87,7 @@ msgstr "Eingänge immer anzeigen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:270
 msgid "Shows the slider even if no application is recording"
-msgstr ""
-"Zeigt Aufnahmeströme (Mikrofone) immer an, auch wenn keine Applikation "
-"gerade aufnimmt"
+msgstr "Zeigt Aufnahmeströme (Mikrofone) immer an, auch wenn keine Applikation gerade aufnimmt"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:322
 msgid "Show percentage"
@@ -107,8 +95,7 @@ msgstr "Prozent anzeigen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:346
 msgid "Whether to show percentage of current output right of the icon"
-msgstr ""
-"Lautstärke des aktuellen Ausgangs in Prozent neben dem Icon anzeigen"
+msgstr "Lautstärke des aktuellen Ausgangs in Prozent neben dem Icon anzeigen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:377
 msgid "Settings"
@@ -134,3 +121,4 @@ msgstr "Umschalter"
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:505
 msgid "Display"
 msgstr "Anzeigen"
+
