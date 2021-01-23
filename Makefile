@@ -69,7 +69,7 @@ stylesheet.css:
 	sed -i '/\/\*\sGlobal\sValues\s\*\//,/\/\*\sCommon\sStylings\s\*/d' $(SRCDIR)/stylesheet.css
 
 check:
-	node_modules/.bin/eslint $(SRCDIR)
+	npm run eslint
 
 clean:
 	@test ! -d "$(BUILDDIR)" || rm -rf $(BUILDDIR)

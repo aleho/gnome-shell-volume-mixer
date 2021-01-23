@@ -1,49 +1,53 @@
 module.exports = {
     'env': {
-        'es6': true
+        'es6': true,
     },
     'globals': {
-        '_': false,
-        'ARGV': false,
-        'C_': false,
-        'Debugger': false,
+        '_':               false,
+        'ARGV':            false,
+        'C_':              false,
+        'Debugger':        false,
         'GjsFileImporter': false,
-        'global': false,
-        'imports': false,
-        'InternalError': false,
-        'Iterator': false,
-        'log': false,
-        'logError': false,
-        'N_': false,
-        'ngettext': false,
-        'print': false,
-        'printerr': false,
-        'StopIteration': false,
-        'uneval': false,
-        'window': false
+        'global':          false,
+        'imports':         false,
+        'InternalError':   false,
+        'Iterator':        false,
+        'log':             false,
+        'logError':        false,
+        'N_':              false,
+        'ngettext':        false,
+        'print':           false,
+        'printerr':        false,
+        'StopIteration':   false,
+        'uneval':          false,
+        'window':          false,
     },
     'extends': 'eslint:recommended',
     'parserOptions': {
-        'ecmaVersion': 2017
+        'ecmaVersion': 2017,
     },
     'rules': {
         'indent': [
             'error',
             4,
-            { 'SwitchCase': 1 }
+            { 'SwitchCase': 1 },
         ],
         'linebreak-style': [
             'error',
-            'unix'
+            'unix',
         ],
         'quotes': [
             'error',
             'single',
-            { 'allowTemplateLiterals': true }
+            { 'allowTemplateLiterals': true },
         ],
         'semi': [
             'error',
-            'always'
-        ]
-    }
+            'always',
+        ],
+        'no-unused-vars': [
+            2,
+            { 'vars': 'local', 'args': 'after-used' },
+        ],
+    },
 };
