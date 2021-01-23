@@ -1,0 +1,35 @@
+name: Linting
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+
+  checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js 14
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Cache node modules
+        id: node-cache
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: npm install
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: npm install
+
+      - name: Run ESLint
+        run: npm run eslint
