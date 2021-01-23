@@ -225,26 +225,30 @@ var Extension = class {
 
         this._dbus = new Dbus({
             debugCards: () => {
-                this._events.emit('debug-cards', (result) => {
-                    Log.info(result);
-                });
-
-                return 'OK';
+                return this._emitDebugEvent('debug-cards');
             },
 
             debugStreams: () => {
-                this._events.emit('debug-streams', (result) => {
-                    Log.info(result);
-                });
-
-                return 'OK';
+                return this._emitDebugEvent('debug-streams');
             },
 
-            reloadExtension: () => {
+            debugEvents: () => {
+                return this._emitDebugEvent('debug-events');
+            },
+
+            reload: () => {
                 this._reloadExtension();
             },
         });
 
         this._dbus.init();
+    }
+
+    _emitDebugEvent(eventName) {
+        this._events.emit(eventName, result => {
+            Log.info(result);
+        });
+
+        return 'OK';
     }
 };

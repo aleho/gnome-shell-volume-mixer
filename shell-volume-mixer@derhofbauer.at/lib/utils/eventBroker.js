@@ -8,7 +8,10 @@
 
 /* exported EventBroker */
 
+const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const Signals = imports.signals;
+
+const Log = Lib.utils.log;
 
 let instance;
 
@@ -19,6 +22,10 @@ var EventBroker = class {
         }
 
         instance = this;
+
+        this.connect('debug-events', (event, callback) => {
+            callback(Log.dump(this._signalConnections));
+        });
     }
 };
 

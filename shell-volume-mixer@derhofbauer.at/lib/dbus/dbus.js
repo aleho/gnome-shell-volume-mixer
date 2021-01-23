@@ -23,7 +23,9 @@ const DBUS_INTERFACE =
             <arg name="what" type="s" direction="in" /> \
             <arg name="result" type="s" direction="out" /> \
         </method> \
-        <method name="reload"> \
+        <method name="reload"/> \
+        <method name="help"> \
+            <arg name="result" type="s" direction="out" /> \
         </method> \
     </interface> \
 </node>';
@@ -35,6 +37,7 @@ let instance;
  *   reloadExtension: function,
  *   debugCards: {function():string},
  *   debugStreams: {function():string},
+ *   debugEvents: {function():string},
  * }} CommandHandler
  */
 
@@ -82,6 +85,7 @@ var Dbus = class {
         }
     }
 
+    //region dbus methods
 
     reload() {
         this._handler.reload();
@@ -103,6 +107,9 @@ var Dbus = class {
                 result = this._handler.debugStreams();
                 break;
 
+            case 'events':
+                result = this._handler.debugEvents();
+                break;
 
             case '':
                 Log.error(`D-Bus: command missing`);
@@ -114,4 +121,10 @@ var Dbus = class {
 
         return result;
     }
+
+    help() {
+        return 'Commands: debug (cards, streams, events), reload';
+    }
+
+    //endregion dbus methods
 };

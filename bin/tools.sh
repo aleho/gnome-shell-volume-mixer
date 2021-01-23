@@ -9,20 +9,23 @@ TMUX_SESSION="gsvm"
 
 
 function print_help() {
-    echo "Shell Volume Mixer dev toolkit"
-    echo ""
-    echo "    test  Runs the extension in a nested session"
-    echo "      --mode  Sets the nested session window size (default: 1280x800)"
-    echo "      --x11   Runs a X11/xorg session (defaulting to wayland)"
-    echo ""
-    echo "    lg  Toggles Looking Glass via DBus"
-    echo ""
-    echo "    command  Executes a DBUS call to debug the running extension (see interface for methods"
-    echo ""
-    echo "    add-sink  Adds a virtual sink via PulseAudio"
-    echo "      --name  Virtual sink name"
-    echo ""
-    echo "    debug  Enables or disables debugging [true, false]"
+    cat <<- EOT
+		Shell Volume Mixer dev toolkit
+
+		    *) test  Runs the extension in a nested session
+		         --mode  Sets the nested session window size (default: 1280x800)
+		         --x11   Runs a X11/xorg session (defaulting to wayland)
+
+		    *) lg  Toggles Looking Glass via D-Bus
+
+		    *) command  Executes a D-Bus call to debug the running extension
+		                (use "help" or see D-Bus interface for methods)
+
+		    *) add-sink  Adds a virtual sink via PulseAudio
+		         --name  Virtual sink name
+
+		    *) debug  Enables or disables debugging [true, false]
+EOT
 }
 
 ###
@@ -99,7 +102,7 @@ function toggle_looking_glass() {
 }
 
 
-function enableDebug() {
+function enable_debuggin() {
     local enable="$1"
 
     if [[ $enable == 1 || $enable == true ]]; then
@@ -150,7 +153,7 @@ function run_test_session() {
     gnome-shell --nested $manager
 }
 
-function dbusCommand() {
+function dbus_command() {
     local command="$1"
     local args="$2"
 
@@ -212,11 +215,11 @@ case $COMMAND in
         ;;
 
     command)
-        dbusCommand "${@}"
+        dbus_command "${@}"
         ;;
 
     debug)
-        enableDebug "$1"
+        enable_debugging "$1"
         ;;
 
     *)
