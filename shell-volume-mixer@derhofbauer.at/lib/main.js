@@ -91,10 +91,14 @@ var Extension = class {
 
     disable() {
         instance = null;
-        this._events = null;
 
         this._menu._volume = this._orgVolume;
         this._showOriginal();
+
+        if (this._events) {
+            this._events.disconnectAll();
+            this._events = null;
+        }
 
         if (this._mixer) {
             this._mixer.destroy();
