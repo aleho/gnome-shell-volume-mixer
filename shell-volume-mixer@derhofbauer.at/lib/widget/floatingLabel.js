@@ -51,7 +51,7 @@ var FloatingLabel = class
         const xOffset = node.get_length('-x-offset');
 
         let xPos;
-        if (Clutter.get_default_text_direction() == Clutter.TextDirection.RTL) {
+        if (Clutter.get_default_text_direction() === Clutter.TextDirection.RTL) {
             xPos = x - labelWidth - xOffset;
         } else {
             xPos = x + labelWidth + xOffset;

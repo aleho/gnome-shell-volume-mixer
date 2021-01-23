@@ -49,7 +49,7 @@ var Profiles = class {
         let profile = paCard.card.profile;
 
         for (let entry of this._profiles) {
-            if (entry.card == paCard.name && entry.profile == profile) {
+            if (entry.card === paCard.name && entry.profile === profile) {
                 this._current = entry;
                 break;
             }

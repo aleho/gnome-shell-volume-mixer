@@ -135,7 +135,7 @@ const Preferences = class
                 for (let parts of test) {
                     let [part] = parts.split(':', 1);
                     // profiles containing 'input' won't be accepted by Gvc
-                    if (part == 'input') {
+                    if (part === 'input') {
                         invalid = true;
                         break;
                     }
@@ -257,13 +257,13 @@ const Preferences = class
      * Binds a signal to an object, passing the object and additionally the
      * settings key to the callback.
      *
-     * @param {number} id Object, identified by id.
+     * @param {string} name Object name, identified by id.
      * @param {string} signal
      * @param {function} callback
-     * @param {string} setting Key in settings, passed to the callback.
+     * @param {string} [setting] Key in settings, passed to the callback.
      */
-    _bindSignal(id, signal, callback, setting) {
-        this._objects[id].connect(signal, widget => {
+    _bindSignal(name, signal, callback, setting) {
+        this._objects[name].connect(signal, widget => {
             callback.apply(this, [widget, setting]);
         });
     }
@@ -277,9 +277,7 @@ const Preferences = class
             return;
         }
 
-        let curr = tabs.get_current_page();
-
-        if (curr == 1) {
+        if (tabs.get_current_page() === 1) {
             return;
         }
 
@@ -349,11 +347,7 @@ const Preferences = class
      * Selection event for devices, before selection is set.
      */
     onDeviceSelection(selection, model, path) {
-        if (!path || path.get_depth() < 2) {
-            return false;
-        }
-
-        return true;
+        return path && path.get_depth() >= 2;
     }
 
     /**
@@ -453,7 +447,7 @@ const Preferences = class
         let cardidSel = store.get_value(iter, 1);
         let profileidSel = store.get_value(iter, 2);
 
-        if (cardid == cardidSel && profileid == profileidSel) {
+        if (cardid === cardidSel && profileid === profileidSel) {
             this._objects.btnAddDevice.set_sensitive(true);
         }
     }

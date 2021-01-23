@@ -44,8 +44,8 @@ var EventHandlerDelegate = class {
      *
      * @param {Object} target
      * @param {string} signal
-     * @param {function()} callback
-     * @param {?function()} initial Function returning the initial value
+     * @param {function()} [callback]
+     * @param {?function()} [initial] Function returning the initial value
      */
     connect(target, signal, callback, initial) {
         if (typeof target === 'string') {

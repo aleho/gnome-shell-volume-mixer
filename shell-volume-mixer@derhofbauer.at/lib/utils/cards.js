@@ -278,14 +278,14 @@ var Cards = class {
         profileParts.shift();
         const profile = profileParts.join(':');
 
-        if (streamAddr != cardAddr
-            || streamIndex != cardIndex
+        if (streamAddr !== cardAddr
+            || streamIndex !== cardIndex
         ) {
             // cards don't match, certainly no hit
             return false;
         }
 
-        if (streamProfile != profile) {
+        if (streamProfile !== profile) {
             return STREAM_MATCHING.card;
         }
 

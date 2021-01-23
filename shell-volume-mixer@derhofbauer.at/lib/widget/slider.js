@@ -22,7 +22,7 @@ var VolumeSlider = GObject.registerClass(class VolumeSlider extends Slider.Slide
      * Allow middle button event to bubble up for mute / unmute.
      */
     startDragging(event) {
-        if (event.get_button() == 2) {
+        if (event.get_button() === 2) {
             return Clutter.EVENT_PROPAGATE;
         }
         return super.startDragging(event);

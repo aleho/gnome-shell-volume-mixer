@@ -74,7 +74,7 @@ var Settings = class
         let instance;
 
         // for all schemas != app schema
-        if (this.schema != SETTINGS_SCHEMA) {
+        if (this.schema !== SETTINGS_SCHEMA) {
             instance = this._getSettings(this.schema);
 
         // app-schema
@@ -113,7 +113,7 @@ var Settings = class
      * @returns {Gio.Settings}
      */
     _getSettings(schema) {
-        if (Gio.Settings.list_schemas().indexOf(schema) == -1) {
+        if (Gio.Settings.list_schemas().indexOf(schema) === -1) {
             return null;
         }
 
@@ -179,7 +179,7 @@ var Settings = class
     disconnectById(signalId) {
         for (let name in this._signals) {
             let id = this._signals[name];
-            if (signalId == id) {
+            if (signalId === id) {
                 this.settings.disconnect(id);
                 delete this._signals[name];
                 return true;

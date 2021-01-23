@@ -134,7 +134,7 @@ const StreamSlider = class extends OutputStreamSliderExtension
     }
 
     _onButtonPress(actor, event) {
-        if (event.get_button() == 2) {
+        if (event.get_button() === 2) {
             this._stream.change_is_muted(!this._stream.is_muted);
             return Clutter.EVENT_STOP;
         }
@@ -261,7 +261,7 @@ var MasterSlider = class extends StreamSlider
      * Override button click to allow for mute / unmute and menu to be opened.
      */
     _onButtonPress(actor, event) {
-        if (event.get_button() == 2) {
+        if (event.get_button() === 2) {
             this._stream.change_is_muted(!this._stream.is_muted);
         }
         return Clutter.EVENT_STOP;
@@ -335,7 +335,7 @@ var OutputSlider = class extends StreamSlider
     }
 
     _onButtonPress(actor, event) {
-        if (event.get_button() == 1) {
+        if (event.get_button() === 1) {
             this._setAsDefault();
             return Clutter.EVENT_PROPAGATE;
         }
@@ -345,7 +345,7 @@ var OutputSlider = class extends StreamSlider
 
     _onKeyPress(actor, event) {
         let symbol = event.get_key_symbol();
-        if (symbol == Clutter.KEY_space || symbol == Clutter.KEY_Return) {
+        if (symbol === Clutter.KEY_space || symbol === Clutter.KEY_Return) {
             this._setAsDefault();
             return Clutter.EVENT_STOP;
         }
@@ -359,11 +359,11 @@ var OutputSlider = class extends StreamSlider
 
         this._label.text = text;
 
-        if (this.options.detailed && text != description && description) {
+        if (this.options.detailed && text !== description && description) {
             let parts = description.split('.');
 
             if (parts.length > 1) {
-                if (parts[0] == 'alsa_output') {
+                if (parts[0] === 'alsa_output') {
                     // remove the common first (and uninteresting) part
                     parts.shift();
                 }
@@ -419,7 +419,7 @@ var InputSlider = class extends StreamSlider
         let text = this._stream.name;
         let description = this._stream.description;
 
-        if (description && text != description) {
+        if (description && text !== description) {
             if (text) {
                 text = `${description} | ${text}`;
             } else {

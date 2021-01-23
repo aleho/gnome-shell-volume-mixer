@@ -241,7 +241,7 @@ var Menu = class extends VolumeMenuExtension
         let slider = new Volume.OutputSlider(control, options);
 
         let isSelected = this._output.stream
-                && this._output.stream.id == stream.id;
+                && this._output.stream.id === stream.id;
         slider.setSelected(isSelected);
 
         this._outputs[stream.id] = slider;
@@ -306,7 +306,7 @@ var Menu = class extends VolumeMenuExtension
     _onControlStateChanged() {
         super._onControlStateChanged();
 
-        if (this._control.get_state() != Gvc.MixerControlState.READY) {
+        if (this._control.get_state() !== Gvc.MixerControlState.READY) {
             return;
         }
 
@@ -325,7 +325,7 @@ var Menu = class extends VolumeMenuExtension
         }
 
         for (let id in this._outputs) {
-            this._outputs[id].setSelected(this._output.stream.id == id);
+            this._outputs[id].setSelected(this._output.stream.id === id);
         }
     }
 

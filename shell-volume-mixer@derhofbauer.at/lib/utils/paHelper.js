@@ -15,7 +15,7 @@ const Utils = Lib.utils.utils;
 
 const PYTHON_HELPER_PATH = 'pautils/cardinfo.py';
 
-let PYTHON = undefined;
+let PYTHON;
 
 async function findPython() {
     if (PYTHON === undefined) {

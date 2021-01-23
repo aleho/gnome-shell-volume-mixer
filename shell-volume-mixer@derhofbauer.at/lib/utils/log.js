@@ -145,11 +145,12 @@ function _dumpObject(object, maxDepth = 8, currDepth = 0) {
         let typeInfo = type;
 
         if (stringMode) {
-            if (isNaN(key)) {
+            let pos = parseInt(key);
+            if (isNaN(pos)) {
                 // don't debug string methods
                 break;
             }
-            typeInfo = object.charCodeAt(key);
+            typeInfo = object.charCodeAt(pos);
         }
 
         if (!isFirst) {
@@ -162,17 +163,17 @@ function _dumpObject(object, maxDepth = 8, currDepth = 0) {
         if (item === null) {
             dump += ' null';
 
-        } else if (type == 'object' || type == 'function') {
+        } else if (type ==='object' || type === 'function') {
             const isArray = Array.isArray(item);
 
             if (isArray) {
                 dump += ' [';
-            } else if (type == 'function') {
+            } else if (type === 'function') {
                 dump += ' (';
             } else {
                 // we're assuming toString() yields sane values
                 let itemString = item.toString();
-                if (itemString != '[object Object]') {
+                if (itemString !== '[object Object]') {
                     dump += ` ${itemString}`;
                 }
                 dump += ' {';
@@ -191,7 +192,7 @@ function _dumpObject(object, maxDepth = 8, currDepth = 0) {
 
             if (isArray) {
                 dump += ']';
-            } else if (type == 'function') {
+            } else if (type === 'function') {
                 dump += ')';
             } else {
                 dump += '}';

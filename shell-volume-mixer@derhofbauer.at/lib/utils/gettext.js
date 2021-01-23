@@ -44,14 +44,14 @@ function getLocal() {
  * Proxies a call to a gettext implementation.
  *
  * @param {string} type Gettext function to use
- * @param {Array} args Original gettext call arguments
+ * @param {IArguments} args Original gettext call arguments
  */
 function proxy(type, args) {
     const local = getLocal()[type];
     const trans = local.apply(local, args);
 
     // compare with original. if unchanged assume missing translation
-    if (trans != args[0]) {
+    if (trans !== args[0]) {
         return trans;
     }
 

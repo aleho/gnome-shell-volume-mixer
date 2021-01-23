@@ -32,7 +32,7 @@ function parseVersionString(string) {
 /**
  * Returns true if the current shell version is greater than the version string passed.
  *
- * @param {string} version
+ * @param {string} string Version string like 3.38.
  */
 function versionGreaterOrEqual(string) {
     let current = parseVersionString(imports.misc.config.PACKAGE_VERSION);

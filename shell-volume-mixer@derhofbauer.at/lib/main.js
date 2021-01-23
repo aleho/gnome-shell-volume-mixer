@@ -175,7 +175,7 @@ var Extension = class {
         let indicatorPos = DEFAULT_INDICATOR_POS;
 
         for (let i = 0; i < indicators.length; i++) {
-            if (this._orgVolume == indicators[i]) {
+            if (this._orgVolume === indicators[i]) {
                 indicatorPos = i;
                 break;
             }
