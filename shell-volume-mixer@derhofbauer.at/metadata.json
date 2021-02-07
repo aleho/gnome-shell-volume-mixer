@@ -6,5 +6,7 @@
     "shell-version": [
         "3.38"
     ],
+    "settings-schema": "org.gnome.shell.extensions.shell-volume-mixer",
+    "gettext-domain": "gnome-shell-extensions-shell-volume-mixer",
     "url": "https://github.com/aleho/gnome-shell-volume-mixer"
 }
