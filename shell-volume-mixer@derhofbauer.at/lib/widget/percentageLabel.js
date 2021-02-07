@@ -40,10 +40,8 @@ var PercentageLabel = GObject.registerClass(class Indicator extends St.Label {
     _setText(percent) {
         if (percent === null) {
             this.text = '';
-
         } else {
-            const formatted = _('%d\u2009%%').format(percent);
-            this.clutter_text.set_markup(`<span size="smaller">${formatted}</span>`);
+            this.text = _('%d\u2009%%').format(percent);
         }
     }
 });
