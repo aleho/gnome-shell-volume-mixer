@@ -338,26 +338,32 @@ var Menu = class extends VolumeMenuExtension
     }
 
     _debugStreams(callback) {
-        let dump = '';
+        let dump = [];
 
-        if (this._outputs.length) {
-            dump += 'Output Streams:\n';
+        if (Object.keys(this._outputs).length) {
+            dump.push('Output Streams:');
         }
 
         for (let id in this._outputs) {
             const stream = this._outputs[id].stream;
-            dump += `  ${stream.id} (${stream.name})`;
+            dump.push(`  ${stream.id} (${stream.name}) (port=${stream.port}) ${stream.description}`);
+
+            const ports = stream.get_ports();
+            for (let p in ports) {
+                const port = ports[p];
+                dump.push(`    ${port.port}`);
+            }
         }
 
-        if (this._inputs.length) {
-            dump += 'Input Streams:\n';
+        if (Object.keys(this._inputs).length) {
+            dump.push('Input Streams:');
         }
 
         for (let id in this._inputs) {
             const stream = this._inputs[id].stream;
-            dump += `  ${stream.id} (${stream.name})`;
+            dump.push(`  ${stream.id} (name=${stream.name}) (port=${stream.port}) ${stream.description}`);
         }
 
-        callback(dump);
+        callback(dump.join('\n'));
     }
 };

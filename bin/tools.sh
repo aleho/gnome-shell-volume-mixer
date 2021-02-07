@@ -102,7 +102,7 @@ function toggle_looking_glass() {
 }
 
 
-function enable_debuggin() {
+function enable_debugging() {
     local enable="$1"
 
     if [[ $enable == 1 || $enable == true ]]; then
