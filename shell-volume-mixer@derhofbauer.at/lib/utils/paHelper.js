@@ -13,7 +13,8 @@ const Log = Lib.utils.log;
 const Process = Lib.utils.process;
 const Utils = Lib.utils.utils;
 
-const PYTHON_HELPER_PATH = 'pautils/cardinfo.py';
+const PYTHON_HELPER_PATH = 'pautils/query.py';
+const TYPE_CARDS = 'cards';
 
 let PYTHON;
 
@@ -44,10 +45,11 @@ async function findPython() {
 }
 
 /**
+ * @param {string} type Type of data to query
  * @param {?number} [index=undefined]
  * @returns {Promise<?Object.<string, paCard>>} JSON object of the output
  */
-async function execHelper(index = undefined) {
+async function execHelper(type, index = undefined) {
     const paUtilPath = Utils.getExtensionPath(PYTHON_HELPER_PATH);
 
     if (!paUtilPath) {
@@ -61,7 +63,7 @@ async function execHelper(index = undefined) {
         return null;
     }
 
-    const args = ['/usr/bin/env', python, paUtilPath];
+    const args = ['/usr/bin/env', python, paUtilPath, type];
 
     if (!isNaN(index)) {
         args.push(index);
@@ -117,7 +119,7 @@ async function execHelper(index = undefined) {
  * @returns {Promise<?Object.<string, paCard>>} JSON object of the output
  */
 async function getCards() {
-    return await execHelper();
+    return await execHelper(TYPE_CARDS);
 }
 
 /**
@@ -127,7 +129,7 @@ async function getCards() {
  * @returns {Promise<?paCard>} JSON object of the output
  */
 async function getCardByIndex(index) {
-    const data = await execHelper(index);
+    const data = await execHelper(TYPE_CARDS, index);
 
     if (data && data[index]) {
         return data[index];

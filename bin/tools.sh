@@ -94,7 +94,7 @@ function add_virtual_sink() {
         props="sink_properties=device.description=$NAME"
     fi
 
-    pacmd load-module module-null-sink sink_name=svm-virtual-sink "$props"
+    pactl load-module module-null-sink object.linger=1 media.class=Audio/Sink sink_name=svm-${NAME:-virtual-sink} "$props"
 }
 
 function toggle_looking_glass() {
