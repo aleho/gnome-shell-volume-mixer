@@ -22,8 +22,6 @@ except:
 
 STRING = c_char_p
 WSTRING = c_wchar_p
-uint32_t = c_uint32
-int64_t = c_int64
 
 class mainloop(Structure):
     pass
@@ -47,18 +45,18 @@ class card_profile_info(Structure):
     _fields_ = [
         ('name', STRING),
         ('description', STRING),
-        ('n_sinks', uint32_t),
-        ('n_sources', uint32_t),
-        ('priority', uint32_t),
+        ('n_sinks', c_uint32),
+        ('n_sources', c_uint32),
+        ('priority', c_uint32),
     ]
 
 class card_profile_info2(Structure):
     _fields_ = [
         ('name', STRING),
         ('description', STRING),
-        ('n_sinks', uint32_t),
-        ('n_sources', uint32_t),
-        ('priority', uint32_t),
+        ('n_sinks', c_uint32),
+        ('n_sources', c_uint32),
+        ('priority', c_uint32),
         ('available', c_int),
     ]
 
@@ -66,30 +64,93 @@ class card_port_info(Structure):
     _fields_ = [
         ('name', STRING),
         ('description', STRING),
-        ('priority', uint32_t),
+        ('priority', c_uint32),
         ('available', c_int),
         ('direction', c_int),
-        ('n_profiles', uint32_t),
+        ('n_profiles', c_uint32),
         ('profiles', POINTER(POINTER(card_profile_info))),
         ('proplist', POINTER(proplist)),
-        ('latency_offset', int64_t),
+        ('latency_offset', c_int64),
         ('profiles2', POINTER(POINTER(card_profile_info2))),
     ]
 
 class card_info(Structure):
     _fields_ = [
-        ('index', uint32_t),
+        ('index', c_uint32),
         ('name', STRING),
-        ('owner_module', uint32_t),
+        ('owner_module', c_uint32),
         ('driver', STRING),
-        ('n_profiles', uint32_t),
+        ('n_profiles', c_uint32),
         ('profiles', POINTER(card_profile_info)),
         ('active_profile', POINTER(card_profile_info)),
         ('proplist', POINTER(proplist)),
-        ('n_ports', uint32_t),
+        ('n_ports', c_uint32),
         ('ports', POINTER(POINTER(card_port_info))),
         ('profiles2', POINTER(POINTER(card_profile_info2))),
         ('active_profile2', POINTER(card_profile_info2)),
+    ]
+
+class sink_port_info(Structure):
+    _fields_ = [
+        ('name', STRING),
+        ('description', STRING),
+        ('priority', c_uint32),
+        ('available', c_int),
+        ('availability_group', STRING),
+        ('type', c_uint32),
+    ]
+
+class format_info(Structure):
+    _fields_ = [
+        ('encoding', c_int),
+        ('plist', POINTER(proplist)),
+    ]
+
+class sample_spec(Structure):
+    _fields_ = [
+        ('format', c_int),
+        ('rate', c_uint32),
+        ('channels', c_uint8),
+    ]
+
+class pa_channel_map(Structure):
+    _fields_ = [
+        ('channels', c_uint8),
+        ('map', c_int * int(32)),
+    ]
+
+class pa_cvolume(Structure):
+    _fields_ = [
+        ('channels', c_uint8),
+        ('values', c_uint32 * int(32)),
+    ]
+
+class sink_info(Structure):
+    _fields_ = [
+        ('name', STRING),
+        ('index', c_uint32),
+        ('description', STRING),
+        ('sample_spec', sample_spec),
+        ('channel_map', pa_channel_map),
+        ('owner_module', c_uint32),
+        ('volume', pa_cvolume),
+        ('mute', c_int),
+        ('monitor_source', c_uint32),
+        ('monitor_source_name', STRING),
+        ('latency', c_uint64),
+        ('driver', STRING),
+        ('flags', c_int),
+        ('proplist', POINTER(proplist)),
+        ('configured_latency', c_uint64),
+        ('base_volume', c_uint32),
+        ('state', c_int),
+        ('n_volume_steps', c_uint32),
+        ('card', c_uint32),
+        ('n_ports', c_uint32),
+        ('ports', POINTER(POINTER(sink_port_info))),
+        ('active_port', POINTER(sink_port_info)),
+        ('n_formats', c_uint8),
+        ('formats', POINTER(POINTER(format_info))),
     ]
 
 mainloop_new = lib.pa_mainloop_new
@@ -146,13 +207,24 @@ operation_unref.argtypes = [POINTER(operation)]
 card_info_cb_t = CFUNCTYPE(None, POINTER(context), POINTER(card_info), c_int, c_void_p)
 context_get_card_info_by_index = lib.pa_context_get_card_info_by_index
 context_get_card_info_by_index.restype = POINTER(operation)
-context_get_card_info_by_index.argtypes = [POINTER(context), uint32_t, card_info_cb_t, c_void_p]
+context_get_card_info_by_index.argtypes = [POINTER(context), c_uint32, card_info_cb_t, c_void_p]
 context_get_card_info_by_name = lib.pa_context_get_card_info_by_name
 context_get_card_info_by_name.restype = POINTER(operation)
 context_get_card_info_by_name.argtypes = [POINTER(context), STRING, card_info_cb_t, c_void_p]
 context_get_card_info_list = lib.pa_context_get_card_info_list
 context_get_card_info_list.restype = POINTER(operation)
 context_get_card_info_list.argtypes = [POINTER(context), card_info_cb_t, c_void_p]
+
+sink_info_cb_t = CFUNCTYPE(None, POINTER(context), POINTER(sink_info), c_int, c_void_p)
+context_get_sink_info_by_index = lib.pa_context_get_sink_info_by_index
+context_get_sink_info_by_index.restype = POINTER(operation)
+context_get_sink_info_by_index.argtypes = [POINTER(context), c_uint32, sink_info_cb_t, c_void_p]
+context_get_sink_info_by_name = lib.pa_context_get_sink_info_by_name
+context_get_sink_info_by_name.restype = POINTER(operation)
+context_get_sink_info_by_name.argtypes = [POINTER(context), STRING, sink_info_cb_t, c_void_p]
+context_get_sink_info_list = lib.pa_context_get_sink_info_list
+context_get_sink_info_list.restype = POINTER(operation)
+context_get_sink_info_list.argtypes = [POINTER(context), sink_info_cb_t, c_void_p]
 
 proplist_gets = lib.pa_proplist_gets
 proplist_gets.restype = STRING
