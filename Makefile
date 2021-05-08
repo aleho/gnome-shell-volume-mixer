@@ -12,8 +12,8 @@ LOCALES_SRC = $(foreach dir,$(LOCALE_DIR),$(wildcard $(dir)/*/*/*.po))
 LOCALES = $(patsubst %.po,%.mo,$(LOCALES_SRC))
 
 SOURCES = \
-	pautils/cardinfo.py \
-	pautils/pa.py \
+	pautils/lib/*.py \
+	pautils/query.py \
 	lib/** \
 	*.js \
 	prefs.ui \
