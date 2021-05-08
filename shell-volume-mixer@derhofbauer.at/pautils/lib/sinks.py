@@ -14,23 +14,23 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from pulseaudio import Pulseaudio
-import log
-import pa
+from .pulseaudio import Pulseaudio
+from . import log
+from . import libpulse
 
 
 class Sinks(Pulseaudio):
     def build_callback(self):
-        return pa.sink_info_cb_t(self.pa_cb)
+        return libpulse.sink_info_cb_t(self.pa_cb)
 
     def get_by_index(self, index, callback):
-        return pa.context_get_sink_info_by_index(self._context, index, callback, None)
+        return libpulse.context_get_sink_info_by_index(self._context, index, callback, None)
 
     def get_by_name(self, name, callback):
-        return pa.context_get_sink_info_by_name(self._context, name, callback, None)
+        return libpulse.context_get_sink_info_by_name(self._context, name, callback, None)
 
     def get_all(self, callback):
-        return pa.context_get_sink_info_list(self._context, callback, None)
+        return libpulse.context_get_sink_info_list(self._context, callback, None)
 
     def cb_data(self, pa_sink):
         sink_name = pa_sink.name.decode('utf8')
@@ -38,14 +38,14 @@ class Sinks(Pulseaudio):
 
         if not description:
             try:
-                description = pa.proplist_gets(pa_sink.proplist, b'device.description')
+                description = libpulse.proplist_gets(pa_sink.proplist, b'device.description')
                 description = description.decode('utf8') if description else None
             except Exception:
                 log.debug('No property "device.description"')
                 description = sink_name
 
         try:
-            alsa_card = pa.proplist_gets(pa_sink.proplist, b'alsa.card')
+            alsa_card = libpulse.proplist_gets(pa_sink.proplist, b'alsa.card')
             alsa_card = int(alsa_card.decode('utf8')) if alsa_card else None
         except Exception:
             log.debug('No property "alsa.card"')

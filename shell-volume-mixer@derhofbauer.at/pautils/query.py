@@ -24,9 +24,9 @@
 import json
 import sys
 
-import log
-from cards import Cards
-from sinks import Sinks
+from lib import log
+from lib.cards import Cards
+from lib.sinks import Sinks
 
 if len(sys.argv) < 2:
     print('Need a type to query')

@@ -16,12 +16,12 @@
 
 import abc
 
-import log
-import pa
+from . import log
+from . import libpulse
 
 
 class Pulseaudio:
-    _pa_state = pa.CONTEXT_UNCONNECTED
+    _pa_state = libpulse.CONTEXT_UNCONNECTED
     _op_done = False
 
     _data = {}
@@ -31,44 +31,44 @@ class Pulseaudio:
     }
 
     def __init__(self):
-        self._pa_mainloop = pa.mainloop_new()
-        self._pa_mainloop_api = pa.mainloop_get_api(self._pa_mainloop)
+        self._pa_mainloop = libpulse.mainloop_new()
+        self._pa_mainloop_api = libpulse.mainloop_get_api(self._pa_mainloop)
 
-        self._context = pa.context_new(self._pa_mainloop_api, b'ShellVolumeMixer')
-        self._context_notify_cb = pa.context_notify_cb_t(self.context_notify_cb)
+        self._context = libpulse.context_new(self._pa_mainloop_api, b'ShellVolumeMixer')
+        self._context_notify_cb = libpulse.context_notify_cb_t(self.context_notify_cb)
 
-        pa.context_set_state_callback(self._context, self._context_notify_cb, None)
+        libpulse.context_set_state_callback(self._context, self._context_notify_cb, None)
 
     def __enter__(self):
-        pa.context_connect(self._context, None, 0, None)
+        libpulse.context_connect(self._context, None, 0, None)
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        pa.context_disconnect(self._context)
-        pa.context_unref(self._context)
-        pa.mainloop_free(self._pa_mainloop)
+        libpulse.context_disconnect(self._context)
+        libpulse.context_unref(self._context)
+        libpulse.mainloop_free(self._pa_mainloop)
 
     def context_notify_cb(self, context, userdata):
         try:
-            self._pa_state = pa.context_get_state(context)
+            self._pa_state = libpulse.context_get_state(context)
         except Exception:
-            self._pa_state = pa.CONTEXT_FAILED
+            self._pa_state = libpulse.CONTEXT_FAILED
             log.debug('Context failed')
 
     def get_info(self, index=None, name=None):
         log.debug('Querying details...')
         operation = None
 
-        while self._pa_state != pa.CONTEXT_TERMINATED:
+        while self._pa_state != libpulse.CONTEXT_TERMINATED:
             if self._op_done:
                 break
 
-            if self._pa_state == pa.CONTEXT_FAILED:
+            if self._pa_state == libpulse.CONTEXT_FAILED:
                 self._data = self._error
                 self._data['error'] = 'context failed'
                 break
 
-            if self._pa_state == pa.CONTEXT_READY and not operation:
+            if self._pa_state == libpulse.CONTEXT_READY and not operation:
                 callback = self.build_callback()
 
                 if name:
@@ -83,10 +83,10 @@ class Pulseaudio:
                     log.debug('Requesting all available data')
                     operation = self.get_all(callback)
 
-            pa.mainloop_iterate(self._pa_mainloop, 0, None)
+            libpulse.mainloop_iterate(self._pa_mainloop, 0, None)
 
         if operation:
-            pa.operation_unref(operation)
+            libpulse.operation_unref(operation)
 
         log.debug('Query done')
 
