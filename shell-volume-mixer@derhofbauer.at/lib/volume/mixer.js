@@ -241,9 +241,8 @@ var Mixer = class
             this._control.set_default_sink(newSink);
         }
 
-        const cardDescription = paCard.description;
-        const profileDescription = paCard.profiles[next.profile];
-        this._showNotification(`${cardDescription}\n${profileDescription}`);
+        const paProfile = paCard.profiles[next.profile];
+        this._showNotification(`${paCard.description || paCard.name}\n${paProfile.description || paProfile.name}`);
     }
 
     /**
