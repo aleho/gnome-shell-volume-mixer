@@ -53,7 +53,8 @@ var Mixer = class
 
     /**
      * The current Gvc.MixerControl.
-     * @returns {Object<Gvc.MixerControl>}
+     *
+     * @returns {Gvc.MixerControl}
      */
     get control() {
         return this._control;

@@ -25,13 +25,31 @@ var STREAM_MATCHING = Object.freeze({
     card:   2,
 });
 
+/** @typedef {{
+ *   name: String,
+ *   description: String,
+ *   available: Boolean,
+ * }} paProfile
+ */
 
 /** @typedef {{
- *   name: string,
- *   index: number,
- *   profiles: string[],
- *   fake: boolean,
- *   card: Object<Gvc.MixerCard>
+ *   name: String,
+ *   description: String,
+ *   available: Boolean,
+ *   direction: String,
+ * }} paPort
+ */
+
+/** @typedef {{
+ *   index: Number,
+ *   alsaCard: Number,
+ *   name: String,
+ *   description: String,
+ *   active_profile: String,
+ *   profiles: Object.<string, paProfile>,
+ *   ports: Object.<string, paPort>,
+ *   fake: Boolean,
+ *   card: Object<Gvc.MixerCard>,
  * }} paCard
  */
 
@@ -41,7 +59,7 @@ var STREAM_MATCHING = Object.freeze({
  */
 var Cards = class {
     /**
-     * @param {Object<Gvc.MixerControl>} control
+     * @param {Gvc.MixerControl} control
      */
     constructor(control) {
         this._events = new EventBroker();
@@ -153,7 +171,7 @@ var Cards = class {
 
     /**
      * @param {paCard} paCard
-     * @param {Object<Gvc.MixerCard>} card
+     * @param {Gvc.MixerCard} card
      * @private
      */
     _addGvcCard(paCard, card) {
@@ -255,10 +273,10 @@ var Cards = class {
     /**
      * Tries to find out whether a certain stream matches profile for a card.
      *
-     * @param {Object<Gvc.MixerStream>} stream
+     * @param {Gvc.MixerStream} stream
      * @param {paCard} paCard
      * @param {string} profileName
-     * @private
+     * @returns {STREAM_MATCHING}
      */
     streamMatchesPaCard(stream, paCard, profileName) {
         const streamName = stream.name;

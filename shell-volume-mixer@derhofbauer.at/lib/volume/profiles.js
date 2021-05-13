@@ -14,10 +14,10 @@ const Log = Lib.utils.log;
 
 
 /** @typedef {{
- *   card: string,
- *   profile: string,
- *   switcher: boolean,
- *   show: boolean,
+ *   card: String,
+ *   profile: String,
+ *   switcher: Boolean,
+ *   show: Boolean,
  *   next: paCycledProfile,
  * }} paCycledProfile
  */
