@@ -16,7 +16,10 @@ const PopupMenu = imports.ui.popupMenu;
 const Volume = imports.ui.status.volume;
 
 const __ = Lib.utils.gettext._;
+
+const { EventBroker } = Lib.utils.eventBroker;
 const { FloatingLabel } = Lib.widget.floatingLabel;
+const Log = Lib.utils.log;
 const MenuItem = Lib.widget.menuItem;
 const Settings = Lib.settings;
 const Slider = Lib.widget.slider;
@@ -45,12 +48,18 @@ Utils.mixin(OutputStreamSliderExtension, Volume.OutputStreamSlider);
  */
 const StreamSlider = class extends OutputStreamSliderExtension
 {
+    /**
+     * @param {Gvc.MixerControl} control
+     * @param {sliderOptions} options
+     * @private
+     */
     constructor(control, options = {}) {
         super();
 
         this.options = options;
         this._control = control;
         this._mixer = options.mixer;
+        this._events = new EventBroker();
 
         this._init(options);
 
@@ -58,7 +67,9 @@ const StreamSlider = class extends OutputStreamSliderExtension
     }
 
     /**
-     * Init basically copied from Volume.StreamSlider and Volume.OutputStreamSlider
+     * Init basically copied from Volume.StreamSlider (all init) and Volume.OutputStreamSlider (icons).
+     *
+     * @param {sliderOptions} options
      */
     _init(options) {
         if (!this.item) {
@@ -332,6 +343,11 @@ var OutputSlider = class extends StreamSlider
         if (options.detailed) {
             this.item.addChildAt(this._details, 1);
         }
+
+        this._cards = options.mixer.cards;
+        this._updateVisibility(false);
+
+        this._events.connect('default-sink-updated', this._onDefaultSinkUpdated.bind(this));
     }
 
     _onButtonPress(actor, event) {
@@ -376,18 +392,82 @@ var OutputSlider = class extends StreamSlider
         }
     }
 
-    setSelected(selected) {
-        if (selected !== false) {
-            this.item.setSelected(true);
-            this._label.add_style_class_name('selected-stream');
+    _setAsDefault() {
+        this._control.set_default_sink(this._stream);
+    }
+
+    _onDefaultSinkUpdated(/* stream */) {
+        this._updateVisibility(false);
+    }
+
+    _updateVisibility(forceRefresh = true) {
+        if (!this._shouldBeVisible()) {
+            // set invisible immediately
+            this.item.visible = false;
+
         } else {
-            this.item.setSelected(false);
-            this._label.remove_style_class_name('selected-stream');
+            // check if port is available before setting visible
+            (async () => {
+                try {
+                    const byPort = await this._shouldByVisibleByPort(forceRefresh);
+
+                    // This could be a race condition with the async code finishing after current conditions have changed.
+                    // Therefore we have to check the sync path again.
+                    this.item.visible = byPort && this._shouldBeVisible();
+
+                } catch (e) {
+                    Log.error('OutputSlider', '_updateVisibility', e);
+                }
+            })();
         }
     }
 
-    _setAsDefault() {
-        this._control.set_default_sink(this._stream);
+    _shouldBeVisible() {
+        if (this.options.mixer.defaultSink === this._stream) {
+            Log.info(`Hiding ${this._stream.id}:${this._stream.name}, it's the default sink`);
+
+            return false;
+        }
+
+        return super._shouldBeVisible();
+    }
+
+    /**
+     * @returns {Promise<boolean>}
+     * @private
+     */
+    async _shouldByVisibleByPort(forceRefresh = true) {
+        if (!this._stream || ! this._cards) {
+            return true;
+        }
+
+        if (!this._stream.card_index) {
+            Log.error('OutputSlider', '_shouldByVisibleByPort', 'Stream cannot be identified, no card index available');
+            return true;
+        }
+
+        const card = await this._cards.get(this._stream.card_index, forceRefresh);
+
+        if (!card) {
+            Log.info(`Card ${this._stream.card_index} not found for stream ${this._stream.id}:${this._stream.name}`);
+            return true;
+        }
+
+        const port = this._stream.port in card.ports ? card.ports[this._stream.port] : null;
+
+        if (!port) {
+            Log.error('OutputSlider', '_shouldByVisibleByPort', `Port ${this._stream.port} not found for stream ${this._stream.id}:${this._stream.name}`);
+            return true;
+        }
+
+        // null == cannot be disabled, true == available, false == not available
+        if (port.available !== false) {
+            return true;
+        }
+
+        Log.info(`Hiding ${this._stream.id}:${this._stream.name}, port "${this._stream.port}" not available`);
+
+        return false;
     }
 };
 
@@ -397,6 +477,10 @@ var OutputSlider = class extends StreamSlider
  */
 var EventsSlider = class extends StreamSlider
 {
+    /**
+     * @param {sliderOptions} options
+     * @private
+     */
     _init(options) {
         super._init(options);
 
@@ -437,6 +521,9 @@ var InputSlider = class extends StreamSlider
  */
 var InputStreamSlider = class extends StreamSlider
 {
+    /**
+     * @param {sliderOptions} options
+     */
     _init(options) {
         super._init(options);
 

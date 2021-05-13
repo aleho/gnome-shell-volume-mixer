@@ -247,16 +247,36 @@ var Cards = class {
      * Finds a card by card index.
      *
      * @param {number} index
+     * @param {Boolean} forceRefresh
      * @returns {Promise<?paCard>}
      */
-    async get(index) {
+    async get(index, forceRefresh = false) {
         if (index === NULL_CARD) {
             return null;
         }
 
         await this._initDone;
 
-        return (index in this._paCards) ? this._paCards[index] : null;
+        if (!forceRefresh) {
+            if (index in this._paCards) {
+                return this._paCards[index];
+            }
+
+            Log.info(`Card ${index} not found, querying...`);
+        }
+
+        const paCard = await PaHelper.getCardByIndex(index);
+
+        if (!paCard) {
+            return null;
+        }
+
+        if (this._controlIsReady()) {
+            let card = this._control.lookup_card_id(paCard.index);
+            this._addGvcCard(paCard, card);
+        }
+
+        return paCard;
     }
 
     /**

@@ -61,6 +61,20 @@ var Mixer = class
     }
 
     /**
+     * @returns {Cards}
+     */
+    get cards() {
+        return this._cards;
+    }
+
+    /**
+     * @returns {?Gvc.MixerSink}
+     */
+    get defaultSink() {
+        return this._defaultSink;
+    }
+
+    /**
      * Returns the current volume in percent.
      *
      * @returns {?number}
@@ -143,7 +157,7 @@ var Mixer = class
             this._defaultSink = stream;
 
             if (stream) {
-                Log.info('Updating default sink');
+                Log.info(`Updating default sink ${stream.id}:${stream.name}`);
 
                 this._connectSink();
                 this._onVolumeUpdate();
@@ -153,20 +167,25 @@ var Mixer = class
             }
         }
 
-        // we might get a sink id without being able to lookup or code causing the event handles the update
-        if (!stream || this._pauseDefaultSinkEvent) {
-            this._pauseDefaultSinkEvent = false;
-            return;
+        // we might get a sink id without being able to lookup
+        // ...or local code causing the event triggers another update
+        if (stream && !this._pauseDefaultSinkEvent) {
+            try {
+                const paCard = await this._cards.get(stream.card_index);
+
+                if (!paCard || !paCard.card) {
+                    Log.info(`Default sink updated but PA/GVC card not found (${stream.card_index}/${stream.name})`);
+                } else {
+                    this._profiles.setCurrent(paCard);
+                }
+
+            } catch (e) {
+                Log.error('Mixer', '_updateDefaultSink', e);
+            }
         }
 
-        const paCard = await this._cards.get(stream.card_index);
-
-        if (!paCard || !paCard.card) {
-            Log.error('Mixer', '_updateDefaultSink', `Default sink updated but PA/GVC card not found (${stream.card_index}/${stream.name})`);
-            return;
-        }
-
-        this._profiles.setCurrent(paCard);
+        this._pauseDefaultSinkEvent = false;
+        this._events.emit('default-sink-updated', stream);
     }
 
     /**
@@ -209,8 +228,13 @@ var Mixer = class
             return;
         }
 
-        // lookup card indirectly via name (indexes aren't UUIDs)
-        const paCard = await this._cards.getByName(next.card);
+        let paCard;
+        try {
+            // lookup card indirectly via name (indexes aren't UUIDs)
+            paCard = await this._cards.getByName(next.card);
+        } catch (e) {
+            Log.error('Mixer', '_switchProfile', e);
+        }
 
         if (!paCard || !paCard.card) {
             // we don't know this card, we won't be able to set its profile

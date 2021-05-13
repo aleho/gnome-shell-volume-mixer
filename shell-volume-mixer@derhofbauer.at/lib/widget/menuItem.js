@@ -87,7 +87,7 @@ var MasterMenuItem = GObject.registerClass(class MasterMenuItem extends PopupMen
     }
 
     _onButtonReleaseEvent(actor, event) {
-        if (event.get_button() == 2) {
+        if (event.get_button() === 2) {
             return Clutter.EVENT_STOP;
         }
         return super._onButtonReleaseEvent(actor, event);

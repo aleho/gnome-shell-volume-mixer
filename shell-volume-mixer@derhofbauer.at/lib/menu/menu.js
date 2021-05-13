@@ -26,6 +26,15 @@ class VolumeMenuExtension extends PopupMenu.PopupMenuSection {}
 Utils.mixin(VolumeMenuExtension, Volume.VolumeMenu);
 
 
+/** @typedef {{
+ *   mixer: Mixer,
+ *   detailed: Boolean,
+ *   symbolicIcons: Boolean,
+ *   stream: Gcv.MixerStream,
+ * }} sliderOptions
+ */
+
+
 /**
  * Our own ui.status.VolumeMenu implementation.
  */
@@ -179,7 +188,7 @@ var Menu = class extends VolumeMenuExtension
             return;
         }
 
-        let options = {
+        const options = {
             mixer: this._mixer,
             detailed: this.options.detailed,
             symbolicIcons: this.options.symbolicIcons,
@@ -205,7 +214,7 @@ var Menu = class extends VolumeMenuExtension
      *
      * @param stream
      * @param control
-     * @param options
+     * @param {sliderOptions} options
      * @private
      */
     _addInputStream(stream, control, options) {
@@ -227,7 +236,7 @@ var Menu = class extends VolumeMenuExtension
      *
      * @param stream
      * @param control
-     * @param options
+     * @param {sliderOptions} options
      * @private
      */
     _addOutputStream(stream, control, options) {
@@ -240,10 +249,6 @@ var Menu = class extends VolumeMenuExtension
 
         let slider = new Volume.OutputSlider(control, options);
 
-        let isSelected = this._output.stream
-                && this._output.stream.id === stream.id;
-        slider.setSelected(isSelected);
-
         this._outputs[stream.id] = slider;
         this._output.addOutputSlider(slider);
     }
@@ -253,7 +258,7 @@ var Menu = class extends VolumeMenuExtension
      *
      * @param stream
      * @param control
-     * @param options
+     * @param {sliderOptions} options
      * @private
      */
     _addSliderStream(stream, control, options) {
@@ -313,19 +318,6 @@ var Menu = class extends VolumeMenuExtension
         let streams = this._control.get_streams();
         for (let stream of streams) {
             this._addStream(this._control, stream);
-        }
-    }
-
-    _readOutput() {
-        super._readOutput();
-
-        if (!this._output.stream) {
-            // safety check for failed setups
-            return;
-        }
-
-        for (let id in this._outputs) {
-            this._outputs[id].setSelected(this._output.stream.id === id);
         }
     }
 
