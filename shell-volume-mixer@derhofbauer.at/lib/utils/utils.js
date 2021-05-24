@@ -37,7 +37,11 @@ function getExtensionPath(subpath) {
 function mixin(target, source) {
     const sourceProps = Object.getOwnPropertyDescriptors(source.prototype);
 
-    for (let name in sourceProps) {
+    for (let name of Object.keys(sourceProps)) {
+        if (Object.prototype.hasOwnProperty.call(target, name)) {
+            continue;
+        }
+
         Object.defineProperty(target.prototype, name, sourceProps[name]);
     }
 }
