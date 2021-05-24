@@ -32,6 +32,9 @@
   font-size: 0.9em;
   font-weight: 400;
 }
+.svm-menu .popup-menu-item {
+  /* I don't know why these items are always insensitive, but I've given up at this point */
+}
 .svm-menu .popup-menu-item:ltr {
   margin-left: 0;
   padding-left: 0;
@@ -39,6 +42,9 @@
 .svm-menu .popup-menu-item:rtl {
   margin-right: 0;
   padding-right: 0;
+}
+.svm-menu .popup-menu-item:insensitive {
+  color: #ddd;
 }
 .svm-menu .popup-sub-menu .popup-menu-item:ltr {
   padding-right: 14px;
@@ -83,17 +89,17 @@
   margin-right: 0;
   padding-right: 0;
 }
-.svm-menu.svm-integrated-menu > .popup-menu-item > .svm-menu-item-container .svm-master-slider-line .popup-menu-ornament,
-.svm-menu.svm-integrated-menu > .popup-menu-item > .svm-menu-item-container .svm-events-slider-line .popup-menu-ornament {
-  /** copy/paste from gnome-shell .aggregate-menu .popup-sub-menu .popup-menu-item > :first-child **/
+.svm-menu.svm-integrated-menu > .popup-menu-item > .svm-menu-item-container .svm-master-slider-line > .popup-menu-ornament,
+.svm-menu.svm-integrated-menu > .popup-menu-item > .svm-menu-item-container .svm-events-slider-line > .popup-menu-ornament {
+  /** @copypaste from gnome-shell .aggregate-menu .popup-sub-menu .popup-menu-item > :first-child **/
 }
-.svm-menu.svm-integrated-menu > .popup-menu-item > .svm-menu-item-container .svm-master-slider-line .popup-menu-ornament:ltr,
-.svm-menu.svm-integrated-menu > .popup-menu-item > .svm-menu-item-container .svm-events-slider-line .popup-menu-ornament:ltr {
+.svm-menu.svm-integrated-menu > .popup-menu-item > .svm-menu-item-container .svm-master-slider-line > .popup-menu-ornament:ltr,
+.svm-menu.svm-integrated-menu > .popup-menu-item > .svm-menu-item-container .svm-events-slider-line > .popup-menu-ornament:ltr {
   padding-left: 14px;
   margin-left: 1.09em;
 }
-.svm-menu.svm-integrated-menu > .popup-menu-item > .svm-menu-item-container .svm-master-slider-line .popup-menu-ornament:rtl,
-.svm-menu.svm-integrated-menu > .popup-menu-item > .svm-menu-item-container .svm-events-slider-line .popup-menu-ornament:rtl {
+.svm-menu.svm-integrated-menu > .popup-menu-item > .svm-menu-item-container .svm-master-slider-line > .popup-menu-ornament:rtl,
+.svm-menu.svm-integrated-menu > .popup-menu-item > .svm-menu-item-container .svm-events-slider-line > .popup-menu-ornament:rtl {
   padding-right: 14px;
   margin-right: 1.09em;
 }

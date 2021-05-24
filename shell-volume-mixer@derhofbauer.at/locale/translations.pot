@@ -6,16 +6,16 @@ msgstr ""
 msgid "Helper script did not return valid card data."
 msgstr ""
 
-#: shell-volume-mixer@derhofbauer.at/lib/utils/cards.js:95
+#: shell-volume-mixer@derhofbauer.at/lib/utils/cards.js:115
 msgid "Querying PulseAudio sound cards failed, disabling extension"
 msgstr ""
 
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:290
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:292
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:307
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:309
 msgid "Inputs"
 msgstr ""
 
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:430
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:520
 msgid "unknown"
 msgstr ""
 

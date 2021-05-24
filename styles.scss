@@ -1,8 +1,10 @@
 $variant: 'light';
-@import "gnome-shell-sass/_colors";
-@import "gnome-shell-sass/_drawing";
-@import "gnome-shell-sass/_common";
+@import "gnome-shell-sass/colors";
+@import "gnome-shell-sass/drawing";
+@import "gnome-shell-sass/common";
 
+// @copypaste from widgets/panel
+$panel_fg_color: #ddd;
 
 .svm-menu {
     $shell_margin: $base_padding + $base_margin * 2;
@@ -15,7 +17,7 @@ $variant: 'light';
     }
 
     @mixin default-padding {
-        /** copy/paste from gnome-shell .aggregate-menu .popup-sub-menu .popup-menu-item > :first-child **/
+        /** @copypaste from gnome-shell .aggregate-menu .popup-sub-menu .popup-menu-item > :first-child **/
         &:ltr {
             padding-left: $shell_margin;
             margin-left: $base_icon_size;
@@ -61,6 +63,11 @@ $variant: 'light';
 
     .popup-menu-item {
         @include no-ornament-margin;
+
+        /* I don't know why these items are always insensitive, but I've given up at this point */
+        &:insensitive {
+            color: $panel_fg_color;
+        }
     }
 
     // sub menu items (of top level menu items)
@@ -125,7 +132,7 @@ $variant: 'light';
                 // offset top level items to align with label instead of ornament icon
                 .svm-master-slider-line,
                 .svm-events-slider-line {
-                    .popup-menu-ornament {
+                    > .popup-menu-ornament {
                         @include default-padding;
                     }
                 }

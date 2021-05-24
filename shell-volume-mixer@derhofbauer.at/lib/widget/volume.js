@@ -73,7 +73,7 @@ const StreamSlider = class extends OutputStreamSliderExtension
      */
     _init(options) {
         if (!this.item) {
-            this.item = new MenuItem.SubMenuItem({ activate: false });
+            this.item = new MenuItem.SubMenuItem();
         }
 
         if (this.icon) {
@@ -83,17 +83,17 @@ const StreamSlider = class extends OutputStreamSliderExtension
 
         if (!this._icon) {
             this._icon = new St.Icon({ style_class: 'popup-menu-icon' });
-            this.item.firstLine.add(this._icon);
+            this.item.firstLine.add_child(this._icon);
         }
 
         if (!this._label) {
             this._label = new St.Label({ text: '' });
-            this.item.firstLine.add(this._label);
+            this.item.firstLine.add_child(this._label);
         }
 
         if (!this._slider) {
             this._slider = new Slider.VolumeSlider(0);
-            this.item.secondLine.add(this._slider);
+            this.item.secondLine.add_child(this._slider);
         }
 
         this._volumeInfo = new FloatingLabel();
@@ -111,7 +111,7 @@ const StreamSlider = class extends OutputStreamSliderExtension
 
         if (this._slider.scroll) {
             this.item.connect('scroll-event', (slider, event) => {
-                return this._slider.scroll(event);
+                return this._slider.emit('scroll-event', event);
             });
         }
 
@@ -120,13 +120,19 @@ const StreamSlider = class extends OutputStreamSliderExtension
         });
 
 
-        let soundSettings = new Settings.Settings(Settings.SOUND_SETTINGS_SCHEMA);
-        this._soundSettings = soundSettings.settings;
-        this._soundSettings.connect(`changed::${Settings.ALLOW_AMPLIFIED_VOLUME_KEY}`, this._amplifySettingsChanged.bind(this));
+        this._inDrag = false;
+        this._notifyVolumeChangeId = 0;
+
+        this._soundSettings = new Settings.Settings(Settings.SOUND_SETTINGS_SCHEMA);
+        this._soundSettings.connect(`changed::${Settings.ALLOW_AMPLIFIED_VOLUME_KEY}`, this._amplifySettingsChanged.bind(this), true);
         this._amplifySettingsChanged();
 
         this._sliderChangedId = this._slider.connect('notify::value', this._sliderChanged.bind(this));
-        this._slider.connect('drag-end', this._notifyVolumeChange.bind(this));
+        this._slider.connect('drag-begin', () => (this._inDrag = true));
+        this._slider.connect('drag-end', () => {
+            this._inDrag = false;
+            this._notifyVolumeChange();
+        });
 
         this.stream = options.stream || null;
         this._volumeCancellable = null;
@@ -141,7 +147,7 @@ const StreamSlider = class extends OutputStreamSliderExtension
     }
 
     _onKeyPress(actor, event) {
-        return this._slider.vfunc_key_press_event(event);
+        return this._slider.emit('key-press-event', event);
     }
 
     _onButtonPress(actor, event) {
@@ -341,7 +347,7 @@ var OutputSlider = class extends StreamSlider
         super._init(options);
 
         if (options.detailed) {
-            this.item.addChildAt(this._details, 1);
+            this.item.addDetails(this._details);
         }
 
         this._cards = options.mixer.cards;
@@ -592,9 +598,3 @@ var InputStreamSlider = class extends StreamSlider
         super._onDestroy();
     }
 };
-
-
-/**
- * Just re-declarations for now.
- */
-var VolumeMenu = Volume.VolumeMenu;
