@@ -25,6 +25,8 @@ var STREAM_MATCHING = Object.freeze({
     card:   2,
 });
 
+const NULL_CARD = 4294967295;
+
 /** @typedef {{
  *   name: String,
  *   description: String,
@@ -248,6 +250,10 @@ var Cards = class {
      * @returns {Promise<?paCard>}
      */
     async get(index) {
+        if (index === NULL_CARD) {
+            return null;
+        }
+
         await this._initDone;
 
         return (index in this._paCards) ? this._paCards[index] : null;

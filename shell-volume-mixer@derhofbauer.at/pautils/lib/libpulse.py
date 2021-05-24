@@ -233,3 +233,6 @@ proplist_gets.argtypes = [POINTER(proplist), STRING]
 proplist_to_string = lib.pa_proplist_to_string
 proplist_to_string.restype = STRING
 proplist_to_string.argtypes = [POINTER(proplist)]
+
+# this is a "magic" number (probably -1 at int32, but unsigned?) and tells us there's something fishy
+NULL_ID = 4294967295

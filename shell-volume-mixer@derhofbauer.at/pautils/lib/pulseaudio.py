@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import abc
+from time import sleep
 
 from . import log
 from . import libpulse
@@ -23,6 +24,10 @@ from . import libpulse
 class Pulseaudio:
     _pa_state = libpulse.CONTEXT_UNCONNECTED
     _op_done = False
+
+    _iterations_max = 10000
+    _iterations_intrv = 0.0001
+
 
     _data = {}
     _error = {
@@ -58,6 +63,7 @@ class Pulseaudio:
     def get_info(self, index=None, name=None):
         log.debug('Querying details...')
         operation = None
+        count = 0
 
         while self._pa_state != libpulse.CONTEXT_TERMINATED:
             if self._op_done:
@@ -68,7 +74,15 @@ class Pulseaudio:
                 self._data['error'] = 'context failed'
                 break
 
-            if self._pa_state == libpulse.CONTEXT_READY and not operation:
+            if count >= self._iterations_max:
+                log.debug(f'Stopping iterations after {self._iterations_intrv * self._iterations_max}s (bug?)')
+                break
+
+            if count > 0 and count % (self._iterations_max / 2) == 0:
+                log.debug(f'Delaying after {self._iterations_intrv * count}s (bug?)')
+                sleep(2)
+
+            if self._pa_state == libpulse.CONTEXT_READY and operation is None:
                 callback = self.build_callback()
 
                 if name:
@@ -84,6 +98,8 @@ class Pulseaudio:
                     operation = self.get_all(callback)
 
             libpulse.mainloop_iterate(self._pa_mainloop, 0, None)
+            count += 1
+            sleep(self._iterations_intrv)
 
         if operation:
             libpulse.operation_unref(operation)
