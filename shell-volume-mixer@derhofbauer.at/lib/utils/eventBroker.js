@@ -27,14 +27,6 @@ var EventBroker = class {
             callback(Log.dump(this._signalConnections));
         });
     }
-
-    disconnectAll() {
-        for (let signal of this._signalConnections) {
-            if (!signal.disconnected) {
-                this.disconnect(signal.id);
-            }
-        }
-    }
 };
 
 Signals.addSignalMethods(EventBroker.prototype);
