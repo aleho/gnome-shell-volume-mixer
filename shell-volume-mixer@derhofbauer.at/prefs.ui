@@ -1,589 +1,508 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.2 -->
 <interface domain="gnome-shell-extensions-shell-volume-mixer">
-  <requires lib="gtk+" version="3.12"/>
+  <requires lib="gtk" version="4.0"/>
   <object class="GtkTreeStore" id="storeDevices">
     <columns>
-      <!-- column-name name -->
       <column type="gchararray"/>
-      <!-- column-name cardid -->
       <column type="gchararray"/>
-      <!-- column-name profileid -->
       <column type="gchararray"/>
     </columns>
   </object>
   <object class="GtkListStore" id="storePinned">
     <columns>
-      <!-- column-name card -->
       <column type="gchararray"/>
-      <!-- column-name profile -->
       <column type="gchararray"/>
-      <!-- column-name switch -->
       <column type="gboolean"/>
-      <!-- column-name display -->
       <column type="gboolean"/>
-      <!-- column-name cardid -->
       <column type="gchararray"/>
-      <!-- column-name profileid -->
       <column type="gchararray"/>
     </columns>
   </object>
   <object class="GtkNotebook" id="tabs">
-    <property name="visible">True</property>
-    <property name="can_focus">True</property>
+    <signal name="switch-page" handler="onSwitchPage" swapped="no"/>
     <child>
-      <object class="GtkGrid" id="gridSettings">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="margin_left">20</property>
-        <property name="margin_right">20</property>
-        <property name="margin_top">20</property>
-        <property name="margin_bottom">20</property>
-        <property name="row_spacing">10</property>
-        <property name="column_spacing">20</property>
-        <child>
-          <object class="GtkLabel" id="lblPosition">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">end</property>
-            <property name="valign">baseline</property>
-            <property name="label" translatable="yes">Position of volume mixer</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkComboBoxText" id="cmbPosition">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="valign">center</property>
-            <property name="active">0</property>
-            <items>
-              <item id="0" translatable="yes">Status Menu</item>
-              <item id="1" translatable="yes">Left</item>
-              <item id="2" translatable="yes">Center</item>
-              <item id="3" translatable="yes">Right</item>
-            </items>
-            <signal name="changed" handler="onPositionChanged" swapped="no"/>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="lblRemoveOriginal">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">end</property>
-            <property name="valign">baseline</property>
-            <property name="label" translatable="yes">Remove original slider</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="lblShowDetailedSliders">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">end</property>
-            <property name="valign">baseline</property>
-            <property name="label" translatable="yes">Show detailed sliders</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">4</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSwitch" id="swRemoveOriginal">
-            <property name="visible">True</property>
-            <property name="sensitive">False</property>
-            <property name="can_focus">True</property>
-            <property name="halign">end</property>
-            <property name="valign">center</property>
-            <signal name="notify::active" handler="onRemoveOriginalActivate" swapped="no"/>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSwitch" id="swShowDetailedSliders">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="halign">end</property>
-            <property name="valign">center</property>
-            <signal name="notify::active" handler="onShowDetailedActivate" swapped="no"/>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">4</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="lblProfileSwitch">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">end</property>
-            <property name="valign">baseline</property>
-            <property name="label" translatable="yes">Hotkey for profile switcher</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">11</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEntry" id="txtProfileSwitch">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="valign">center</property>
-            <property name="input_purpose">alpha</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">11</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="lblProfileSwitchHelp">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">(e.g. "&lt;Super&gt;p")</property>
-          </object>
-          <packing>
-            <property name="left_attach">2</property>
-            <property name="top_attach">11</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="lblShowSystemSounds">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">end</property>
-            <property name="valign">baseline</property>
-            <property name="label" translatable="yes">Show system sounds</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">7</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="lblUseSymbolicIcons">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">end</property>
-            <property name="valign">baseline</property>
-            <property name="label" translatable="yes">Use symbolic icons</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">5</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSwitch" id="swUseSymbolicIcons">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="halign">end</property>
-            <property name="valign">center</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">5</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSwitch" id="swShowSystemSounds">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="halign">end</property>
-            <property name="valign">center</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">7</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="lblShowVirtualStreams">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">end</property>
-            <property name="valign">baseline</property>
-            <property name="label" translatable="yes">Show virtual streams</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">8</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSwitch" id="swShowVirtualStreams">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="halign">end</property>
-            <property name="valign">center</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">8</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="lblAlwaysShowInputStreams">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">end</property>
-            <property name="valign">baseline</property>
-            <property name="label" translatable="yes">Always show input streams</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">9</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSwitch" id="swAlwaysShowInputStreams">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="halign">end</property>
-            <property name="valign">center</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">9</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="lblAlwaysShowInputStreamsHelp">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="valign">baseline</property>
-            <property name="label" translatable="yes">Shows the slider even if no application is recording</property>
-          </object>
-          <packing>
-            <property name="left_attach">2</property>
-            <property name="top_attach">9</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSeparator" id="sep1">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_top">10</property>
-            <property name="margin_bottom">10</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">2</property>
-            <property name="width">3</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSeparator" id="sep2">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_top">10</property>
-            <property name="margin_bottom">10</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">6</property>
-            <property name="width">3</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSeparator" id="sep3">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_top">10</property>
-            <property name="margin_bottom">10</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">10</property>
-            <property name="width">3</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="lblShowPercentageLabel">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">end</property>
-            <property name="valign">baseline</property>
-            <property name="label" translatable="yes">Show percentage</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">3</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSwitch" id="swShowPercentageLabel">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="halign">end</property>
-            <property name="valign">center</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">3</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="lblShowPercentageLabelHelp">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="valign">baseline</property>
-            <property name="label" translatable="yes">Whether to show percentage of current output right of the icon</property>
-          </object>
-          <packing>
-            <property name="left_attach">2</property>
-            <property name="top_attach">3</property>
-          </packing>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-      </object>
-    </child>
-    <child type="tab">
-      <object class="GtkLabel" id="lblSettings">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Settings</property>
-      </object>
-      <packing>
-        <property name="tab_fill">False</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkBox" id="boxDevices">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="margin_left">20</property>
-        <property name="margin_right">20</property>
-        <property name="margin_top">10</property>
-        <property name="margin_bottom">20</property>
-        <property name="spacing">10</property>
-        <child>
-          <object class="GtkScrolledWindow" id="scrDevices">
-            <property name="width_request">300</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="shadow_type">in</property>
-            <property name="min_content_width">200</property>
-            <property name="min_content_height">400</property>
+      <object class="GtkNotebookPage">
+        <property name="child">
+          <object class="GtkGrid" id="gridSettings">
+            <property name="can_focus">1</property>
+            <property name="margin-start">20</property>
+            <property name="margin-end">20</property>
+            <property name="margin_top">20</property>
+            <property name="margin_bottom">20</property>
+            <property name="row_spacing">10</property>
+            <property name="column_spacing">20</property>
             <child>
-              <object class="GtkTreeView" id="treeDevices">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="hexpand">True</property>
-                <property name="vexpand">True</property>
-                <property name="model">storeDevices</property>
-                <property name="headers_clickable">False</property>
-                <property name="enable_search">False</property>
-                <child internal-child="selection">
-                  <object class="GtkTreeSelection" id="treeDevicesSelection"/>
-                </child>
-                <child>
-                  <object class="GtkTreeViewColumn" id="column-name">
-                    <property name="title" translatable="yes">Devices</property>
-                    <property name="expand">True</property>
-                    <child>
-                      <object class="GtkCellRendererText" id="rndName">
-                        <property name="yalign">0</property>
-                      </object>
-                      <attributes>
-                        <attribute name="text">0</attribute>
-                      </attributes>
-                    </child>
-                  </object>
-                </child>
+              <object class="GtkLabel" id="lblPosition">
+                <property name="can_focus">0</property>
+                <property name="halign">end</property>
+                <property name="valign">baseline</property>
+                <property name="label" translatable="yes">Position of volume mixer</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">0</property>
+                </layout>
               </object>
             </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkBox" id="boxSelectedDevices">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="orientation">vertical</property>
             <child>
-              <object class="GtkScrolledWindow" id="scrSelection">
-                <property name="width_request">600</property>
-                <property name="height_request">400</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="shadow_type">in</property>
-                <child>
-                  <object class="GtkTreeView" id="treePinned">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="hexpand">True</property>
-                    <property name="vexpand">True</property>
-                    <property name="model">storePinned</property>
-                    <property name="headers_clickable">False</property>
-                    <property name="enable_search">False</property>
-                    <property name="search_column">0</property>
-                    <property name="show_expanders">False</property>
+              <object class="GtkComboBoxText" id="cmbPosition">
+                <property name="can_focus">0</property>
+                <property name="valign">center</property>
+                <property name="active">0</property>
+                <signal name="changed" handler="onPositionChanged" swapped="no"/>
+                <items>
+                  <item id="0" translatable="yes">Status Menu</item>
+                  <item id="1" translatable="yes">Left</item>
+                  <item id="2" translatable="yes">Center</item>
+                  <item id="3" translatable="yes">Right</item>
+                </items>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lblRemoveOriginal">
+                <property name="can_focus">0</property>
+                <property name="halign">end</property>
+                <property name="valign">baseline</property>
+                <property name="label" translatable="yes">Remove original slider</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">1</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lblShowDetailedSliders">
+                <property name="can_focus">0</property>
+                <property name="halign">end</property>
+                <property name="valign">baseline</property>
+                <property name="label" translatable="yes">Show detailed sliders</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">4</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSwitch" id="swRemoveOriginal">
+                <property name="sensitive">0</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <signal name="notify::active" handler="toggleBoolean" swapped="no"/>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="row">1</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSwitch" id="swShowDetailedSliders">
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <signal name="notify::active" handler="toggleBoolean" swapped="no"/>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="row">4</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lblProfileSwitch">
+                <property name="can_focus">0</property>
+                <property name="halign">end</property>
+                <property name="valign">baseline</property>
+                <property name="label" translatable="yes">Hotkey for profile switcher</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">11</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkEntry" id="txtProfileSwitch">
+                <property name="valign">center</property>
+                <property name="input_purpose">alpha</property>
+                <signal name="changed" handler="onProfileSwitchChanged" swapped="no"/>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="row">11</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lblProfileSwitchHelp">
+                <property name="can_focus">0</property>
+                <property name="label" translatable="yes">(e.g. &quot;&lt;Super&gt;p&quot;)</property>
+                <layout>
+                  <property name="column">2</property>
+                  <property name="row">11</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lblUseSymbolicIcons">
+                <property name="can_focus">0</property>
+                <property name="halign">end</property>
+                <property name="valign">baseline</property>
+                <property name="label" translatable="yes">Use symbolic icons</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">5</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSwitch" id="swUseSymbolicIcons">
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <signal name="notify::active" handler="toggleBoolean" swapped="no"/>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="row">5</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lblShowSystemSounds">
+                <property name="can_focus">0</property>
+                <property name="halign">end</property>
+                <property name="valign">baseline</property>
+                <property name="label" translatable="yes">Show system sounds</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">7</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSwitch" id="swShowSystemSounds">
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <signal name="notify::active" handler="toggleBoolean" swapped="no"/>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="row">7</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lblShowVirtualStreams">
+                <property name="can_focus">0</property>
+                <property name="halign">end</property>
+                <property name="valign">baseline</property>
+                <property name="label" translatable="yes">Show virtual streams</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">8</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSwitch" id="swShowVirtualStreams">
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <signal name="notify::active" handler="toggleBoolean" swapped="no"/>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="row">8</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lblAlwaysShowInputStreams">
+                <property name="can_focus">0</property>
+                <property name="halign">end</property>
+                <property name="valign">baseline</property>
+                <property name="label" translatable="yes">Always show input streams</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">9</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSwitch" id="swAlwaysShowInputStreams">
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <signal name="notify::active" handler="toggleBoolean" swapped="no"/>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="row">9</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lblAlwaysShowInputStreamsHelp">
+                <property name="can_focus">0</property>
+                <property name="valign">baseline</property>
+                <property name="label" translatable="yes">Shows the slider even if no application is recording</property>
+                <layout>
+                  <property name="column">2</property>
+                  <property name="row">9</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSeparator" id="sep1">
+                <property name="can_focus">0</property>
+                <property name="margin_top">10</property>
+                <property name="margin_bottom">10</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">2</property>
+                  <property name="column-span">3</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSeparator" id="sep2">
+                <property name="can_focus">0</property>
+                <property name="margin_top">10</property>
+                <property name="margin_bottom">10</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">6</property>
+                  <property name="column-span">3</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSeparator" id="sep3">
+                <property name="can_focus">0</property>
+                <property name="margin_top">10</property>
+                <property name="margin_bottom">10</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">10</property>
+                  <property name="column-span">3</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lblShowPercentageLabel">
+                <property name="can_focus">0</property>
+                <property name="halign">end</property>
+                <property name="valign">baseline</property>
+                <property name="label" translatable="yes">Show percentage</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">3</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSwitch" id="swShowPercentageLabel">
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <signal name="notify::active" handler="toggleBoolean" swapped="no"/>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="row">3</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lblShowPercentageLabelHelp">
+                <property name="can_focus">0</property>
+                <property name="valign">baseline</property>
+                <property name="label" translatable="yes">Whether to show percentage of current output right of the icon</property>
+                <layout>
+                  <property name="column">2</property>
+                  <property name="row">3</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+        </property>
+        <property name="tab">
+          <object class="GtkLabel" id="lblSettings">
+            <property name="can_focus">0</property>
+            <property name="label" translatable="yes">Settings</property>
+          </object>
+        </property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkNotebookPage">
+        <property name="child">
+          <object class="GtkBox" id="boxDevices">
+            <property name="can_focus">1</property>
+            <property name="margin-start">20</property>
+            <property name="margin-end">20</property>
+            <property name="margin_top">10</property>
+            <property name="margin_bottom">20</property>
+            <property name="spacing">10</property>
+            <child>
+              <object class="GtkScrolledWindow" id="scrDevices">
+                <property name="width_request">300</property>
+                <property name="min_content_width">200</property>
+                <property name="min_content_height">400</property>
+                <property name="child">
+                  <object class="GtkTreeView" id="treeDevices">
+                    <property name="hexpand">1</property>
+                    <property name="vexpand">1</property>
+                    <property name="model">storeDevices</property>
+                    <property name="headers_clickable">0</property>
+                    <property name="enable_search">0</property>
                     <child internal-child="selection">
-                      <object class="GtkTreeSelection" id="treeview-selection"/>
+                      <object class="GtkTreeSelection" id="treeDevicesSelection"/>
                     </child>
                     <child>
-                      <object class="GtkTreeViewColumn" id="column-card">
-                        <property name="resizable">True</property>
-                        <property name="sizing">autosize</property>
-                        <property name="title" translatable="yes">Card</property>
-                        <property name="expand">True</property>
+                      <object class="GtkTreeViewColumn" id="column-name">
+                        <property name="title" translatable="yes">Devices</property>
+                        <property name="expand">1</property>
                         <child>
-                          <object class="GtkCellRendererText" id="rndCard"/>
+                          <object class="GtkCellRendererText" id="rndName">
+                            <property name="yalign">0</property>
+                          </object>
                           <attributes>
                             <attribute name="text">0</attribute>
                           </attributes>
                         </child>
                       </object>
                     </child>
-                    <child>
-                      <object class="GtkTreeViewColumn" id="column-profile">
-                        <property name="resizable">True</property>
-                        <property name="sizing">autosize</property>
-                        <property name="title" translatable="yes">Profile</property>
-                        <property name="expand">True</property>
-                        <child>
-                          <object class="GtkCellRendererText" id="rndProfile"/>
-                          <attributes>
-                            <attribute name="text">1</attribute>
-                          </attributes>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkTreeViewColumn" id="column-quickswitch">
-                        <property name="sizing">fixed</property>
-                        <property name="title" translatable="yes">Switch</property>
-                        <child>
-                          <object class="GtkCellRendererToggle" id="rndQuickswitch"/>
-                          <attributes>
-                            <attribute name="active">2</attribute>
-                          </attributes>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkTreeViewColumn" id="column-display">
-                        <property name="visible">False</property>
-                        <property name="sizing">fixed</property>
-                        <property name="title" translatable="yes">Display</property>
-                        <child>
-                          <object class="GtkCellRendererToggle" id="rndDisplay"/>
-                          <attributes>
-                            <attribute name="active">3</attribute>
-                          </attributes>
-                        </child>
-                      </object>
-                    </child>
                   </object>
-                </child>
+                </property>
               </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
             </child>
             <child>
-              <object class="GtkToolbar" id="deviceSelectionToolbar">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="show_arrow">False</property>
-                <property name="icon_size">1</property>
+              <object class="GtkBox" id="boxSelectedDevices">
+                <property name="can_focus">0</property>
+                <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkToolButton" id="btnAddDevice">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="sensitive">False</property>
-                    <property name="can_focus">False</property>
-                    <property name="icon_name">list-add-symbolic</property>
+                  <object class="GtkScrolledWindow" id="scrSelection">
+                    <property name="vexpand">1</property>
+                    <property name="width_request">600</property>
+                    <property name="height_request">400</property>
+                    <property name="child">
+                      <object class="GtkTreeView" id="treePinned">
+                        <property name="hexpand">1</property>
+                        <property name="vexpand">1</property>
+                        <property name="model">storePinned</property>
+                        <property name="headers_clickable">0</property>
+                        <property name="enable_search">0</property>
+                        <property name="search_column">0</property>
+                        <property name="show_expanders">0</property>
+                        <child internal-child="selection">
+                          <object class="GtkTreeSelection" id="treeview-selection"/>
+                        </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="column-card">
+                            <property name="resizable">1</property>
+                            <property name="sizing">autosize</property>
+                            <property name="title" translatable="yes">Card</property>
+                            <property name="expand">1</property>
+                            <child>
+                              <object class="GtkCellRendererText" id="rndCard"/>
+                              <attributes>
+                                <attribute name="text">0</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="column-profile">
+                            <property name="resizable">1</property>
+                            <property name="sizing">autosize</property>
+                            <property name="title" translatable="yes">Profile</property>
+                            <property name="expand">1</property>
+                            <child>
+                              <object class="GtkCellRendererText" id="rndProfile"/>
+                              <attributes>
+                                <attribute name="text">1</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="column-quickswitch">
+                            <property name="sizing">fixed</property>
+                            <property name="title" translatable="yes">Switch</property>
+                            <child>
+                              <object class="GtkCellRendererToggle" id="rndQuickswitch">
+                                <signal name="toggled" handler="onQuickswitchToggled" swapped="no"/>
+                              </object>
+                              <attributes>
+                                <attribute name="active">2</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="column-display">
+                            <property name="visible">0</property>
+                            <property name="sizing">fixed</property>
+                            <property name="title" translatable="yes">Display</property>
+                            <child>
+                              <object class="GtkCellRendererToggle" id="rndDisplay">
+                                <signal name="toggled" handler="onDisplayToggled" swapped="no"/>
+                              </object>
+                              <attributes>
+                                <attribute name="active">3</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="homogeneous">True</property>
-                  </packing>
                 </child>
                 <child>
-                  <object class="GtkToolButton" id="btnRemoveDevice">
-                    <property name="use_action_appearance">False</property>
-                    <property name="visible">True</property>
-                    <property name="sensitive">False</property>
-                    <property name="can_focus">False</property>
-                    <property name="icon_name">list-remove-symbolic</property>
+                  <object class="GtkBox" id="deviceSelectionToolbar">
+                    <property name="can_focus">0</property>
+                    <child>
+                      <object class="GtkButton" id="btnAddDevice">
+                        <property name="sensitive">0</property>
+                        <property name="can_focus">0</property>
+                        <property name="icon_name">list-add-symbolic</property>
+                        <signal name="clicked" handler="onAddDevice" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="btnRemoveDevice">
+                        <property name="sensitive">0</property>
+                        <property name="can_focus">0</property>
+                        <property name="icon_name">list-remove-symbolic</property>
+                        <signal name="clicked" handler="onRemoveDevice" swapped="no"/>
+                      </object>
+                    </child>
+                    <style>
+                      <class name="toolbar"/>
+                      <class name="inline-toolbar"/>
+                    </style>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="homogeneous">True</property>
-                  </packing>
                 </child>
-                <style>
-                  <class name="inline-toolbar"/>
-                </style>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
+        </property>
+        <property name="tab">
+          <object class="GtkLabel" id="lblDevices">
+            <property name="can_focus">0</property>
+            <property name="label" translatable="yes">Devices</property>
+          </object>
+        </property>
       </object>
-      <packing>
-        <property name="position">1</property>
-      </packing>
-    </child>
-    <child type="tab">
-      <object class="GtkLabel" id="lblDevices">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Devices</property>
-      </object>
-      <packing>
-        <property name="position">1</property>
-        <property name="tab_fill">False</property>
-      </packing>
     </child>
   </object>
 </interface>
