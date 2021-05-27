@@ -27,6 +27,7 @@ import sys
 from lib import log
 from lib.cards import Cards
 from lib.sinks import Sinks
+from lib.libpulse import NULL_ID
 
 if len(sys.argv) < 2:
     print('Need a type to query')
@@ -43,7 +44,10 @@ if len(sys.argv) > 2:
         name = filter_arg
 
 
-if op_type == 'cards':
+if index == NULL_ID:
+    result = {}
+
+elif op_type == 'cards':
     with Cards() as cards:
         result = cards.get_info(index=index, name=name)
 

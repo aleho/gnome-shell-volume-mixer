@@ -1,4 +1,4 @@
-VERSION = 3.38.2
+VERSION = 40.0
 EXTENSION = shell-volume-mixer@derhofbauer.at
 
 SRCDIR = $(EXTENSION)
@@ -64,7 +64,7 @@ metadata.json: prepare
 	cat $(addprefix $(SRCDIR)/, metadata.json) | grep -v '"version":' > $(BUILDDIR)/metadata.json
 
 stylesheet.css:
-	node_modules/.bin/sass --no-source-map styles.scss $(SRCDIR)/stylesheet.css
+	npm run build
 	# remove harmful content produced by gnome-shell-sass
 	sed -i '/\/\*\sGlobal\sValues\s\*\//,/\/\*\sCommon\sStylings\s\*/d' $(SRCDIR)/stylesheet.css
 

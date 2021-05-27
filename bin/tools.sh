@@ -94,7 +94,10 @@ function add_virtual_sink() {
         props="sink_properties=device.description=$NAME"
     fi
 
-    pactl load-module module-null-sink object.linger=1 media.class=Audio/Sink sink_name=svm-${NAME:-virtual-sink} "$props"
+    local pipewire_opts="object.linger=1 media.class=Audio/Sink"
+
+    pactl load-module module-null-sink sink_name=svm-${NAME:-virtual-sink} $pipewire_opts "$props" \
+        || pactl load-module module-null-sink sink_name=svm-${NAME:-virtual-sink} "$props"
 }
 
 function toggle_looking_glass() {

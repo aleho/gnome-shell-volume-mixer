@@ -56,7 +56,7 @@ class Sinks(Pulseaudio):
             'alsaCard': alsa_card,
             'name': sink_name,
             'description': description,
-            'card': pa_sink.card,
+            'card': pa_sink.card if pa_sink.card != libpulse.NULL_ID else None,
             'active_port': None,
             'ports': {
             },

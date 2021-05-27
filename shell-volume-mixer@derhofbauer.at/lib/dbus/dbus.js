@@ -35,9 +35,9 @@ let instance;
 
 /** @typedef {{
  *   reloadExtension: function,
- *   debugCards: {function():string},
- *   debugStreams: {function():string},
- *   debugEvents: {function():string},
+ *   debugCards: {function():String},
+ *   debugStreams: {function():String},
+ *   debugEvents: {function():String},
  * }} CommandHandler
  */
 

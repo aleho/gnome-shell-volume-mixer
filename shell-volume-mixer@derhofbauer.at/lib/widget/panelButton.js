@@ -58,11 +58,7 @@ var PanelButton = GObject.registerClass(class PanelButton extends PanelMenu.Butt
     }
 
     _onIconChanged() {
-        if (this._mixerMenu.outputHasHeadphones()) {
-            this.setIcon('audio-headphones-symbolic');
-        } else {
-            this.setIcon(this._mixerMenu.getOutputIcon());
-        }
+        this.setIcon(this._mixerMenu.getOutputIcon());
     }
 
     setIcon(icon_name) {

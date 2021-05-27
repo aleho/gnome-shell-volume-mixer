@@ -11,12 +11,20 @@
 const Gvc = imports.gi.Gvc;
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const PopupMenu = imports.ui.popupMenu;
+const Volume = imports.ui.status.volume;
 
 const { EventBroker } = Lib.utils.eventBroker;
 const { Settings, SETTING } = Lib.settings;
 const Log = Lib.utils.log;
 const Utils = Lib.utils.utils;
-const Volume = Lib.widget.volume;
+const {
+    AggregatedInput,
+    EventsSlider,
+    InputSlider,
+    InputStreamSlider,
+    MasterSlider,
+    OutputSlider,
+} = Lib.widget.volume;
 
 
 /**
@@ -24,6 +32,15 @@ const Volume = Lib.widget.volume;
  */
 class VolumeMenuExtension extends PopupMenu.PopupMenuSection {}
 Utils.mixin(VolumeMenuExtension, Volume.VolumeMenu);
+
+
+/** @typedef {{
+ *   mixer: Mixer,
+ *   detailed: Boolean,
+ *   symbolicIcons: Boolean,
+ *   stream: Gcv.MixerStream,
+ * }} sliderOptions
+ */
 
 
 /**
@@ -86,7 +103,7 @@ var Menu = class extends VolumeMenuExtension
             }
         }
 
-        this._output = new Volume.MasterSlider(this._control, {
+        this._output = new MasterSlider(this._control, {
             mixer: mixer,
             detailed: this.options.detailed,
             symbolicIcons: this.options.symbolicIcons
@@ -97,14 +114,14 @@ var Menu = class extends VolumeMenuExtension
         });
 
 
-        this._inputMenu = new Volume.AggregatedInput(this._control, {
+        this._inputMenu = new AggregatedInput(this._control, {
             mixer: mixer,
             detailed: this.options.detailed,
             symbolicIcons: this.options.symbolicIcons
         });
 
 
-        this._input = new Volume.InputStreamSlider(this._control, {
+        this._input = new InputStreamSlider(this._control, {
             mixer: mixer,
             showAlways: this.options.alwaysShowInputStreams,
             detailed: this.options.detailed,
@@ -146,8 +163,16 @@ var Menu = class extends VolumeMenuExtension
         super.close(animate);
     }
 
-    outputHasHeadphones() {
-        return this._output._hasHeadphones;
+    getOutputIcon() {
+        if (this._output._hasHeadphones) {
+            return 'audio-headphones-symbolic';
+        } else {
+            return this._output.getIcon();
+        }
+    }
+
+    getInputIcon() {
+        return this._input.getIcon();
     }
 
     _addSeparator() {
@@ -179,7 +204,7 @@ var Menu = class extends VolumeMenuExtension
             return;
         }
 
-        let options = {
+        const options = {
             mixer: this._mixer,
             detailed: this.options.detailed,
             symbolicIcons: this.options.symbolicIcons,
@@ -205,7 +230,7 @@ var Menu = class extends VolumeMenuExtension
      *
      * @param stream
      * @param control
-     * @param options
+     * @param {sliderOptions} options
      * @private
      */
     _addInputStream(stream, control, options) {
@@ -216,7 +241,7 @@ var Menu = class extends VolumeMenuExtension
 
         Log.info(`Adding input stream ${stream.id}:${stream.name}`);
 
-        let slider = new Volume.InputSlider(control, options);
+        let slider = new InputSlider(control, options);
 
         this._inputs[stream.id] = slider;
         this._inputMenu.addSlider(slider);
@@ -227,7 +252,7 @@ var Menu = class extends VolumeMenuExtension
      *
      * @param stream
      * @param control
-     * @param options
+     * @param {sliderOptions} options
      * @private
      */
     _addOutputStream(stream, control, options) {
@@ -238,11 +263,7 @@ var Menu = class extends VolumeMenuExtension
 
         Log.info(`Adding output stream ${stream.id}:${stream.name}`);
 
-        let slider = new Volume.OutputSlider(control, options);
-
-        let isSelected = this._output.stream
-                && this._output.stream.id === stream.id;
-        slider.setSelected(isSelected);
+        let slider = new OutputSlider(control, options);
 
         this._outputs[stream.id] = slider;
         this._output.addOutputSlider(slider);
@@ -253,7 +274,7 @@ var Menu = class extends VolumeMenuExtension
      *
      * @param stream
      * @param control
-     * @param options
+     * @param {sliderOptions} options
      * @private
      */
     _addSliderStream(stream, control, options) {
@@ -264,7 +285,7 @@ var Menu = class extends VolumeMenuExtension
 
         Log.info(`Adding stream ${stream.id}:${stream.name}`);
 
-        let slider = new Volume.EventsSlider(control, options);
+        let slider = new EventsSlider(control, options);
 
         this._items[stream.id] = slider;
         this.addMenuItem(slider.item, 1);
@@ -313,19 +334,6 @@ var Menu = class extends VolumeMenuExtension
         let streams = this._control.get_streams();
         for (let stream of streams) {
             this._addStream(this._control, stream);
-        }
-    }
-
-    _readOutput() {
-        super._readOutput();
-
-        if (!this._output.stream) {
-            // safety check for failed setups
-            return;
-        }
-
-        for (let id in this._outputs) {
-            this._outputs[id].setSelected(this._output.stream.id === id);
         }
     }
 

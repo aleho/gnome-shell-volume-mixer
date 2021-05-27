@@ -6,6 +6,7 @@
     "sass": "^1.32.12"
   },
   "scripts": {
-    "eslint": "eslint shell-volume-mixer@derhofbauer.at"
+    "eslint": "eslint shell-volume-mixer@derhofbauer.at",
+    "build": "sass --no-source-map styles.scss shell-volume-mixer@derhofbauer.at/stylesheet.css"
   }
 }

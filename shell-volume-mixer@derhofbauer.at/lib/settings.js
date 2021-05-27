@@ -128,17 +128,18 @@ var Settings = class
      *
      * @param {string} signal
      * @param {function()} callback
+     * @param {boolean} allowMultiple Whether to error out if the setting has already been connected
      */
-    connect(signal, callback) {
-        // already connected
-        if (this._signals && this._signals[signal]) {
+    connect(signal, callback, allowMultiple = false) {
+        if (!allowMultiple && this._signals[signal]) {
             Log.error('Settings', 'connect', `Signal "${signal}" already bound for "${this.schema}"`);
             return false;
         }
 
-        Log.info(`Connecting to settings change signal`);
+        Log.info(`Connecting to settings change signal "${signal}"`);
         let id = this.settings.connect(signal, callback);
         this._signals[signal] = id;
+
         return id;
     }
 

@@ -25,13 +25,33 @@ var STREAM_MATCHING = Object.freeze({
     card:   2,
 });
 
+const NULL_CARD = 4294967295;
 
 /** @typedef {{
- *   name: string,
- *   index: number,
- *   profiles: string[],
- *   fake: boolean,
- *   card: Object<Gvc.MixerCard>
+ *   name: String,
+ *   description: String,
+ *   available: Boolean,
+ * }} paProfile
+ */
+
+/** @typedef {{
+ *   name: String,
+ *   description: String,
+ *   available: Boolean,
+ *   direction: String,
+ * }} paPort
+ */
+
+/** @typedef {{
+ *   index: Number,
+ *   alsaCard: Number,
+ *   name: String,
+ *   description: String,
+ *   active_profile: String,
+ *   profiles: Object.<string, paProfile>,
+ *   ports: Object.<string, paPort>,
+ *   fake: Boolean,
+ *   card: Object<Gvc.MixerCard>,
  * }} paCard
  */
 
@@ -41,7 +61,7 @@ var STREAM_MATCHING = Object.freeze({
  */
 var Cards = class {
     /**
-     * @param {Object<Gvc.MixerControl>} control
+     * @param {Gvc.MixerControl} control
      */
     constructor(control) {
         this._events = new EventBroker();
@@ -153,7 +173,7 @@ var Cards = class {
 
     /**
      * @param {paCard} paCard
-     * @param {Object<Gvc.MixerCard>} card
+     * @param {Gvc.MixerCard} card
      * @private
      */
     _addGvcCard(paCard, card) {
@@ -227,12 +247,36 @@ var Cards = class {
      * Finds a card by card index.
      *
      * @param {number} index
+     * @param {Boolean} forceRefresh
      * @returns {Promise<?paCard>}
      */
-    async get(index) {
+    async get(index, forceRefresh = false) {
+        if (index === NULL_CARD) {
+            return null;
+        }
+
         await this._initDone;
 
-        return (index in this._paCards) ? this._paCards[index] : null;
+        if (!forceRefresh) {
+            if (index in this._paCards) {
+                return this._paCards[index];
+            }
+
+            Log.info(`Card ${index} not found, querying...`);
+        }
+
+        const paCard = await PaHelper.getCardByIndex(index);
+
+        if (!paCard) {
+            return null;
+        }
+
+        if (this._controlIsReady()) {
+            let card = this._control.lookup_card_id(paCard.index);
+            this._addGvcCard(paCard, card);
+        }
+
+        return paCard;
     }
 
     /**
@@ -255,10 +299,10 @@ var Cards = class {
     /**
      * Tries to find out whether a certain stream matches profile for a card.
      *
-     * @param {Object<Gvc.MixerStream>} stream
+     * @param {Gvc.MixerStream} stream
      * @param {paCard} paCard
      * @param {string} profileName
-     * @private
+     * @returns {STREAM_MATCHING}
      */
     streamMatchesPaCard(stream, paCard, profileName) {
         const streamName = stream.name;
