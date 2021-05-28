@@ -1,6 +1,7 @@
 GNOME Shell Volume Mixer
 ========================
 
+[![Linting](https://github.com/aleho/gnome-shell-volume-mixer/actions/workflows/linting.yml/badge.svg)](https://github.com/aleho/gnome-shell-volume-mixer/actions/workflows/linting.yml)
 
 Shell Volume Mixer is an extension for GNOME Shell allowing separate
 configuration of PulseAudio devices and output switches. It features a profile
