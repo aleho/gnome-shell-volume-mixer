@@ -91,6 +91,8 @@ const StreamSlider = class extends OutputStreamSliderExtension
             this.item.firstLine.add_child(this._label);
         }
 
+        this.item.label_actor = this._label;
+
         if (!this._slider) {
             this._slider = new Slider.VolumeSlider(0);
             this.item.secondLine.add_child(this._slider);
