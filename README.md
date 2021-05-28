@@ -54,6 +54,6 @@ button to switch to a 2% step.
 Acknowledgments
 ---------------
 
-This is a fork of AdvancedVolumeMixer by Harry Karvonen
+This is a fork of AdvancedVolumeMixer by [Harry Karvonen](https://github.com/Hatell)
 (git://repo.or.cz/AdvancedVolumeMixer.git).
 Many thanks go out to him for his initial work.
