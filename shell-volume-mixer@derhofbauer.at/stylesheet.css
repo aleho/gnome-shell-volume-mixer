@@ -32,9 +32,6 @@
   font-size: 0.9em;
   font-weight: 400;
 }
-.svm-menu .popup-menu-item {
-  /* I don't know why these items are always insensitive, but I've given up at this point */
-}
 .svm-menu .popup-menu-item:ltr {
   margin-left: 0;
   padding-left: 0;
@@ -42,9 +39,6 @@
 .svm-menu .popup-menu-item:rtl {
   margin-right: 0;
   padding-right: 0;
-}
-.svm-menu .popup-menu-item:insensitive {
-  color: #ddd;
 }
 .svm-menu .popup-sub-menu .popup-menu-item:ltr {
   padding-right: 14px;

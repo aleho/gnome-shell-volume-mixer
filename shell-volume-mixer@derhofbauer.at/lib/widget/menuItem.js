@@ -30,7 +30,10 @@ class BaseMenuItem
      * @returns {St.BoxLayout}
      */
     _makeItemLine() {
-        return new St.BoxLayout({ style_class: 'popup-menu-item svm-container-line' });
+        return new St.BoxLayout({
+            style_class: 'popup-menu-item svm-container-line',
+            reactive:    true,
+        });
     }
 
     _prepareMenuItem() {
