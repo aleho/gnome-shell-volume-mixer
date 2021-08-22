@@ -175,6 +175,10 @@ var Menu = class extends VolumeMenuExtension
         return this._input.getIcon();
     }
 
+    getInputVisible() {
+        return false;
+    }
+
     _addSeparator() {
         if (this._separator) {
             this._separator.destroy();
