@@ -44,10 +44,14 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
         this._primaryIndicator.reactive = true;
         this._inputIndicator.reactive = true;
 
-        this._primaryIndicator.connect('scroll-event',
-            (actor, event) => Volume.Indicator.prototype._handleScrollEvent.apply(this, [VolumeType.OUTPUT, event]));
-        this._inputIndicator.connect('scroll-event',
-            (actor, event) => Volume.Indicator.prototype._handleScrollEvent.apply(this, [VolumeType.INPUT, event]));
+        this._primaryIndicator.connect('scroll-event', (actor, event) => {
+            Volume.Indicator.prototype._handleScrollEvent.apply(this, [VolumeType.OUTPUT, event]);
+            return true;
+        });
+        this._inputIndicator.connect('scroll-event', (actor, event) => {
+            Volume.Indicator.prototype._handleScrollEvent.apply(this, [VolumeType.INPUT, event]);
+            return true;
+        });
 
         this._control = mixer.control;
         this._volumeMenu = new Menu(mixer, options);
