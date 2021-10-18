@@ -417,7 +417,7 @@ var OutputSlider = class extends StreamSlider
             // check if port is available before setting visible
             (async () => {
                 try {
-                    const byPort = await this._shouldByVisibleByPort(forceRefresh);
+                    const byPort = await this._shouldBeVisibleByPort(forceRefresh);
 
                     // This could be a race condition with the async code finishing after current conditions have changed.
                     // Therefore we have to check the sync path again.
@@ -444,13 +444,13 @@ var OutputSlider = class extends StreamSlider
      * @returns {Promise<boolean>}
      * @private
      */
-    async _shouldByVisibleByPort(forceRefresh = true) {
+    async _shouldBeVisibleByPort(forceRefresh = true) {
         if (!this._stream || ! this._cards) {
             return true;
         }
 
         if (!this._stream.card_index) {
-            Log.error('OutputSlider', '_shouldByVisibleByPort', 'Stream cannot be identified, no card index available');
+            Log.error('OutputSlider', '_shouldBeVisibleByPort', 'Stream cannot be identified, no card index available');
             return true;
         }
 
@@ -464,7 +464,7 @@ var OutputSlider = class extends StreamSlider
         const port = this._stream.port in card.ports ? card.ports[this._stream.port] : null;
 
         if (!port) {
-            Log.error('OutputSlider', '_shouldByVisibleByPort', `Port ${this._stream.port} not found for stream ${this._stream.id}:${this._stream.name}`);
+            Log.error('OutputSlider', '_shouldBeVisibleByPort', `Port ${this._stream.port} not found for stream ${this._stream.id}:${this._stream.name}`);
             return true;
         }
 
