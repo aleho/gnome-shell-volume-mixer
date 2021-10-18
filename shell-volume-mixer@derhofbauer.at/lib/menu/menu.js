@@ -374,4 +374,8 @@ var Menu = class extends VolumeMenuExtension
 
         callback(dump.join('\n'));
     }
+
+    getInputVisible() {
+        return this._input.isVisible();
+    }
 };
