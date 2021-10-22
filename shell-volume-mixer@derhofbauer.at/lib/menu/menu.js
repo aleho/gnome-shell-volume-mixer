@@ -185,6 +185,12 @@ var Menu = class extends VolumeMenuExtension
     }
 
     _addStream(control, stream) {
+        if (stream instanceof Gvc.MixerSource
+            || stream instanceof Gvc.MixerSourceOutput
+        ) {
+            return;
+        }
+
         const isSystemSound = stream instanceof Gvc.MixerEventRole;
         const isInputStream = stream instanceof Gvc.MixerSinkInput;
         const isOutputStream = stream instanceof Gvc.MixerSink;
@@ -221,7 +227,7 @@ var Menu = class extends VolumeMenuExtension
             this._addOutputStream(stream, control, options);
 
         } else {
-            Log.info(`Unhandled stream ${stream.id} (${stream.name})`);
+            Log.info(`Unhandled stream ${stream.id} (${stream.name} (${stream.constructor}))`);
         }
     }
 
