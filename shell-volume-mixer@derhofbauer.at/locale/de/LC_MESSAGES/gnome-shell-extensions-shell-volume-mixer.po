@@ -10,115 +10,115 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
-"PO-Revision-Date: 2021-10-22 15:30\n"
+"PO-Revision-Date: 2021-10-22 15:35\n"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.js:219
 msgid "Error retrieving card details"
-msgstr ""
+msgstr "Fehler beim Abfragen der Karten"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.js:220
 msgid "Helper script did not return valid card data."
-msgstr ""
+msgstr "Hilfsprogramm gab keine gültigen Daten zurück."
 
 #: shell-volume-mixer@derhofbauer.at/lib/utils/cards.js:115
 msgid "Querying PulseAudio sound cards failed, disabling extension"
-msgstr ""
+msgstr "Abfrage der PulseAudio-Soundkarten fehlgeschlagen, Erweiterung deaktiviert"
 
 #: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:309
 #: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:311
 msgid "Inputs"
-msgstr ""
+msgstr "Eingänge"
 
 #: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:522
 msgid "unknown"
-msgstr ""
+msgstr "unbekannt"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:39
 msgid "Position of volume mixer"
-msgstr ""
+msgstr "Position des Lautstärkereglers"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:53
 msgid "Status Menu"
-msgstr ""
+msgstr "Statusmenü"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:54
 msgid "Left"
-msgstr ""
+msgstr "Links"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:55
 msgid "Center"
-msgstr ""
+msgstr "Zentriert"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:56
 msgid "Right"
-msgstr ""
+msgstr "Rechts"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:69
 msgid "Remove original slider"
-msgstr ""
+msgstr "Originalen Lautstärkeregler entfernen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:81
 msgid "Show detailed sliders"
-msgstr ""
+msgstr "Details an den Schiebereglern anzeigen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:116
 msgid "Hotkey for profile switcher"
-msgstr ""
+msgstr "Hotkey für Profilumschalter"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:137
 msgid "(e.g. \"<Super>p\")"
-msgstr ""
+msgstr "(z.B. \"<Super>p\")"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:149
 msgid "Use symbolic icons"
-msgstr ""
+msgstr "Symbolische Icons verwenden"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:172
 msgid "Show system sounds"
-msgstr ""
+msgstr "Systemklänge anzeigen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:195
 msgid "Show virtual streams"
-msgstr ""
+msgstr "Virtuelle Streams anzeigen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:218
 msgid "Always show input streams"
-msgstr ""
+msgstr "Eingänge immer anzeigen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:240
 msgid "Shows the slider even if no application is recording"
-msgstr ""
+msgstr "Zeigt Aufnahmeströme (Mikrofone) immer an, auch wenn keine Applikation gerade aufnimmt"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:288
 msgid "Show percentage"
-msgstr ""
+msgstr "Prozent anzeigen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:310
 msgid "Whether to show percentage of current output right of the icon"
-msgstr ""
+msgstr "Lautstärke des aktuellen Ausgangs in Prozent neben dem Icon anzeigen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:340
 msgid "Settings"
-msgstr ""
+msgstr "Einstellungen"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:372
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:502
 msgid "Devices"
-msgstr ""
+msgstr "Geräte"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:413
 msgid "Card"
-msgstr ""
+msgstr "Karte"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:427
 msgid "Profile"
-msgstr ""
+msgstr "Profil"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:440
 msgid "Switch"
-msgstr ""
+msgstr "Umschalter"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.ui:455
 msgid "Display"
-msgstr ""
+msgstr "Anzeigen"
 
