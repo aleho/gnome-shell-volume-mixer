@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
-"PO-Revision-Date: 2021-10-22 15:35\n"
+"PO-Revision-Date: 2021-10-22 16:32\n"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.js:219
 msgid "Error retrieving card details"
@@ -24,12 +24,12 @@ msgstr "Pomocný skript nevrátil platná data o kartě."
 msgid "Querying PulseAudio sound cards failed, disabling extension"
 msgstr ""
 
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:309
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:311
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:315
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:317
 msgid "Inputs"
 msgstr "Vstupy"
 
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:522
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:533
 msgid "unknown"
 msgstr "neznámé"
 
