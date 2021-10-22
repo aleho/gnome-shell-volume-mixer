@@ -295,11 +295,13 @@ var MasterSlider = class extends StreamSlider
     }
 
     scroll(event) {
-        super.scroll(event);
+        const eventResult = super.scroll(event);
 
         if (Main.panel.statusArea.aggregateMenu.menu.isOpen) {
             this._showVolumeInfo();
         }
+
+        return eventResult;
     }
 };
 
