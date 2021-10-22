@@ -563,6 +563,7 @@ var InputStreamSlider = class extends StreamSlider
 
     _connectStream(stream) {
         Volume.InputStreamSlider.prototype._connectStream.apply(this, [stream]);
+        this.refresh();
     }
 
     _maybeShowInput() {
@@ -584,8 +585,6 @@ var InputStreamSlider = class extends StreamSlider
     }
 
     _updateLabel() {
-        super._updateLabel();
-
         this._label.text = _('Microphone');
     }
 
@@ -593,7 +592,7 @@ var InputStreamSlider = class extends StreamSlider
         if (this._stream && !this.options.symbolicIcons) {
             this._icon.gicon = this._stream.get_gicon();
         } else {
-            this._icon.icon_name = this.getIcon();
+            this._icon.icon_name = 'audio-input-microphone-symbolic';
         }
 
         this.emit('stream-updated');
