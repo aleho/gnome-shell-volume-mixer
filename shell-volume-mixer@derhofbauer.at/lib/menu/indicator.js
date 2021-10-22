@@ -57,12 +57,9 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
         this._volumeMenu.connect('input-visible-changed', () => {
             this._inputIndicator.visible = this._volumeMenu.getInputVisible();
         });
-        this._volumeMenu.connect('input-icon-changed', () => {
-            let icon = this._volumeMenu.getInputIcon();
-
-            if (icon !== null)
-                this._inputIndicator.icon_name = icon;
-        });
+        this._volumeMenu.connect('input-icon-changed', this.updateInputIcon.bind(this));
+        // initial call to get an icon (expecially for "show-always" setups)
+        this.updateInputIcon();
 
         this.menu.addMenuItem(this._volumeMenu);
 
@@ -75,13 +72,21 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
     }
 
     updateOutputIcon() {
-        let icon = this._volumeMenu.getOutputIcon();
+        let icon = this._volumeMenu.getIcon(VolumeType.OUTPUT);
 
         if (icon) {
             this._primaryIndicator.icon_name = icon;
             this._primaryIndicator.visible = true;
         } else {
             this._primaryIndicator.visible = false;
+        }
+    }
+
+    updateInputIcon() {
+        let icon = this._volumeMenu.getIcon(VolumeType.INPUT);
+
+        if (icon !== null) {
+            this._inputIndicator.icon_name = icon;
         }
     }
 

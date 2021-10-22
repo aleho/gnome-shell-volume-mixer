@@ -57,6 +57,7 @@ const StreamSlider = class extends OutputStreamSliderExtension
         super();
 
         this._isDestroyed = false;
+        this._hasHeadphones = false;
 
         this.options = options;
         this._control = control;
@@ -253,7 +254,6 @@ var MasterSlider = class extends StreamSlider
         this.item = new MenuItem.MasterMenuItem();
         this.item.menu.actor.add_style_class_name('svm-master-slider-menu');
 
-        this._hasHeadphones = false;
         this._slider = this.item._slider;
         this._icon = this.item.icon;
         this._label = this.item.label;
@@ -550,6 +550,7 @@ var InputStreamSlider = class extends StreamSlider
         this._streamAddedId = this._control.connect('stream-added', this._maybeShowInput.bind(this));
         this._streamRemovedId = this._control.connect('stream-removed', this._maybeShowInput.bind(this));
 
+        this._icon.icon_name = 'audio-input-microphone-symbolic';
         this._icons = [
             'microphone-sensitivity-muted-symbolic',
             'microphone-sensitivity-low-symbolic',
@@ -559,8 +560,7 @@ var InputStreamSlider = class extends StreamSlider
     }
 
     _connectStream(stream) {
-        super._connectStream(stream);
-        this._maybeShowInput();
+        Volume.InputStreamSlider.prototype._connectStream.apply(this, [stream]);
     }
 
     _maybeShowInput() {
@@ -573,12 +573,12 @@ var InputStreamSlider = class extends StreamSlider
         }
     }
 
-    isVisible() {
-        return this._shouldBeVisible();
-    }
-
     _shouldBeVisible() {
         return Volume.InputStreamSlider.prototype._shouldBeVisible.call(this);
+    }
+
+    isVisible() {
+        return this._shouldBeVisible();
     }
 
     _updateLabel() {
@@ -591,7 +591,7 @@ var InputStreamSlider = class extends StreamSlider
         if (this._stream && !this.options.symbolicIcons) {
             this._icon.gicon = this._stream.get_gicon();
         } else {
-            this._icon.icon_name = 'audio-input-microphone-symbolic';
+            this._icon.icon_name = this.getIcon();
         }
 
         this.emit('stream-updated');

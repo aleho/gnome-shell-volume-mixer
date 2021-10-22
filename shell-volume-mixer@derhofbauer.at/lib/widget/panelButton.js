@@ -16,6 +16,11 @@ const St = imports.gi.St;
 const { Menu } = Lib.menu.menu;
 const { PercentageLabel } = Lib.widget.percentageLabel;
 
+const VolumeType = {
+    OUTPUT: 0,
+    INPUT: 1,
+};
+
 
 /**
  * Stand-alone panel menu
@@ -58,7 +63,7 @@ var PanelButton = GObject.registerClass(class PanelButton extends PanelMenu.Butt
     }
 
     _onIconChanged() {
-        this.setIcon(this._mixerMenu.getOutputIcon());
+        this.setIcon(this._mixerMenu.getIcon(VolumeType.OUTPUT));
     }
 
     setIcon(icon_name) {
