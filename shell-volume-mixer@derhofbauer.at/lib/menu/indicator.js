@@ -39,6 +39,12 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
         super._init();
 
         this._primaryIndicator = this._addIndicator();
+
+        if (options.showPercentageLabel) {
+            this._percentageLabel = new PercentageLabel(mixer);
+            this.add(this._percentageLabel);
+        }
+
         this._inputIndicator = this._addIndicator();
 
         this._primaryIndicator.reactive = true;
@@ -64,11 +70,6 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
         this.menu.addMenuItem(this._volumeMenu);
 
         this._volumeMenu.actor.add_style_class_name('svm-integrated-menu');
-
-        if (options.showPercentageLabel) {
-            this._percentageLabel = new PercentageLabel(mixer);
-            this.add(this._percentageLabel);
-        }
     }
 
     updateOutputIcon() {
