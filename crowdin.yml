@@ -1,4 +1,3 @@
 files:
   - source: /shell-volume-mixer@derhofbauer.at/locale/translations.pot
-    translation: >-
-      /shell-volume-mixer@derhofbauer.at/locale/%two_letters_code%/LC_MESSAGES/gnome-shell-extensions-shell-volume-mixer.po
+    translation: /shell-volume-mixer@derhofbauer.at/locale/%osx_locale%/LC_MESSAGES/gnome-shell-extensions-shell-volume-mixer.po
