@@ -1,122 +1,124 @@
-# Czech translation for GNOME Shell Volume Mixer.
-# Copyright (C) 2017
-# This file is distributed under the same license as the GNOME Shell Volume Mixer.
-# Daniel Rusek <mail@asciiwolf.com>
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: GNOME Shell Volume Mixer\n"
-"POT-Creation-Date: 2017-11-07 23:12+0100\n"
-"PO-Revision-Date: 2017-11-13 22:08+0100\n"
-"Last-Translator: Daniel Rusek <mail@asciiwolf.com>\n"
-"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=4; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 3;\n"
+"X-Crowdin-Project: gnome-shell-volume-mixer\n"
+"X-Crowdin-Project-ID: 294009\n"
+"X-Crowdin-Language: cs\n"
+"X-Crowdin-File: /main/shell-volume-mixer@derhofbauer.at/locale/translations.pot\n"
+"X-Crowdin-File-ID: 11\n"
+"Project-Id-Version: gnome-shell-volume-mixer\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-Basepath: ..\n"
-"X-Poedit-KeywordsList: ;__\n"
-"PO-Revision-Date: \n"
-"Language-Team: \n"
-"X-Generator: Poedit 2.0.3\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"Language: cs\n"
-"X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPathExcluded-0: locale\n"
-"X-Poedit-SearchPathExcluded-1: pautils\n"
-"X-Poedit-SearchPathExcluded-2: schemas\n"
+"Language-Team: Czech\n"
+"Language: cs_CZ\n"
+"PO-Revision-Date: 2021-10-22 15:30\n"
 
-#: prefs.js:288
+#: shell-volume-mixer@derhofbauer.at/prefs.js:219
 msgid "Error retrieving card details"
-msgstr "Chyba při získávání detailů o kartě"
+msgstr ""
 
-#: prefs.js:289
+#: shell-volume-mixer@derhofbauer.at/prefs.js:220
 msgid "Helper script did not return valid card data."
-msgstr "Pomocný skript nevrátil platná data o kartě."
+msgstr ""
 
-#: widget/volume.js:255 widget/volume.js:257
+#: shell-volume-mixer@derhofbauer.at/lib/utils/cards.js:115
+msgid "Querying PulseAudio sound cards failed, disabling extension"
+msgstr ""
+
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:309
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:311
 msgid "Inputs"
-msgstr "Vstupy"
+msgstr ""
 
-#: widget/volume.js:394
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:522
 msgid "unknown"
-msgstr "neznámé"
+msgstr ""
 
-#: prefs.ui:56
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:39
 msgid "Position of volume mixer"
-msgstr "Umístění směšovače hlasitosti"
+msgstr ""
 
-#: prefs.ui:70
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:53
 msgid "Status Menu"
-msgstr "Stavové menu"
+msgstr ""
 
-#: prefs.ui:71
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:54
 msgid "Left"
-msgstr "Vlevo"
+msgstr ""
 
-#: prefs.ui:72
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:55
 msgid "Center"
-msgstr "Uprostřed"
+msgstr ""
 
-#: prefs.ui:73
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:56
 msgid "Right"
-msgstr "Vpravo"
+msgstr ""
 
-#: prefs.ui:88
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:69
 msgid "Remove original slider"
-msgstr "Odstranit původní posuvníky"
+msgstr ""
 
-#: prefs.ui:101
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:81
 msgid "Show detailed sliders"
-msgstr "Zobrazit detailní posuvníky"
+msgstr ""
 
-#: prefs.ui:141
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:116
 msgid "Hotkey for profile switcher"
-msgstr "Klávesová zkratka pro přepínač profilů"
+msgstr ""
 
-#: prefs.ui:164
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:137
 msgid "(e.g. \"<Super>p\")"
-msgstr "(např. „<Super>p”)"
+msgstr ""
 
-#: prefs.ui:260
-msgid "Show system sounds"
-msgstr "Zobrazit systémové zvuky"
-
-#: prefs.ui:273
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:149
 msgid "Use symbolic icons"
-msgstr "Použít symbolické ikony"
+msgstr ""
 
-#: prefs.ui:310
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:172
+msgid "Show system sounds"
+msgstr ""
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:195
 msgid "Show virtual streams"
-msgstr "Zobrazit virtuální proudy"
+msgstr ""
 
-#: prefs.ui:335
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:218
 msgid "Always show input streams"
-msgstr "Vždy zobrazit vstupní proudy"
+msgstr ""
 
-#: prefs.ui:359
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:240
 msgid "Shows the slider even if no application is recording"
-msgstr "Zobrazí posuvník i pokud žádná aplikace nenahrává zvuk"
+msgstr ""
 
-#: prefs.ui:445
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:288
+msgid "Show percentage"
+msgstr ""
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:310
+msgid "Whether to show percentage of current output right of the icon"
+msgstr ""
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:340
 msgid "Settings"
-msgstr "Nastavení"
+msgstr ""
 
-#: prefs.ui:482 prefs.ui:649
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:372
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:502
 msgid "Devices"
-msgstr "Zařízení"
+msgstr ""
 
-#: prefs.ui:533
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:413
 msgid "Card"
-msgstr "Karta"
+msgstr ""
 
-#: prefs.ui:547
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:427
 msgid "Profile"
-msgstr "Profil"
+msgstr ""
 
-#: prefs.ui:560
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:440
 msgid "Switch"
-msgstr "Přepínač"
+msgstr ""
 
-#: prefs.ui:573
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:455
 msgid "Display"
-msgstr "Zobrazit"
+msgstr ""
+
