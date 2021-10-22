@@ -56,6 +56,8 @@ const StreamSlider = class extends OutputStreamSliderExtension
     constructor(control, options = {}) {
         super();
 
+        this._isDestroyed = false;
+
         this.options = options;
         this._control = control;
         this._mixer = options.mixer;
@@ -231,6 +233,8 @@ const StreamSlider = class extends OutputStreamSliderExtension
     }
 
     _onDestroy() {
+        this._isDestroyed = true;
+
         // make sure we clean up all bindings
         if (this._stream) {
             this._disconnectStream(this._stream);
@@ -418,6 +422,11 @@ var OutputSlider = class extends StreamSlider
             (async () => {
                 try {
                     const byPort = await this._shouldBeVisibleByPort(forceRefresh);
+
+                    if (this._isDestroyed) {
+                        // async race condition, we're already gone
+                        return;
+                    }
 
                     // This could be a race condition with the async code finishing after current conditions have changed.
                     // Therefore we have to check the sync path again.
