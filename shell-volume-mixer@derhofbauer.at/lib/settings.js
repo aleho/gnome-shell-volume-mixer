@@ -9,7 +9,8 @@
 /* exported Settings, cleanup */
 /* exported SOUND_SETTINGS_SCHEMA, ALLOW_AMPLIFIED_VOLUME_KEY, SETTING */
 
-const Extension = imports.misc.extensionUtils.getCurrentExtension();
+const ExtensionUtils = imports.misc.extensionUtils;
+const Extension = ExtensionUtils.getCurrentExtension();
 const { Gio, GLib } = imports.gi;
 const Lib = Extension.imports.lib;
 
@@ -52,8 +53,9 @@ var Settings = class
 {
     get settings() {
         if (!GSETTINGS[this.schema]) {
-            this._initSettings();
+            GSETTINGS[this.schema] = ExtensionUtils.getSettings(this.schema);
         }
+
         return GSETTINGS[this.schema];
     }
 
@@ -66,62 +68,6 @@ var Settings = class
 
         this._signals = SIGNALS[this.schema];
     }
-
-    /**
-     * Initializes a single instance of Gio.Settings for this extension.
-     */
-    _initSettings() {
-        let instance;
-
-        // for all schemas != app schema
-        if (this.schema !== SETTINGS_SCHEMA) {
-            instance = this._getSettings(this.schema);
-
-        // app-schema
-        } else {
-            let schemaDir = Utils.getExtensionPath('schemas');
-
-            // try to find the app-schema locally
-            if (GLib.file_test(`${schemaDir}/gschemas.compiled`, GLib.FileTest.EXISTS)) {
-                let schemaSource = Gio.SettingsSchemaSource.new_from_directory(
-                    schemaDir,
-                    Gio.SettingsSchemaSource.get_default(),
-                    false
-                );
-
-                instance = new Gio.Settings({
-                    settings_schema: schemaSource.lookup(this.schema, false)
-                });
-
-            // app-schema might be installed system-wide
-            } else {
-                instance = this._getSettings(this.schema);
-            }
-        }
-
-        if (!instance) {
-            throw 'Schema "%s" not found'.format(this.schema);
-        }
-
-        GSETTINGS[this.schema] = instance;
-    }
-
-    /**
-     * Returns a Gio.Settings object for a schema.
-     *
-     * @param {string} schema Name of the schema to initialize.
-     * @returns {Gio.Settings}
-     */
-    _getSettings(schema) {
-        if (Gio.Settings.list_schemas().indexOf(schema) === -1) {
-            return null;
-        }
-
-        return new Gio.Settings({
-            schema: schema
-        });
-    }
-
 
     /**
      * Registers a listener for a signal.
