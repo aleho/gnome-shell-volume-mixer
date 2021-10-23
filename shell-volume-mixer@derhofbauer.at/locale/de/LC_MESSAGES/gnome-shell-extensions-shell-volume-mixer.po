@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
-"PO-Revision-Date: 2021-10-22 16:32\n"
+"PO-Revision-Date: 2021-10-23 15:41\n"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.js:219
 msgid "Error retrieving card details"
@@ -20,16 +20,16 @@ msgstr "Fehler beim Abfragen der Karten"
 msgid "Helper script did not return valid card data."
 msgstr "Hilfsprogramm gab keine gültigen Daten zurück."
 
-#: shell-volume-mixer@derhofbauer.at/lib/utils/cards.js:115
+#: shell-volume-mixer@derhofbauer.at/lib/utils/cards.js:116
 msgid "Querying PulseAudio sound cards failed, disabling extension"
 msgstr "Abfrage der PulseAudio-Soundkarten fehlgeschlagen, Erweiterung deaktiviert"
 
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:315
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:317
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:314
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:316
 msgid "Inputs"
 msgstr "Eingänge"
 
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:533
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:532
 msgid "unknown"
 msgstr "unbekannt"
 
