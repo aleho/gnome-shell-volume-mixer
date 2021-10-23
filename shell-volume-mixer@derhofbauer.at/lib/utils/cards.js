@@ -8,11 +8,12 @@
 
 /* exported Cards, STREAM_MATCHING */
 
-const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
+const ExtensionUtils = imports.misc.extensionUtils;
+const Lib = ExtensionUtils.getCurrentExtension().imports.lib;
 const Main = imports.ui.main;
 const { Gvc, GLib } = imports.gi;
+const __ = ExtensionUtils.gettext;
 
-const __ = Lib.utils.gettext._;
 const { EventBroker } = Lib.utils.eventBroker;
 const { EventHandlerDelegate } = Lib.utils.eventHandlerDelegate;
 const Log = Lib.utils.log;

@@ -10,12 +10,11 @@
 
 const { Clutter, GLib, St } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
-const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
+const Lib = ExtensionUtils.getCurrentExtension().imports.lib;
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
 const Volume = imports.ui.status.volume;
-
-const __ = Lib.utils.gettext._;
+const __ = ExtensionUtils.gettext;
 
 const { EventBroker } = Lib.utils.eventBroker;
 const { FloatingLabel } = Lib.widget.floatingLabel;

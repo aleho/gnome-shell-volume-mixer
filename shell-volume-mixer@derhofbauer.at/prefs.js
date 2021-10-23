@@ -9,14 +9,14 @@
 /* exported init, buildPrefsWidget */
 
 const { Gtk, GObject } = imports.gi;
-const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
+const ExtensionUtils = imports.misc.extensionUtils;
+const Lib = ExtensionUtils.getCurrentExtension().imports.lib;
+const __ = ExtensionUtils.gettext;
 
-const Gettext = Lib.utils.gettext;
 const { Settings, SETTING } = Lib.settings;
 const Log = Lib.utils.log;
 const PaHelper = Lib.utils.paHelper;
 const Utils = Lib.utils.utils;
-const __ = Lib.utils.gettext._;
 
 let preferences;
 
@@ -298,11 +298,11 @@ const Preferences = GObject.registerClass({
     _init() {
         super._init();
 
+        ExtensionUtils.initTranslations();
+
         this._widgets = {};
         this._widgetSettings = [];
 
-        // just init gettext here
-        Gettext.getLocal();
         this._settings = new Settings();
 
         this._builder = new Gtk.Builder();
