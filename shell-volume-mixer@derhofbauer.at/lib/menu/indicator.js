@@ -9,7 +9,7 @@
 /* exported Indicator */
 
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
-const { Clutter, GObject } = imports.gi;
+const { GObject } = imports.gi;
 const PanelMenu = imports.ui.panelMenu;
 const Volume = imports.ui.status.volume;
 
@@ -42,7 +42,11 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
 
         if (options.showPercentageLabel) {
             this._percentageLabel = new PercentageLabel(mixer);
-            this.add(this._percentageLabel);
+            this.add_actor(this._percentageLabel);
+
+            this._percentageLabel.reactive = true;
+            this._percentageLabel.connect('scroll-event',
+                (actor, event) => Volume.Indicator.prototype._handleScrollEvent.apply(this, [VolumeType.OUTPUT, event]));
         }
 
         this._inputIndicator = this._addIndicator();

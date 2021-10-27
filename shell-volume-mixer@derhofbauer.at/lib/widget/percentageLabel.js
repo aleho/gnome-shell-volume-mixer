@@ -14,7 +14,7 @@ const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const { EventBroker } = Lib.utils.eventBroker;
 
 
-var PercentageLabel = GObject.registerClass(class Indicator extends St.Label {
+var PercentageLabel = GObject.registerClass(class PercentageLabel extends St.Label {
     _init(mixer) {
         this._events = new EventBroker();
 
