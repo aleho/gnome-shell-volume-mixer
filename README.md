@@ -7,7 +7,9 @@ Shell Volume Mixer is an extension for GNOME Shell allowing separate
 configuration of PulseAudio devices and output switches. It features a profile
 switcher to quickly switch between pinned profiles and devices.
 
-Middle mouse click on a slider mutes the selected stream.
+Middle mouse click on an indicator or a slider mutes the selected stream.
+
+Indicators and streams are also scrollable,
 
 
 <img src="/screenshot_1.png" alt="Outputs menu" width="40%"><img alt="Inputs menu" src="/screenshot_2.png" width="40%">
