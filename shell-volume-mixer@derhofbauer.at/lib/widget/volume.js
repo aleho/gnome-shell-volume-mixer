@@ -156,9 +156,11 @@ const StreamSlider = class extends OutputStreamSliderExtension
 
     _onButtonPress(actor, event) {
         if (event.get_button() === 2) {
-            this._stream.change_is_muted(!this._stream.is_muted);
+            this.toggleMute();
+
             return Clutter.EVENT_STOP;
         }
+
         return this._slider.startDragging(event);
     }
 
@@ -232,6 +234,12 @@ const StreamSlider = class extends OutputStreamSliderExtension
         this._volumeInfo.hide(false);
     }
 
+    toggleMute() {
+        if (this._stream) {
+            this._stream.change_is_muted(!this._stream.is_muted);
+        }
+    }
+
     _onDestroy() {
         this._isDestroyed = true;
 
@@ -284,8 +292,9 @@ var MasterSlider = class extends StreamSlider
      */
     _onButtonPress(actor, event) {
         if (event.get_button() === 2) {
-            this._stream.change_is_muted(!this._stream.is_muted);
+            this.toggleMute();
         }
+
         return Clutter.EVENT_STOP;
     }
 

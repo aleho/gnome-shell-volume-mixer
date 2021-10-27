@@ -46,7 +46,9 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
 
             this._percentageLabel.reactive = true;
             this._percentageLabel.connect('scroll-event',
-                (actor, event) => Volume.Indicator.prototype._handleScrollEvent.apply(this, [VolumeType.OUTPUT, event]));
+                (actor, event) => this._handleScrollEvent(VolumeType.OUTPUT, event));
+            this._percentageLabel.connect('button-press-event',
+                (actor, event) => this._handleButtonPress(VolumeType.OUTPUT, event));
         }
 
         this._inputIndicator = this._addIndicator();
@@ -55,9 +57,14 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
         this._inputIndicator.reactive = true;
 
         this._primaryIndicator.connect('scroll-event',
-            (actor, event) => Volume.Indicator.prototype._handleScrollEvent.apply(this, [VolumeType.OUTPUT, event]));
+            (actor, event) => this._handleScrollEvent(VolumeType.OUTPUT, event));
         this._inputIndicator.connect('scroll-event',
-            (actor, event) => Volume.Indicator.prototype._handleScrollEvent.apply(this, [VolumeType.INPUT, event]));
+            (actor, event) => this._handleScrollEvent(VolumeType.INPUT, event));
+
+        this._primaryIndicator.connect('button-press-event',
+            (actor, event) => this._handleButtonPress(VolumeType.OUTPUT, event));
+        this._inputIndicator.connect('button-press-event',
+            (actor, event) => this._handleButtonPress(VolumeType.INPUT, event));
 
         this._control = mixer.control;
         this._volumeMenu = new Menu(mixer, options);
@@ -93,6 +100,24 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
         if (icon !== null) {
             this._inputIndicator.icon_name = icon;
         }
+    }
+
+    _handleScrollEvent(type, event) {
+        return Volume.Indicator.prototype._handleScrollEvent.apply(this, [type, event]);
+    }
+
+    _handleButtonPress(type, event) {
+        if (event.get_button() === 2) {
+            if (type === VolumeType.OUTPUT) {
+                this._volumeMenu._output.toggleMute();
+            } else {
+                this._volumeMenu._input.toggleMute();
+            }
+
+            return Clutter.EVENT_STOP;
+        }
+
+        return Clutter.EVENT_PROPAGATE;
     }
 
     destroy() {
