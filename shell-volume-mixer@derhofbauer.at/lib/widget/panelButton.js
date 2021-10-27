@@ -9,9 +9,8 @@
 /* exported PanelButton */
 
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
-const GObject = imports.gi.GObject;
+const { GObject, St } = imports.gi;
 const PanelMenu = imports.ui.panelMenu;
-const St = imports.gi.St;
 const Volume = imports.ui.status.volume;
 
 const { Menu } = Lib.menu.menu;

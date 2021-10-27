@@ -8,11 +8,9 @@
 
 /* exported MasterMenuItem, SubMenuItem */
 
-const Clutter = imports.gi.Clutter;
-const GObject = imports.gi.GObject;
+const { Clutter, GObject, St } = imports.gi;
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
 const PopupMenu = imports.ui.popupMenu;
-const St = imports.gi.St;
 
 const Slider = Lib.widget.slider;
 const Utils = Lib.utils.utils;

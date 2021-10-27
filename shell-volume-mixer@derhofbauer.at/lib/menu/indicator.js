@@ -9,7 +9,7 @@
 /* exported Indicator */
 
 const Lib = imports.misc.extensionUtils.getCurrentExtension().imports.lib;
-const { GObject } = imports.gi;
+const { GObject, Clutter } = imports.gi;
 const PanelMenu = imports.ui.panelMenu;
 const Volume = imports.ui.status.volume;
 

@@ -8,8 +8,7 @@
 
 /* exported VolumeSlider */
 
-const Clutter = imports.gi.Clutter;
-const GObject = imports.gi.GObject;
+const { Clutter, GObject } = imports.gi;
 const Slider = imports.ui.slider;
 
 
