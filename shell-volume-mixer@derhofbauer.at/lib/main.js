@@ -153,6 +153,7 @@ var Extension = class {
         this._indicator = new Indicator(this._mixer, {
             separator: false,
             showPercentageLabel: this._settings.get_boolean(SETTING.show_percentage_label),
+            menuClass: 'svm-integrated-menu',
         });
 
         // get current indicator position

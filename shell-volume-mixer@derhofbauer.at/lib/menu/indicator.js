@@ -26,7 +26,7 @@ const VolumeType = {
  * Custom indicator with dropdown menu.
  * Copied from status/volume.js
  *
- * @copypaste: Needs code to not initialize volume menu and all its events.
+ * @copypaste from Volume.Indicator: Needs code to not initialize volume menu and all its events.
  */
 var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIndicator
 {
@@ -68,6 +68,8 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
 
         this._control = mixer.control;
         this._volumeMenu = new Menu(mixer, options);
+        this._volumeMenu.actor.add_style_class_name(options.menuClass);
+
         this._volumeMenu.connect('output-icon-changed', this.updateOutputIcon.bind(this));
 
         this._inputIndicator.visible = this._volumeMenu.getInputVisible();
@@ -75,12 +77,10 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
             this._inputIndicator.visible = this._volumeMenu.getInputVisible();
         });
         this._volumeMenu.connect('input-icon-changed', this.updateInputIcon.bind(this));
-        // initial call to get an icon (expecially for "show-always" setups)
+        // initial call to get an icon (especially for "show-always" setups)
         this.updateInputIcon();
 
         this.menu.addMenuItem(this._volumeMenu);
-
-        this._volumeMenu.actor.add_style_class_name('svm-integrated-menu');
     }
 
     updateOutputIcon() {
