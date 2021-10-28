@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt_BR\n"
-"PO-Revision-Date: 2021-10-23 15:41\n"
+"PO-Revision-Date: 2021-10-28 09:31\n"
 
 #: shell-volume-mixer@derhofbauer.at/prefs.js:219
 msgid "Error retrieving card details"
@@ -24,12 +24,12 @@ msgstr "O script ajudante não retornou dados de placa válidos."
 msgid "Querying PulseAudio sound cards failed, disabling extension"
 msgstr ""
 
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:314
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:316
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:323
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:325
 msgid "Inputs"
 msgstr "Entradas"
 
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:532
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:541
 msgid "unknown"
 msgstr "desconhecido"
 
