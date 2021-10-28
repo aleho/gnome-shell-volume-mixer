@@ -10,12 +10,12 @@ msgstr ""
 msgid "Querying PulseAudio sound cards failed, disabling extension"
 msgstr ""
 
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:314
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:316
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:323
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:325
 msgid "Inputs"
 msgstr ""
 
-#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:532
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:541
 msgid "unknown"
 msgstr ""
 

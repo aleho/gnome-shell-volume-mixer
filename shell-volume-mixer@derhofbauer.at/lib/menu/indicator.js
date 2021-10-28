@@ -13,8 +13,11 @@ const { GObject, Clutter } = imports.gi;
 const PanelMenu = imports.ui.panelMenu;
 const Volume = imports.ui.status.volume;
 
+const { EventHandlerDelegate } = Lib.utils.eventHandlerDelegate;
 const { Menu } = Lib.menu.menu;
 const { PercentageLabel } = Lib.widget.percentageLabel;
+const Utils = Lib.utils.utils;
+
 
 const VolumeType = {
     OUTPUT: 0,
@@ -45,9 +48,9 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
             this.add_actor(this._percentageLabel);
 
             this._percentageLabel.reactive = true;
-            this._percentageLabel.connect('scroll-event',
+            this.connect(this._percentageLabel, 'scroll-event',
                 (actor, event) => this._handleScrollEvent(VolumeType.OUTPUT, event));
-            this._percentageLabel.connect('button-press-event',
+            this.connect(this._percentageLabel, 'button-press-event',
                 (actor, event) => this._handleButtonPress(VolumeType.OUTPUT, event));
         }
 
@@ -56,27 +59,27 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
         this._primaryIndicator.reactive = true;
         this._inputIndicator.reactive = true;
 
-        this._primaryIndicator.connect('scroll-event',
+        this.connect(this._primaryIndicator, 'scroll-event',
             (actor, event) => this._handleScrollEvent(VolumeType.OUTPUT, event));
-        this._inputIndicator.connect('scroll-event',
+        this.connect(this._inputIndicator, 'scroll-event',
             (actor, event) => this._handleScrollEvent(VolumeType.INPUT, event));
 
-        this._primaryIndicator.connect('button-press-event',
+        this.connect(this._primaryIndicator, 'button-press-event',
             (actor, event) => this._handleButtonPress(VolumeType.OUTPUT, event));
-        this._inputIndicator.connect('button-press-event',
+        this.connect(this._inputIndicator, 'button-press-event',
             (actor, event) => this._handleButtonPress(VolumeType.INPUT, event));
 
         this._control = mixer.control;
         this._volumeMenu = new Menu(mixer, options);
         this._volumeMenu.actor.add_style_class_name(options.menuClass);
 
-        this._volumeMenu.connect('output-icon-changed', this.updateOutputIcon.bind(this));
+        this.connect(this._volumeMenu, 'output-icon-changed', this.updateOutputIcon.bind(this));
 
         this._inputIndicator.visible = this._volumeMenu.getInputVisible();
-        this._volumeMenu.connect('input-visible-changed', () => {
+        this.connect(this._volumeMenu, 'input-visible-changed', () => {
             this._inputIndicator.visible = this._volumeMenu.getInputVisible();
         });
-        this._volumeMenu.connect('input-icon-changed', this.updateInputIcon.bind(this));
+        this.connect(this._volumeMenu, 'input-icon-changed', this.updateInputIcon.bind(this));
         // initial call to get an icon (especially for "show-always" setups)
         this.updateInputIcon();
 
@@ -121,6 +124,8 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
     }
 
     destroy() {
+        this.disconnectAll();
+
         if (this.menu) {
             this.menu.destroy();
             this.menu = null;
@@ -132,3 +137,5 @@ var Indicator = GObject.registerClass(class Indicator extends PanelMenu.SystemIn
         }
     }
 });
+
+Utils.mixin(Indicator, EventHandlerDelegate);
