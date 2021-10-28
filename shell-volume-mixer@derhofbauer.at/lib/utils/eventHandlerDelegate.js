@@ -77,7 +77,6 @@ var EventHandlerDelegate = class {
     disconnect(target, signal) {
         if (typeof target === 'string') {
             signal = target;
-            target = this.eventHandlerDelegate;
         }
 
         for (let index in this._signals) {
@@ -96,8 +95,12 @@ var EventHandlerDelegate = class {
      * Disconnects all locally used signals.
      */
     disconnectAll() {
+        Log.info(`Disconnecting ${this._signals.length} signal(s)`);
+
         while (this._signals.length > 0) {
             const [target, id] = this._signals.pop();
+            Log.info(`Disconnecting signal ${id} from ${target.constructor.name}`);
+
             target.disconnect(id);
         }
     }

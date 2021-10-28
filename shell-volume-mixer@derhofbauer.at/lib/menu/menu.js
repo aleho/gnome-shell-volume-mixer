@@ -228,7 +228,7 @@ var Menu = class extends VolumeMenuExtension
             this._addOutputStream(stream, control, options);
 
         } else {
-            Log.info(`Unhandled stream ${stream.id} (${stream.name} (${stream.constructor}))`);
+            Log.info(`Unhandled stream ${stream.id} (${stream.name} (${stream.constructor.name}))`);
         }
     }
 
