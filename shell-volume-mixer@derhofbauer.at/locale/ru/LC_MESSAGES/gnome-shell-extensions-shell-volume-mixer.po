@@ -1,0 +1,123 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-shell-volume-mixer\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: Alexandr K <Alexandr1322@yandex.ua>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.0\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"Language: ru\n"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.js:219
+msgid "Error retrieving card details"
+msgstr "Ошибка при получении сведений о карте"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.js:220
+msgid "Helper script did not return valid card data."
+msgstr "Вспомогательный скрипт не вернул действительные данные карты."
+
+#: shell-volume-mixer@derhofbauer.at/lib/utils/cards.js:116
+msgid "Querying PulseAudio sound cards failed, disabling extension"
+msgstr "Сбой запроса звуковых карт PulseAudio, отключение расширения"
+
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:323
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:325
+msgid "Inputs"
+msgstr "Входы"
+
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:541
+msgid "unknown"
+msgstr "неизвестно"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:39
+msgid "Position of volume mixer"
+msgstr "Позиция volume mixer"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:53
+msgid "Status Menu"
+msgstr "В меню состояния"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:54
+msgid "Left"
+msgstr "Слева"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:55
+msgid "Center"
+msgstr "По центру"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:56
+msgid "Right"
+msgstr "Справо"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:69
+msgid "Remove original slider"
+msgstr "Скрыть оригинальный ползунок"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:81
+msgid "Show detailed sliders"
+msgstr "Показывать детали под ползунком"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:116
+msgid "Hotkey for profile switcher"
+msgstr "Горячая клавиша для переключателя профилей"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:137
+msgid "(e.g. \"<Super>p\")"
+msgstr "(например, \"<Super>p\")"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:149
+msgid "Use symbolic icons"
+msgstr "Использовать символьные иконки"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:172
+msgid "Show system sounds"
+msgstr "Показывать системные звуки"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:195
+msgid "Show virtual streams"
+msgstr "Показать действующие устройства"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:218
+msgid "Always show input streams"
+msgstr "Всегда показывать устройства ввода"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:240
+msgid "Shows the slider even if no application is recording"
+msgstr "Показывает ползунок, даже если приложение не записывает"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:288
+msgid "Show percentage"
+msgstr "Показать процент громкости"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:310
+msgid "Whether to show percentage of current output right of the icon"
+msgstr "Показывать ли процент от текущего выходного сигнала справа от значка"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:340
+msgid "Settings"
+msgstr "Общие настройки"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:372
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:502
+msgid "Devices"
+msgstr "Устройства вывода"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:413
+msgid "Card"
+msgstr "Карты"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:427
+msgid "Profile"
+msgstr "Профиль"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:440
+msgid "Switch"
+msgstr "Переключить"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:455
+msgid "Display"
+msgstr "Показать"
