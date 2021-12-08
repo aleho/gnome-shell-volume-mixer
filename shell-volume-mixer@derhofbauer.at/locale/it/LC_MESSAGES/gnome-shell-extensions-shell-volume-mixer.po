@@ -4,108 +4,123 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GNOME Shell Volume Mixer\n"
-"POT-Creation-Date: 2017-11-07 23:12+0100\n"
+"PO-Creation-Date: 2017-11-07 23:12+0100\n"
+"PO-Revision-Date: 2021-12-08 11:37+0100\n"
 "Last-Translator: Gianvito Cavasoli <gianvito@gmx.it>\n"
+"Language-Team: \n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0\n"
 
-#: prefs.js:288
+#: shell-volume-mixer@derhofbauer.at/prefs.js:219
 msgid "Error retrieving card details"
 msgstr "Errore nel recuperare le informazioni sulla scheda"
 
-#: prefs.js:289
+#: shell-volume-mixer@derhofbauer.at/prefs.js:220
 msgid "Helper script did not return valid card data."
 msgstr "Lo script di aiuto non ha restituito dati della scheda validi"
 
-#: widget/volume.js:255 widget/volume.js:257
+#: shell-volume-mixer@derhofbauer.at/lib/utils/cards.js:116
+msgid "Querying PulseAudio sound cards failed, disabling extension"
+msgstr ""
+
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:323
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:325
 msgid "Inputs"
 msgstr "Sorgenti"
 
-#: widget/volume.js:394
+#: shell-volume-mixer@derhofbauer.at/lib/widget/volume.js:541
 msgid "unknown"
 msgstr "sconosciuto"
 
-#: prefs.ui:56
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:39
 msgid "Position of volume mixer"
 msgstr "Posizione mixer del volume"
 
-#: prefs.ui:70
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:53
 msgid "Status Menu"
 msgstr "Menù di stato"
 
-#: prefs.ui:71
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:54
 msgid "Left"
 msgstr "Sinistra"
 
-#: prefs.ui:72
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:55
 msgid "Center"
 msgstr "Centro"
 
-#: prefs.ui:73
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:56
 msgid "Right"
 msgstr "Destra"
 
-#: prefs.ui:88
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:69
 msgid "Remove original slider"
 msgstr "Rimuovere cursore di scorrimento originale"
 
-#: prefs.ui:101
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:81
 msgid "Show detailed sliders"
 msgstr "Mostrare cursore di scorrimento dettagliato"
 
-#: prefs.ui:141
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:116
 msgid "Hotkey for profile switcher"
 msgstr "Scorciatoia selettore del profilo"
 
-#: prefs.ui:164
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:137
 msgid "(e.g. \"<Super>p\")"
 msgstr "(esempio «<Super>p»)"
 
-#: prefs.ui:260
-msgid "Show system sounds"
-msgstr "Mostra i suoni di sistema"
-
-#: prefs.ui:273
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:149
 msgid "Use symbolic icons"
 msgstr "Usare le icone simboliche"
 
-#: prefs.ui:310
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:172
+msgid "Show system sounds"
+msgstr "Mostra i suoni di sistema"
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:195
 msgid "Show virtual streams"
 msgstr "Mostrare i flussi virtuali"
 
-#: prefs.ui:335
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:218
 msgid "Always show input streams"
 msgstr "Mostrare sempre i flussi di input"
 
-#: prefs.ui:359
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:240
 msgid "Shows the slider even if no application is recording"
-msgstr ""
-"Mostra il cursore di scorrimento anche se nessuna applicazione sta "
-"registrando"
+msgstr "Mostra il cursore di scorrimento anche se nessuna applicazione sta registrando"
 
-#: prefs.ui:445
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:288
+msgid "Show percentage"
+msgstr ""
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:310
+msgid "Whether to show percentage of current output right of the icon"
+msgstr ""
+
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:340
 msgid "Settings"
 msgstr "Impostazioni"
 
-#: prefs.ui:482 prefs.ui:649
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:372
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:502
 msgid "Devices"
 msgstr "Dispositivi"
 
-#: prefs.ui:533
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:413
 msgid "Card"
 msgstr "Scheda"
 
-#: prefs.ui:547
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:427
 msgid "Profile"
 msgstr "Profilo"
 
-#: prefs.ui:560
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:440
 msgid "Switch"
 msgstr "Attiva"
 
-#: prefs.ui:573
+#: shell-volume-mixer@derhofbauer.at/prefs.ui:455
 msgid "Display"
 msgstr "Visualizza"
