@@ -19,6 +19,7 @@ Requirements
 ------------
 
 - PulseAudio (for retrieval of card details)
+- Python3 (for retrieval of card details)
 - gettext (for building of language files)
 - nodejs / npm (styles and linting)
 - glib2 bin (schema compilation)
