@@ -1,4 +1,4 @@
-VERSION = 41.1
+VERSION = 42.0
 EXTENSION = shell-volume-mixer@derhofbauer.at
 
 SRCDIR = $(EXTENSION)
@@ -66,7 +66,7 @@ metadata.json: prepare
 stylesheet.css:
 	npm run build
 	# remove harmful content produced by gnome-shell-sass
-	sed -i '/\/\*\sGlobal\sValues\s\*\//,/\/\*\sCommon\sStylings\s\*/d' $(SRCDIR)/stylesheet.css
+	sed -i '/\/\*\sGlobal\sValues\s\*\//,/\/\*\sGeneral\sTypography\s\*/d' $(SRCDIR)/stylesheet.css
 
 check:
 	npm run eslint
