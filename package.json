@@ -2,8 +2,8 @@
   "license": "GPL-2.0-only",
   "repository": "https://github.com/aleho/gnome-shell-volume-mixer",
   "devDependencies": {
-    "eslint": "^8.0",
-    "sass": "^1.32"
+    "eslint": "^8.13.0",
+    "sass": "^1.50.0"
   },
   "scripts": {
     "eslint": "eslint shell-volume-mixer@derhofbauer.at",
