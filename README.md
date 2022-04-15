@@ -18,7 +18,7 @@ Indicators and streams are also scrollable,
 Requirements
 ------------
 
-- PulseAudio (for retrieval of card details)
+- PulseAudio / libpulse.so, Python (for retrieval of card details)
 - gettext (for building of language files)
 - nodejs / npm (styles and linting)
 - glib2 bin (schema compilation)
