@@ -161,7 +161,7 @@ function dbus_command() {
     local args="$2"
 
     if [[ -z $command ]]; then
-        echo "Command needed"
+        echo "Command needed (use help for available commands)"
         exit 1
     fi
 
