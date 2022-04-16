@@ -277,6 +277,7 @@ var MasterSlider = class extends StreamSlider
      * @private
      */
     _addSettingsItem() {
+        this.item.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
         this.item.menu.addAction(_('Settings'), () => ExtensionUtils.openPrefs());
     }
 
