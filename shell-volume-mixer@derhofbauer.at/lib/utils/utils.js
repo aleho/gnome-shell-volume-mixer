@@ -36,9 +36,14 @@ function getExtensionPath(subpath) {
  */
 function mixin(target, source, keepExisting = false) {
     const sourceProps = Object.getOwnPropertyDescriptors(source.prototype);
+    const targetProps = Object.getOwnPropertyDescriptors(target.prototype);
 
     for (let name of Object.keys(sourceProps)) {
-        if (keepExisting === true && Object.prototype.hasOwnProperty.call(target, name)) {
+        if (keepExisting === true
+            && (name in targetProps
+                || Object.prototype.hasOwnProperty.call(target, name)
+            )
+        ) {
             continue;
         }
 
