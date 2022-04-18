@@ -47,6 +47,54 @@ Utils.mixin(OutputStreamSliderExtension, Volume.OutputStreamSlider);
  */
 const StreamSlider = class extends OutputStreamSliderExtension
 {
+    _initItem() {
+        if (!this.item) {
+            this.item = new MenuItem.SubMenuItem();
+        }
+
+        return this.item;
+    }
+
+    _initIcon() {
+        if (this.icon) {
+            // different widgets seem to use different naming
+            return this.icon;
+        }
+
+        if (this._icon) {
+            return this._icon;
+        }
+
+        this._icon = this.icon = new St.Icon({ style_class: 'popup-menu-icon' });
+        this.item.addChildFirstLine(this._icon);
+
+        return this._icon;
+    }
+
+    _initLabel() {
+        if (this._label) {
+            return this._label;
+        }
+
+        this._label = new St.Label({ text: '' });
+        this.item.addChildFirstLine(this._label);
+
+        return this._label;
+    }
+
+    _initSlider() {
+        if (this._slider) {
+            return this._slider;
+        }
+
+        log('################################ adding slider') //XXX
+        this._slider = new Slider.VolumeSlider(0);
+        this.item.addChildSecondLine(this._slider);
+
+        return this._slider;
+    }
+
+
     /**
      * @param {Gvc.MixerControl} control
      * @param {sliderOptions} options
@@ -64,8 +112,6 @@ const StreamSlider = class extends OutputStreamSliderExtension
         this._events = new EventBroker();
 
         this._init(options);
-
-        return this;
     }
 
     /**
@@ -74,36 +120,18 @@ const StreamSlider = class extends OutputStreamSliderExtension
      * @param {sliderOptions} options
      */
     _init(options) {
-        if (!this.item) {
-            this.item = new MenuItem.SubMenuItem();
-        }
-
-        if (this.icon) {
-            // different widgets seem to use different naming
-            this._icon = this.icon;
-        }
-
-        if (!this._icon) {
-            this._icon = new St.Icon({ style_class: 'popup-menu-icon' });
-            this.item.firstLine.add_child(this._icon);
-        }
-
-        if (!this._label) {
-            this._label = new St.Label({ text: '' });
-            this.item.firstLine.add_child(this._label);
-        }
-
-        this.item.label_actor = this._label;
-
-        if (!this._slider) {
-            this._slider = new Slider.VolumeSlider(0);
-            this.item.secondLine.add_child(this._slider);
-        }
+        this._initItem();
+        this._initIcon();
+        this._initLabel();
+        this._initSlider();
 
         this._volumeInfo = new FloatingLabel();
 
-
+        this.item.label_actor = this._label;
         this.item.connect('destroy', this._onDestroy.bind(this));
+        this.item.connect('scroll-event', () => {
+            this._showVolumeInfo();
+        });
 
         if (this._onButtonPress) {
             this.item.connect('button-press-event', this._onButtonPress.bind(this));
@@ -118,10 +146,6 @@ const StreamSlider = class extends OutputStreamSliderExtension
                 return this._slider.emit('scroll-event', event);
             });
         }
-
-        this.item.connect('scroll-event', () => {
-            this._showVolumeInfo();
-        });
 
 
         this._inDrag = false;
@@ -257,16 +281,23 @@ const StreamSlider = class extends OutputStreamSliderExtension
  */
 var MasterSlider = class extends StreamSlider
 {
+    _initItem() {
+        return this.item = new MenuItem.MasterMenuItem();
+    }
+
+    _initIcon() {
+        return this._icon = this.item.icon;
+    }
+
+    _initLabel() {
+        return this._label = this.item.label;
+    }
+
+    _initSlider() {
+        return this._slider = this.item._slider;
+    }
+
     _init(options) {
-        this.item = new MenuItem.MasterMenuItem();
-        this.item.menu.actor.add_style_class_name('svm-master-slider-menu');
-
-        this._slider = this.item._slider;
-        this._icon = this.item.icon;
-        this._label = this.item.label;
-
-        this._slider.accessible_name = _('Volume');
-
         super._init(options);
         this._addSettingsItem();
     }

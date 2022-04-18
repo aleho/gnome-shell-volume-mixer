@@ -20,8 +20,28 @@ const Utils = Lib.utils.utils;
  */
 class BaseMenuItem
 {
-    _makeOrnamentLabel() {
-        return new St.Label({ style_class: 'popup-menu-ornament' });
+    addChildFirstLine(child) {
+        this.firstLine.add_child(child);
+    }
+
+    addChildSecondLine(child) {
+        log('############# in add child')
+        this.secondLine.add_child(child);
+    }
+
+    _buildFirstLine() {
+        this.firstLine = this._makeItemLine();
+        this.firstLine.add_style_class_name('line-1');
+
+        this.container.add(this.firstLine);
+    }
+
+    _buildSecondLine() {
+        console.log('### building second')
+        this.secondLine = this._makeItemLine();
+        this.secondLine.add_style_class_name('line-2');
+
+        this.container.add(this.secondLine);
     }
 
     /**
@@ -47,24 +67,12 @@ class BaseMenuItem
 
         this.add(this.container);
 
-        if (!this.firstLine) {
-            this.firstLine = this._makeItemLine();
-            if (this._ornamentLabel) {
-                this.firstLine.add_child(this._ornamentLabel);
-            }
-            this.container.add(this.firstLine);
-        }
+        this._buildFirstLine();
+        this._buildSecondLine();
 
-        if (!this.secondLine) {
-            this.secondLine = this._makeItemLine();
-            if (this._ornamentLabel) {
-                this.secondLine.add_child(this._makeOrnamentLabel());
-            }
+        if (this.secondLine) {
             this.container.add(this.secondLine);
         }
-
-        this.firstLine.add_style_class_name('line-1');
-        this.secondLine.add_style_class_name('line-2');
     }
 }
 
@@ -76,27 +84,43 @@ class BaseMenuItem
  */
 var MasterMenuItem = GObject.registerClass(class MasterMenuItem extends PopupMenu.PopupSubMenuMenuItem
 {
-    _init() {
-        super._init('', true);
-        this._prepareMenuItem();
+    _buildFirstLine() {
+        BaseMenuItem.prototype._buildFirstLine.call(this);
 
-        this._slider = new Slider.VolumeSlider(0);
-
-        this.firstLine.add_child(this.icon);
-        this.firstLine.add_child(this.label);
-
-        this.firstLine.add_child(new St.Bin({
+        const expander = new St.Bin({
             style_class: 'popup-menu-item-expander',
             x_expand: true,
-        }));
+        });
 
+        this.firstLine.add_child(this._ornamentLabel);
+        this.firstLine.add_child(this.icon);
+        this.firstLine.add_child(this.label);
+        this.firstLine.add_child(expander);
         this.firstLine.add_child(this._triangleBin);
+    }
 
-        this.secondLine.add_child(this._slider); // shell uses add_child here but that breaks layout?
+    _buildSecondLine() {
+        BaseMenuItem.prototype._buildSecondLine.call(this);
+
         this.secondLine.add_style_class_name('svm-master-slider-line');
+        this.secondLine.add(this._slider);
+
+        // without this label the slider will not be drawn, wtf?
+        this.secondLine.add_child(new St.Label({ text: '' }));
+    }
+
+    _init() {
+        super._init('', true);
+
+        this._slider = new Slider.VolumeSlider(0);
+        this._slider.accessible_name = _('Volume');
+
+        this.menu.actor.add_style_class_name('svm-master-slider-menu');
 
         this.label.add_style_class_name('svm-master-label');
         this.add_style_class_name('svm-master-slider svm-menu-item');
+
+        this._prepareMenuItem();
     }
 
     vfunc_button_release_event(event) {
